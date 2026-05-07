@@ -34,6 +34,7 @@ import {
 } from '../../../requests/services/rest-workspace-api.service';
 import { WorkspacePersistenceService } from '../../../requests/services/workspace-persistence.service';
 import { tryFormatXml } from '../../../../core/utils/format-xml';
+import { WorkspaceAppHeaderComponent } from '../../../../shared/components/workspace-app-header/workspace-app-header.component';
 import { XmlEditorComponent } from '../../components/xml-editor/xml-editor.component';
 import type { SoapTabState } from '../../models/soap-workspace.models';
 import { SoapWorkspacePersistenceService } from '../../services/soap-workspace-persistence.service';
@@ -52,6 +53,7 @@ import {
     AuthorizationEditorComponent,
     ResponseViewerComponent,
     WorkspaceSidebarComponent,
+    WorkspaceAppHeaderComponent,
     EnvironmentEditorModalComponent,
     XmlEditorComponent,
   ],
@@ -242,18 +244,22 @@ export class SoapWorkspacePageComponent {
     });
   }
 
-  loadStoredRequest(r: {
-    id: string;
-    method: string;
-    url: string;
-    headers: unknown;
-    params?: unknown;
-    body: string | null;
-    tag?: string | null;
-    protocol?: string;
-    graphqlVariables?: unknown;
-    authConfig?: unknown;
+  loadStoredRequest(event: {
+    storageFolderId: string;
+    request: {
+      id: string;
+      method: string;
+      url: string;
+      headers: unknown;
+      params?: unknown;
+      body: string | null;
+      tag?: string | null;
+      protocol?: string;
+      graphqlVariables?: unknown;
+      authConfig?: unknown;
+    };
   }): void {
+    const r = event.request;
     const headers: KeyValueRow[] = toHeaderRows(r.headers);
     const tab: SoapTabState = {
       id: crypto.randomUUID(),
@@ -319,7 +325,7 @@ export class SoapWorkspacePageComponent {
 
   renameCollection(c: CollectionRow): void {
     if (typeof window === 'undefined') return;
-    const name = window.prompt('Novo nome da collection', c.name);
+    const name = window.prompt('New collection name', c.name);
     if (!name?.trim()) return;
     this.api
       .updateCollection(c.id, { name: name.trim() })
@@ -351,14 +357,14 @@ export class SoapWorkspacePageComponent {
           .updateCollection(c.id, { authConfig: parsed })
           .subscribe(() => this.refreshMeta());
       } catch {
-        this.errorMessage.set('JSON de auth inválido.');
+        this.errorMessage.set('Invalid auth JSON.');
       }
     });
   }
 
   deleteCollection(id: string): void {
     if (typeof window === 'undefined') return;
-    if (!window.confirm('Eliminar esta collection e todos os pedidos guardados?')) {
+    if (!window.confirm('Delete this collection and all saved requests?')) {
       return;
     }
     this.api.deleteCollection(id).subscribe(() => {
@@ -375,7 +381,7 @@ export class SoapWorkspacePageComponent {
     requestId: string;
   }): void {
     if (typeof window === 'undefined') return;
-    if (!window.confirm('Eliminar este pedido guardado?')) return;
+    if (!window.confirm('Delete this saved request?')) return;
     this.api
       .deleteStoredRequest(event.collectionId, event.requestId)
       .subscribe(() => {

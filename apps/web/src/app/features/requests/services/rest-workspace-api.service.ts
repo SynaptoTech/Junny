@@ -198,17 +198,18 @@ export class RestWorkspaceApiService {
       headers: Record<string, string>;
       params?: Record<string, string>;
       body?: string | null;
+      tag?: string | null;
       protocol?: 'REST' | 'GRAPHQL' | 'SOAP' | 'WEBSOCKET';
       graphqlVariables?: Record<string, unknown> | null;
       authConfig?: RequestAuthConfig;
     },
-  ) {
+  ): Observable<StoredRequestDto> {
     return this.http
-      .post<Wrapped<unknown>>(
+      .post<Wrapped<StoredRequestDto>>(
         `${this.v1}/collections/${collectionId}/requests`,
         body,
       )
-      .pipe(map((r) => r.data));
+      .pipe(map((r) => r.data!));
   }
 
   updateStoredRequest(
@@ -220,6 +221,7 @@ export class RestWorkspaceApiService {
       headers: Record<string, string>;
       params: Record<string, string>;
       body: string | null;
+      tag: string | null;
       protocol: 'REST' | 'GRAPHQL' | 'SOAP' | 'WEBSOCKET';
       graphqlVariables: Record<string, unknown> | null;
       authConfig: RequestAuthConfig | null;
@@ -238,6 +240,56 @@ export class RestWorkspaceApiService {
       .delete<Wrapped<unknown>>(
         `${this.v1}/collections/${collectionId}/requests/${requestId}`,
       )
+      .pipe(map((r) => r.data));
+  }
+
+  listRootStoredRequests(): Observable<StoredRequestDto[]> {
+    return this.http
+      .get<Wrapped<StoredRequestDto[]>>(`${this.v1}/saved-requests`)
+      .pipe(map((r) => r.data ?? []));
+  }
+
+  saveRequestToRoot(body: {
+    method: string;
+    url: string;
+    headers: Record<string, string>;
+    params?: Record<string, string>;
+    body?: string | null;
+    tag?: string | null;
+    protocol?: 'REST' | 'GRAPHQL' | 'SOAP' | 'WEBSOCKET';
+    graphqlVariables?: Record<string, unknown> | null;
+    authConfig?: RequestAuthConfig;
+  }): Observable<StoredRequestDto> {
+    return this.http
+      .post<Wrapped<StoredRequestDto>>(`${this.v1}/saved-requests`, body)
+      .pipe(map((r) => r.data!));
+  }
+
+  updateRootStoredRequest(
+    requestId: string,
+    body: Partial<{
+      method: string;
+      url: string;
+      headers: Record<string, string>;
+      params: Record<string, string>;
+      body: string | null;
+      tag: string | null;
+      protocol: 'REST' | 'GRAPHQL' | 'SOAP' | 'WEBSOCKET';
+      graphqlVariables: Record<string, unknown> | null;
+      authConfig: RequestAuthConfig | null;
+    }>,
+  ): Observable<StoredRequestDto> {
+    return this.http
+      .patch<Wrapped<StoredRequestDto>>(
+        `${this.v1}/saved-requests/${requestId}`,
+        body,
+      )
+      .pipe(map((r) => r.data!));
+  }
+
+  deleteRootStoredRequest(requestId: string) {
+    return this.http
+      .delete<Wrapped<unknown>>(`${this.v1}/saved-requests/${requestId}`)
       .pipe(map((r) => r.data));
   }
 

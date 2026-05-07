@@ -1,11 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { defaultAuth, type WorkspaceTabState } from '../models/workspace.models';
+import { workspaceTabContentFingerprint } from '../utils/workspace-tab.utils';
 
 const STORAGE_KEY = 'junny-workspace-tabs-v1';
 const UI_STORAGE_KEY = 'junny-workspace-ui-v1';
 
 function newTab(): WorkspaceTabState {
-  return {
+  const tab: WorkspaceTabState = {
     id: crypto.randomUUID(),
     title: 'Untitled',
     method: 'GET',
@@ -14,7 +15,10 @@ function newTab(): WorkspaceTabState {
     paramRows: [],
     bodyText: '',
     auth: defaultAuth(),
+    savedFingerprint: '',
   };
+  tab.savedFingerprint = workspaceTabContentFingerprint(tab);
+  return tab;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -130,7 +134,11 @@ export class WorkspacePersistenceService {
 
   closeTab(id: string): void {
     this.tabs.update((list) => {
-      if (list.length <= 1) return list;
+      if (list.length <= 1) {
+        const fresh = newTab();
+        this.activeTabId.set(fresh.id);
+        return [fresh];
+      }
       const next = list.filter((t) => t.id !== id);
       if (this.activeTabId() === id) {
         this.activeTabId.set(next[0]?.id ?? '');
@@ -140,10 +148,29 @@ export class WorkspacePersistenceService {
     this.persist();
   }
 
+  /** Fecha todas as abas e deixa apenas uma "Untitled" em branco. */
+  resetTabsToBlank(): WorkspaceTabState {
+    const fresh = newTab();
+    this.tabs.set([fresh]);
+    this.activeTabId.set(fresh.id);
+    this.persist();
+    return fresh;
+  }
+
   patchActive(mutator: (tab: WorkspaceTabState) => WorkspaceTabState): void {
     const id = this.activeTabId();
     this.tabs.update((list) =>
       list.map((t) => (t.id === id ? mutator({ ...t }) : t)),
+    );
+    this.persist();
+  }
+
+  patchTab(
+    tabId: string,
+    mutator: (tab: WorkspaceTabState) => WorkspaceTabState,
+  ): void {
+    this.tabs.update((list) =>
+      list.map((t) => (t.id === tabId ? mutator({ ...t }) : t)),
     );
     this.persist();
   }
@@ -155,14 +182,20 @@ export class WorkspacePersistenceService {
   }
 
   loadTabState(state: WorkspaceTabState): void {
-    const existing = this.tabs().find((t) => t.id === state.id);
+    const normalized: WorkspaceTabState = {
+      ...state,
+      savedFingerprint:
+        state.savedFingerprint ||
+        workspaceTabContentFingerprint(state),
+    };
+    const existing = this.tabs().find((t) => t.id === normalized.id);
     if (existing) {
       this.tabs.update((list) =>
-        list.map((t) => (t.id === state.id ? state : t)),
+        list.map((t) => (t.id === normalized.id ? normalized : t)),
       );
     } else {
-      this.tabs.update((list) => [...list, state]);
-      this.activeTabId.set(state.id);
+      this.tabs.update((list) => [...list, normalized]);
+      this.activeTabId.set(normalized.id);
     }
     this.persist();
   }

@@ -5,11 +5,24 @@ import type { KeyValueRow } from '../../models/workspace.models';
   selector: 'app-key-value-table',
   standalone: true,
   template: `
-    <div class="overflow-hidden rounded-xl border border-white/10 bg-slate-950/40">
+    <div
+      [class]="
+        embedded()
+          ? 'flex min-h-0 flex-col'
+          : 'overflow-hidden rounded-xl border border-white/10 bg-slate-950/40'
+      "
+    >
       <div
-        class="flex items-center justify-between border-b border-white/5 px-3 py-2"
+        class="flex items-center justify-between border-b border-white/5 py-2"
+        [class.px-3]="!embedded()"
+        [class.px-1]="embedded()"
       >
-        <span class="text-xs font-medium text-slate-400">{{ label() }}</span>
+        <span
+          class="text-xs font-medium"
+          [class.text-slate-400]="!embedded()"
+          [class.text-slate-500]="embedded()"
+          >{{ label() }}</span
+        >
         <button
           type="button"
           class="rounded-lg px-2 py-1 text-xs text-junny-blue transition hover:bg-white/5"
@@ -18,7 +31,12 @@ import type { KeyValueRow } from '../../models/workspace.models';
           + Add
         </button>
       </div>
-      <div class="max-h-48 overflow-y-auto">
+      <div
+        class="overflow-y-auto"
+        [class.max-h-48]="!embedded()"
+        [class.min-h-32]="embedded()"
+        [class.max-h-96]="embedded()"
+      >
         @for (row of rows(); track $index; let i = $index) {
           <div
             class="grid grid-cols-[1fr_1fr_auto] gap-2 border-b border-white/5 px-3 py-2 last:border-0"
@@ -50,6 +68,9 @@ import type { KeyValueRow } from '../../models/workspace.models';
   `,
 })
 export class KeyValueTableComponent {
+  /** Tab / inline layout: no outer card chrome */
+  readonly embedded = input(false);
+
   readonly label = input.required<string>();
   readonly rows = input.required<KeyValueRow[]>();
   readonly rowsChange = output<KeyValueRow[]>();

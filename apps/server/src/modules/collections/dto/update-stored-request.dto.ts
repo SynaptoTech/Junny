@@ -56,6 +56,12 @@ export class UpdateStoredRequestDto {
   @MaxLength(MAX_STORED_BODY_LENGTH)
   body?: string | null;
 
+  @ApiPropertyOptional({ description: 'Nome / rótulo na lista' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  tag?: string | null;
+
   @ApiPropertyOptional({
     description: 'Auth específica; omitir campo para não alterar.',
   })

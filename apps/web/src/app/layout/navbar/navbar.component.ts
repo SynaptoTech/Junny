@@ -8,13 +8,12 @@ import type { LocaleId } from '../../core/i18n/supported-locales';
 import { getLandingCopy } from '../../core/i18n/landing.copy';
 import { resolveLocaleIdFromUrl } from '../../core/i18n/resolve-locale';
 import { ThemeService, type ThemeMode } from '../../core/theme/theme.service';
-import { ButtonComponent } from '../../shared/components/button/button.component';
 import { LanguageSelectorComponent } from '../../shared/components/language-selector/language-selector.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [ButtonComponent, RouterLink, NgClass, LanguageSelectorComponent],
+  imports: [RouterLink, NgClass, LanguageSelectorComponent],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {

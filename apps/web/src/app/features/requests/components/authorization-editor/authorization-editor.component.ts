@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import type {
   AuthType,
@@ -7,15 +8,24 @@ import type {
 @Component({
   selector: 'app-authorization-editor',
   standalone: true,
+  imports: [NgClass],
   template: `
-    <div class="overflow-hidden rounded-xl border border-white/10 bg-slate-950/40">
-      <div class="border-b border-white/5 px-3 py-2">
-        <span class="text-xs font-medium text-slate-400">Authorization</span>
-      </div>
-      <div class="space-y-3 p-3">
+    <div
+      [ngClass]="
+        embedded()
+          ? 'flex flex-col'
+          : 'overflow-hidden rounded-xl border border-white/10 bg-slate-950/40'
+      "
+    >
+      @if (!embedded()) {
+        <div class="border-b border-white/5 px-3 py-2">
+          <span class="text-xs font-medium text-slate-400">Authorization</span>
+        </div>
+      }
+      <div [ngClass]="embedded() ? 'space-y-3' : 'space-y-3 p-3'">
         <div>
           <label class="mb-1 block text-xs text-slate-500" for="auth-type"
-            >Tipo</label
+            >Type</label
           >
           <select
             id="auth-type"
@@ -89,7 +99,7 @@ import type {
             <div class="grid gap-2 sm:grid-cols-2">
               <div>
                 <label class="mb-1 block text-xs text-slate-500" for="auth-add"
-                  >Enviar em</label
+                  >Add to</label
                 >
                 <select
                   id="auth-add"
@@ -107,7 +117,7 @@ import type {
               </div>
               <div>
                 <label class="mb-1 block text-xs text-slate-500" for="auth-k"
-                  >Nome</label
+                  >Name</label
                 >
                 <input
                   id="auth-k"
@@ -123,7 +133,7 @@ import type {
             </div>
             <div>
               <label class="mb-1 block text-xs text-slate-500" for="auth-val"
-                >Valor</label
+                >Value</label
               >
               <input
                 id="auth-val"
@@ -143,7 +153,10 @@ import type {
   `,
 })
 export class AuthorizationEditorComponent {
-  readonly phToken = '{{token}} ou valor literal';
+  readonly phToken = '{{token}} or literal value';
+
+  /** Inline under request sub-tabs: no outer card / title bar */
+  readonly embedded = input(false);
 
   readonly auth = input.required<RequestAuthConfig>();
   readonly authChange = output<RequestAuthConfig>();

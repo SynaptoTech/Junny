@@ -14,15 +14,15 @@ export function bucketForCreatedAt(iso: string): HistoryDateBucket {
   return 'older';
 }
 
-export function bucketLabelPt(bucket: HistoryDateBucket): string {
+export function bucketLabel(bucket: HistoryDateBucket): string {
   switch (bucket) {
     case 'today':
-      return 'Hoje';
+      return 'Today';
     case 'yesterday':
-      return 'Ontem';
+      return 'Yesterday';
     case 'week':
-      return 'Últimos 7 dias';
+      return 'Last 7 days';
     default:
-      return 'Mais antigos';
+      return 'Older';
   }
 }

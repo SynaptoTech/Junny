@@ -1,0 +1,592 @@
+<aside
+  class="relative flex h-full min-h-0 border-r border-white/10 bg-slate-950/90"
+  [style.width.px]="sidebarWidth()"
+>
+  <div class="flex min-h-0 min-w-0 flex-1">
+    <!-- Vertical tab rail -->
+    <nav
+      class="flex w-11 shrink-0 flex-col gap-0.5 border-r border-white/10 bg-slate-950/95 py-2"
+      aria-label="Sidebar panels"
+    >
+      @for (tab of tabs; track tab.id) {
+        <button
+          type="button"
+          class="flex min-h-[2.75rem] flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[10px] font-semibold leading-tight transition"
+          [ngClass]="
+            activePanel() === tab.id
+              ? 'bg-junny-violet/15 text-junny-violet'
+              : 'text-slate-500 hover:bg-white/5 hover:text-slate-200'
+          "
+          [attr.title]="tab.title"
+          [attr.aria-selected]="activePanel() === tab.id"
+          role="tab"
+          (click)="activePanel.set(tab.id)"
+        >
+          <span class="text-base leading-none" aria-hidden="true">{{ tab.icon }}</span>
+          <span class="max-w-[2.5rem] text-center uppercase tracking-wide">{{
+            tab.short
+          }}</span>
+        </button>
+      }
+    </nav>
+
+    <!-- Panel body -->
+    <div class="relative flex min-h-0 min-w-0 flex-1 flex-col">
+      @switch (activePanel()) {
+        @case ('env') {
+          <div
+            class="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-3 py-3"
+          >
+            <section class="shrink-0">
+              <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Environments
+              </p>
+              <label class="mb-1 block text-xs font-medium text-slate-500" for="workspace-env"
+                >Active</label
+              >
+              <select
+                id="workspace-env"
+                class="mb-2 w-full rounded-lg border border-white/10 bg-slate-900 px-2 py-2 text-sm text-slate-100 focus:border-junny-violet/50 focus:outline-none"
+                [value]="selectedEnvironmentId()"
+                (change)="envChange.emit($any($event.target).value)"
+              >
+                <option value="">— none —</option>
+                @for (e of environments(); track e.id) {
+                  <option [value]="e.id">{{ e.name }}</option>
+                }
+              </select>
+              <div class="flex gap-2">
+                <button
+                  type="button"
+                  class="flex-1 rounded-lg border border-white/10 bg-slate-900 py-2 text-xs font-medium text-slate-200 transition hover:border-junny-violet/40 hover:text-white"
+                  (click)="openEnvCreate.emit()"
+                >
+                  + New
+                </button>
+                <button
+                  type="button"
+                  class="flex-1 rounded-lg border border-white/10 bg-slate-900 py-2 text-xs font-medium text-slate-200 transition hover:border-junny-violet/40 hover:text-white disabled:opacity-40"
+                  [disabled]="!selectedEnvironmentId()"
+                  (click)="openEnvEdit.emit(selectedEnvironmentId())"
+                >
+                  Edit
+                </button>
+              </div>
+            </section>
+          </div>
+        }
+        @case ('collections') {
+          <div
+            class="flex min-h-0 flex-1 flex-col overflow-hidden px-3 py-3"
+          >
+            <p
+              class="mb-2 shrink-0 text-xs font-semibold uppercase tracking-wide text-slate-500"
+            >
+              Collections
+            </p>
+            <div class="relative mb-2 shrink-0">
+              <input
+                type="search"
+                class="w-full rounded-lg border border-white/10 bg-slate-900 px-2.5 py-1.5 pr-7 text-xs text-slate-200 placeholder:text-slate-600 focus:border-junny-violet/50 focus:outline-none"
+                placeholder="Filter requests…"
+                [value]="searchQuery()"
+                (input)="searchQuery.set($any($event.target).value)"
+              />
+              @if (searchQuery()) {
+                <button
+                  type="button"
+                  class="absolute right-1 top-1/2 -translate-y-1/2 rounded p-1 text-[10px] text-slate-500 hover:bg-white/5 hover:text-slate-200"
+                  title="Clear filter"
+                  (click)="searchQuery.set('')"
+                >
+                  ✕
+                </button>
+              }
+            </div>
+            <div class="min-h-0 flex-1 space-y-1 overflow-y-auto">
+              @if (rootFolderId()) {
+                <div>
+                  <div
+                    class="flex items-center gap-0.5 rounded-lg px-1 py-0.5 transition hover:bg-white/5"
+                  >
+                    <button
+                      type="button"
+                      class="min-w-0 flex-1 truncate px-1 py-1.5 text-left text-sm text-slate-200"
+                      [ngClass]="{
+                        'text-junny-blue': expandedCollectionId() === rootFolderId(),
+                      }"
+                      (click)="toggleCollection.emit(rootFolderId())"
+                    >
+                      Root
+                    </button>
+                  </div>
+                  @if (
+                    expandedCollectionId() === rootFolderId() &&
+                    visibleRequests()
+                  ) {
+                    <div class="ml-2 mt-1 border-l border-white/10 pl-2">
+                      @for (r of visibleRequests()!; track r.id) {
+                        <div class="group flex items-center gap-0.5 py-0.5">
+                          <button
+                            type="button"
+                            class="flex min-w-0 flex-1 items-center gap-2 py-1 text-left text-xs text-slate-300 hover:text-junny-blue"
+                            (click)="
+                              loadStored.emit({
+                                storageFolderId: rootFolderId(),
+                                request: r,
+                              })
+                            "
+                          >
+                            <span
+                              class="inline-flex shrink-0 items-center justify-center rounded border px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wide"
+                              [ngClass]="
+                                toneFor(r.method, r.protocol).pill
+                              "
+                              [style.minWidth.rem]="2.4"
+                            >
+                              {{ toneFor(r.method, r.protocol).label }}
+                            </span>
+                            <span class="min-w-0 flex-1 truncate">
+                              @if (r.tag) {
+                                <span class="text-slate-200">{{ r.tag }}</span>
+                                <span class="ml-1 text-slate-600">·</span>
+                                <span class="ml-1 text-slate-500">{{ r.url }}</span>
+                              } @else {
+                                {{ r.url }}
+                              }
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="shrink-0 rounded px-1 text-[10px] text-slate-600 opacity-0 transition hover:text-junny-blue group-hover:opacity-100"
+                            title="Rename request"
+                            (click)="
+                              renameStoredRequest.emit({
+                                collectionId: rootFolderId(),
+                                requestId: r.id,
+                                currentTag: r.tag,
+                                currentUrl: r.url,
+                              });
+                              $event.stopPropagation()
+                            "
+                          >
+                            ✎
+                          </button>
+                          <button
+                            type="button"
+                            class="shrink-0 rounded px-1 text-[10px] text-slate-600 opacity-0 transition hover:text-rose-300 group-hover:opacity-100"
+                            title="Delete request"
+                            (click)="
+                              deleteStoredRequest.emit({
+                                collectionId: rootFolderId(),
+                                requestId: r.id,
+                              });
+                              $event.stopPropagation()
+                            "
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+              @for (c of collections(); track c.id) {
+                <div>
+                  <div
+                    class="flex items-center gap-0.5 rounded-lg px-1 py-0.5 transition hover:bg-white/5"
+                  >
+                    <button
+                      type="button"
+                      class="min-w-0 flex-1 truncate px-1 py-1.5 text-left text-sm text-slate-200"
+                      [ngClass]="{ 'text-junny-blue': expandedCollectionId() === c.id }"
+                      (click)="toggleCollection.emit(c.id)"
+                    >
+                      {{ c.name }}
+                    </button>
+                    <button
+                      type="button"
+                      class="shrink-0 rounded px-1.5 py-1 text-xs text-slate-500 hover:bg-white/10 hover:text-slate-200"
+                      title="Duplicate"
+                      (click)="duplicateCollection.emit(c.id); $event.stopPropagation()"
+                    >
+                      ⧉
+                    </button>
+                    <button
+                      type="button"
+                      class="shrink-0 rounded px-1.5 py-1 text-xs text-slate-500 hover:bg-white/10 hover:text-slate-200"
+                      title="Rename"
+                      (click)="renameCollection.emit(c); $event.stopPropagation()"
+                    >
+                      ✎
+                    </button>
+                    <button
+                      type="button"
+                      class="shrink-0 rounded px-1.5 py-1 text-xs text-slate-500 hover:bg-white/10 hover:text-slate-200"
+                      title="Collection auth"
+                      (click)="editCollectionAuth.emit(c); $event.stopPropagation()"
+                    >
+                      🔑
+                    </button>
+                    <button
+                      type="button"
+                      class="shrink-0 rounded px-1.5 py-1 text-xs text-slate-500 hover:bg-rose-500/10 hover:text-rose-300"
+                      title="Delete"
+                      (click)="deleteCollection.emit(c.id); $event.stopPropagation()"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  @if (expandedCollectionId() === c.id && visibleRequests()) {
+                    <div class="ml-2 mt-1 border-l border-white/10 pl-2">
+                      @for (r of visibleRequests()!; track r.id) {
+                        <div class="group flex items-center gap-0.5 py-0.5">
+                          <button
+                            type="button"
+                            class="flex min-w-0 flex-1 items-center gap-2 py-1 text-left text-xs text-slate-300 hover:text-junny-blue"
+                            (click)="
+                              loadStored.emit({
+                                storageFolderId: c.id,
+                                request: r,
+                              })
+                            "
+                          >
+                            <span
+                              class="inline-flex shrink-0 items-center justify-center rounded border px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wide"
+                              [ngClass]="
+                                toneFor(r.method, r.protocol).pill
+                              "
+                              [style.minWidth.rem]="2.4"
+                            >
+                              {{ toneFor(r.method, r.protocol).label }}
+                            </span>
+                            <span class="min-w-0 flex-1 truncate">
+                              @if (r.tag) {
+                                <span class="text-slate-200">{{ r.tag }}</span>
+                                <span class="ml-1 text-slate-600">·</span>
+                                <span class="ml-1 text-slate-500">{{ r.url }}</span>
+                              } @else {
+                                {{ r.url }}
+                              }
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="shrink-0 rounded px-1 text-[10px] text-slate-600 opacity-0 transition hover:text-junny-blue group-hover:opacity-100"
+                            title="Rename request"
+                            (click)="
+                              renameStoredRequest.emit({
+                                collectionId: c.id,
+                                requestId: r.id,
+                                currentTag: r.tag,
+                                currentUrl: r.url,
+                              });
+                              $event.stopPropagation()
+                            "
+                          >
+                            ✎
+                          </button>
+                          <button
+                            type="button"
+                            class="shrink-0 rounded px-1 text-[10px] text-slate-600 opacity-0 transition hover:text-rose-300 group-hover:opacity-100"
+                            title="Delete request"
+                            (click)="
+                              deleteStoredRequest.emit({
+                                collectionId: c.id,
+                                requestId: r.id,
+                              });
+                              $event.stopPropagation()
+                            "
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+            <button
+              type="button"
+              class="mt-2 w-full shrink-0 rounded-lg border border-dashed border-white/15 py-2 text-xs text-slate-400 hover:border-junny-violet/40 hover:text-slate-200"
+              (click)="newCollection.emit()"
+            >
+              + New collection
+            </button>
+          </div>
+        }
+        @case ('history') {
+          <div class="flex min-h-0 flex-1 flex-col overflow-hidden px-2 py-2">
+            <app-history-panel
+              class="flex min-h-0 flex-1 flex-col"
+              [reloadTick]="historyReloadTick()"
+              (replay)="replayHistory.emit($event)"
+            />
+          </div>
+        }
+        @case ('protocols') {
+          <div
+            class="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-2 py-3"
+          >
+            <p
+              class="mb-2 shrink-0 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-500"
+            >
+              Protocols &amp; tools
+            </p>
+            <div class="flex flex-wrap content-start gap-2">
+              <a
+                routerLink="/app"
+                routerLinkActive="pointer-events-none border-junny-violet/50 bg-slate-900 text-junny-blue"
+                [routerLinkActiveOptions]="{ exact: true }"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[11px] transition hover:border-junny-violet/40 hover:text-slate-100"
+                >REST</a
+              >
+              <a
+                routerLink="/app/graphql"
+                routerLinkActive="pointer-events-none border-junny-violet/50 bg-slate-900 text-junny-blue"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[11px] transition hover:border-junny-violet/40 hover:text-slate-100"
+                >GQL</a
+              >
+              <a
+                routerLink="/app/soap"
+                routerLinkActive="pointer-events-none border-junny-violet/50 bg-slate-900 text-junny-blue"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[11px] transition hover:border-junny-violet/40 hover:text-slate-100"
+                >SOAP</a
+              >
+              <a
+                routerLink="/app/websocket"
+                routerLinkActive="pointer-events-none border-junny-violet/50 bg-slate-900 text-junny-blue"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[11px] transition hover:border-junny-violet/40 hover:text-slate-100"
+                >WS</a
+              >
+              <a
+                routerLink="/app/kafka"
+                routerLinkActive="pointer-events-none border-amber-500/40 bg-amber-950/50 text-amber-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[10px] transition hover:border-amber-500/30 hover:text-amber-50"
+                >Kafka</a
+              >
+              <a
+                routerLink="/app/plugins"
+                routerLinkActive="pointer-events-none border-indigo-500/40 bg-indigo-950/45 text-indigo-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[10px] transition hover:border-indigo-400/35 hover:text-indigo-50"
+                >Plugins</a
+              >
+              <a
+                routerLink="/app/ai"
+                routerLinkActive="pointer-events-none border-sky-500/40 bg-sky-950/45 text-sky-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[10px] transition hover:border-sky-400/35 hover:text-sky-50"
+                >AI</a
+              >
+              <a
+                routerLink="/app/grpc"
+                routerLinkActive="pointer-events-none border-teal-500/40 bg-teal-950/45 text-teal-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[10px] transition hover:border-teal-400/35 hover:text-teal-50"
+                >gRPC</a
+              >
+              <a
+                routerLink="/app/codegen"
+                routerLinkActive="pointer-events-none border-fuchsia-500/40 bg-fuchsia-950/45 text-fuchsia-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-fuchsia-400/35 hover:text-fuchsia-50"
+                title="cURL import + code generation"
+                >cURL+</a
+              >
+              <a
+                routerLink="/app/runner"
+                routerLinkActive="pointer-events-none border-emerald-500/40 bg-emerald-950/45 text-emerald-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[10px] transition hover:border-emerald-400/35 hover:text-emerald-50"
+                title="Collection request runner"
+                >Run</a
+              >
+              <a
+                routerLink="/app/mock"
+                routerLinkActive="pointer-events-none border-cyan-500/40 bg-cyan-950/35 text-cyan-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-cyan-400/35 hover:text-cyan-50"
+                title="Mock server roadmap"
+                >Mock</a
+              >
+              <a
+                routerLink="/app/security"
+                routerLinkActive="pointer-events-none border-rose-500/40 bg-rose-950/30 text-rose-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-rose-400/35 hover:text-rose-50"
+                title="Security & secrets roadmap"
+                >Sec</a
+              >
+              <a
+                routerLink="/app/sync"
+                routerLinkActive="pointer-events-none border-blue-500/40 bg-blue-950/30 text-blue-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-blue-400/35 hover:text-blue-50"
+                title="Sync & cloud strategy roadmap"
+                >Sync</a
+              >
+              <a
+                routerLink="/app/workspace-layout"
+                routerLinkActive="pointer-events-none border-purple-500/40 bg-purple-950/30 text-purple-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-purple-400/35 hover:text-purple-50"
+                title="Workspace layout system"
+                >Lay</a
+              >
+              <a
+                routerLink="/app/desktop"
+                routerLinkActive="pointer-events-none border-orange-500/40 bg-orange-950/25 text-orange-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-orange-400/35 hover:text-orange-50"
+                title="Native desktop — Tauri roadmap"
+                >Dsk</a
+              >
+              <a
+                routerLink="/app/team"
+                routerLinkActive="pointer-events-none border-pink-500/40 bg-pink-950/25 text-pink-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-pink-400/35 hover:text-pink-50"
+                title="Enterprise · team workspaces"
+                >Team</a
+              >
+              <a
+                routerLink="/app/official"
+                routerLinkActive="pointer-events-none border-sky-500/40 bg-sky-950/25 text-sky-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-sky-400/35 hover:text-sky-50"
+                title="Official roadmap v1"
+                >v1</a
+              >
+              <a
+                routerLink="/app/monitoring"
+                routerLinkActive="pointer-events-none border-lime-500/40 bg-lime-950/25 text-lime-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-lime-400/35 hover:text-lime-50"
+                title="API monitoring roadmap"
+                >Mon</a
+              >
+              <a
+                routerLink="/app/contracts"
+                routerLinkActive="pointer-events-none border-violet-500/40 bg-violet-950/30 text-violet-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-violet-400/35 hover:text-violet-50"
+                title="Contract testing & schemas"
+                >Ctx</a
+              >
+              <a
+                routerLink="/app/diff"
+                routerLinkActive="pointer-events-none border-amber-500/40 bg-amber-950/25 text-amber-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-amber-400/35 hover:text-amber-50"
+                title="API diff & schema compare"
+                >Dif</a
+              >
+              <a
+                routerLink="/app/interceptor"
+                routerLinkActive="pointer-events-none border-teal-500/40 bg-teal-950/25 text-teal-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-teal-400/35 hover:text-teal-50"
+                title="Traffic interceptor · HTTP inspector"
+                >Int</a
+              >
+              <a
+                routerLink="/app/browser-extension"
+                routerLinkActive="pointer-events-none border-indigo-500/40 bg-indigo-950/30 text-indigo-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-indigo-400/35 hover:text-indigo-50"
+                title="Browser extension · capture"
+                >Ext</a
+              >
+              <a
+                routerLink="/app/ai-generator"
+                routerLinkActive="pointer-events-none border-purple-500/40 bg-purple-950/30 text-purple-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-purple-400/35 hover:text-purple-50"
+                title="AI request generator · prompt → request"
+                >Gen</a
+              >
+              <a
+                routerLink="/app/ai-analyzer"
+                routerLinkActive="pointer-events-none border-cyan-500/40 bg-cyan-950/25 text-cyan-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-cyan-400/35 hover:text-cyan-50"
+                title="AI response analyzer · errors & fixes"
+                >Ana</a
+              >
+              <a
+                routerLink="/app/workflows"
+                routerLinkActive="pointer-events-none border-amber-500/40 bg-amber-950/25 text-amber-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-amber-400/35 hover:text-amber-50"
+                title="AI workflow builder · chaining"
+                >Flo</a
+              >
+              <a
+                routerLink="/app/marketplace"
+                routerLinkActive="pointer-events-none border-fuchsia-500/40 bg-fuchsia-950/20 text-fuchsia-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-fuchsia-400/35 hover:text-fuchsia-50"
+                title="Plugin marketplace · community"
+                >Mkt</a
+              >
+              <a
+                routerLink="/app/enterprise"
+                routerLinkActive="pointer-events-none border-sky-500/40 bg-sky-950/30 text-sky-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-sky-400/35 hover:text-sky-50"
+                title="Enterprise self-hosted"
+                >Ent</a
+              >
+              <a
+                routerLink="/app/profiler"
+                routerLinkActive="pointer-events-none border-green-500/40 bg-green-950/25 text-green-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-green-400/35 hover:text-green-50"
+                title="API performance profiler"
+                >Prf</a
+              >
+              <a
+                routerLink="/app/observability"
+                routerLinkActive="pointer-events-none border-blue-500/40 bg-blue-950/30 text-blue-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-blue-400/35 hover:text-blue-50"
+                title="Realtime observability dashboard"
+                >Obs</a
+              >
+              <a
+                routerLink="/app/vault"
+                routerLinkActive="pointer-events-none border-rose-500/40 bg-rose-950/25 text-rose-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-rose-400/35 hover:text-rose-50"
+                title="Secrets vault enterprise"
+                >Vlt</a
+              >
+              <a
+                routerLink="/app/ai-docs"
+                routerLinkActive="pointer-events-none border-violet-500/40 bg-violet-950/25 text-violet-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-violet-400/35 hover:text-violet-50"
+                title="AI API documentation generator"
+                >Doc</a
+              >
+              <a
+                routerLink="/app/ai-openapi"
+                routerLinkActive="pointer-events-none border-lime-500/40 bg-lime-950/25 text-lime-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-lime-400/35 hover:text-lime-50"
+                title="AI OpenAPI generator & schema builder"
+                >OAI</a
+              >
+              <a
+                routerLink="/app/streaming"
+                routerLinkActive="pointer-events-none border-teal-500/40 bg-teal-950/25 text-teal-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-teal-400/35 hover:text-teal-50"
+                title="Event streaming studio"
+                >Str</a
+              >
+              <a
+                routerLink="/app/git"
+                routerLinkActive="pointer-events-none border-amber-500/40 bg-amber-950/25 text-amber-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-amber-400/35 hover:text-amber-50"
+                title="Git native collections"
+                >Git</a
+              >
+              <a
+                routerLink="/app/sdk"
+                routerLinkActive="pointer-events-none border-indigo-500/40 bg-indigo-950/25 text-indigo-100"
+                class="min-w-[3.5rem] flex-1 rounded-lg border border-white/10 px-1.5 py-1.5 text-center text-[9px] font-medium leading-tight transition hover:border-indigo-400/35 hover:text-indigo-50"
+                title="Public SDK"
+                >SDK</a
+              >
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Resize handle -->
+  <button
+    type="button"
+    class="absolute right-0 top-0 z-10 h-full w-2 -translate-x-1/2 cursor-col-resize border-0 bg-transparent p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-junny-violet/60"
+    aria-label="Resize sidebar"
+    title="Drag to resize"
+    (mousedown)="onResizeStart($event)"
+  ></button>
+</aside>

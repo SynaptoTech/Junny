@@ -22,7 +22,7 @@ import {
         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
         role="button"
         tabindex="0"
-        aria-label="Fechar"
+        aria-label="Close"
         (click)="close()"
         (keydown.enter)="close()"
         (keydown.space)="$event.preventDefault(); close()"
@@ -41,8 +41,8 @@ import {
                 Import OpenAPI
               </h2>
               <p class="mt-1 text-xs text-slate-500">
-                Cole a URL do <code class="text-slate-400">swagger.json</code>,
-                <code class="text-slate-400">openapi.json</code> ou
+                Paste the URL of <code class="text-slate-400">swagger.json</code>,
+                <code class="text-slate-400">openapi.json</code>, or
                 <code class="text-slate-400">v3/api-docs</code>
               </p>
             </div>
@@ -50,7 +50,7 @@ import {
               type="button"
               class="rounded-lg px-2 py-1 text-slate-500 hover:bg-white/10 hover:text-slate-200"
               (click)="close()"
-              aria-label="Fechar"
+              aria-label="Close"
             >
               ✕
             </button>
@@ -60,7 +60,7 @@ import {
             <label
               class="mb-1 block text-xs font-medium text-slate-500"
               for="openapi-url"
-              >URL do documento</label
+              >Document URL</label
             >
             <input
               id="openapi-url"
@@ -92,7 +92,7 @@ import {
               [disabled]="importing()"
               (click)="close()"
             >
-              Fechar
+              Close
             </button>
             <button
               type="button"
@@ -101,7 +101,7 @@ import {
               [ngClass]="{ 'opacity-40': importing() }"
               (click)="runImport()"
             >
-              {{ importing() ? 'A importar…' : 'Importar' }}
+              {{ importing() ? 'Importing…' : 'Import' }}
             </button>
           </div>
         </div>
@@ -136,7 +136,7 @@ export class OpenApiImportModalComponent {
       next: (res) => {
         this.importing.set(false);
         this.success.set(
-          `Criado environment e ${res.stats.requestCount} pedidos em ${res.stats.tagCount} collections.`,
+          `Created environment and ${res.stats.requestCount} requests in ${res.stats.tagCount} collections.`,
         );
         this.imported.emit(res);
       },
@@ -149,7 +149,7 @@ export class OpenApiImportModalComponent {
               ? body.message.join(', ')
               : body.message
             : err.message;
-        this.error.set(raw || 'Erro ao importar');
+        this.error.set(raw || 'Import failed');
       },
     });
   }

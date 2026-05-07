@@ -15,6 +15,7 @@ import { historyEntryProtocol } from '../../../history/utils/history-entry-proto
 import { AuthorizationEditorComponent } from '../../../requests/components/authorization-editor/authorization-editor.component';
 import { BodyEditorComponent } from '../../../requests/components/body-editor/body-editor.component';
 import { KeyValueTableComponent } from '../../../requests/components/key-value-table/key-value-table.component';
+import { WorkspaceAppHeaderComponent } from '../../../../shared/components/workspace-app-header/workspace-app-header.component';
 import { WorkspaceSidebarComponent } from '../../../requests/components/workspace-sidebar/workspace-sidebar.component';
 import { EnvironmentEditorModalComponent } from '../../../environments/components/environment-editor-modal/environment-editor-modal.component';
 import {
@@ -53,6 +54,7 @@ interface StreamLine {
     KeyValueTableComponent,
     BodyEditorComponent,
     WorkspaceSidebarComponent,
+    WorkspaceAppHeaderComponent,
     EnvironmentEditorModalComponent,
     AuthorizationEditorComponent,
   ],
@@ -218,7 +220,7 @@ export class WebsocketWorkspacePageComponent implements OnDestroy {
         u.searchParams.set(name, auth.apiKeyValue);
         url = u.toString();
       } catch {
-        this.errorMessage.set('URL inválida para query auth.');
+        this.errorMessage.set('Invalid URL for query auth.');
         return;
       }
     }
@@ -266,7 +268,7 @@ export class WebsocketWorkspacePageComponent implements OnDestroy {
   send(): void {
     const sid = this.sessionId();
     if (!sid || this.connStatus() !== 'open') {
-      this.errorMessage.set('Sem sessão aberta.');
+      this.errorMessage.set('No open session.');
       return;
     }
     const payload = this.store.handshake().sendDraft;
@@ -332,14 +334,18 @@ export class WebsocketWorkspacePageComponent implements OnDestroy {
     });
   }
 
-  loadStored(r: {
-    id: string;
-    method: string;
-    url: string;
-    headers: unknown;
-    body: string | null;
-    authConfig?: unknown;
+  loadStored(event: {
+    storageFolderId: string;
+    request: {
+      id: string;
+      method: string;
+      url: string;
+      headers: unknown;
+      body: string | null;
+      authConfig?: unknown;
+    };
   }): void {
+    const r = event.request;
     const headers: KeyValueRow[] = toHeaderRows(r.headers);
     const auth = parseAuthFromUnknown(r.authConfig) ?? defaultAuth();
     this.store.patch({
@@ -365,7 +371,7 @@ export class WebsocketWorkspacePageComponent implements OnDestroy {
 
   renameCollection(c: CollectionRow): void {
     if (typeof window === 'undefined') return;
-    const name = window.prompt('Novo nome da collection', c.name);
+    const name = window.prompt('New collection name', c.name);
     if (!name?.trim()) return;
     this.api
       .updateCollection(c.id, { name: name.trim() })
@@ -397,14 +403,14 @@ export class WebsocketWorkspacePageComponent implements OnDestroy {
           .updateCollection(c.id, { authConfig: parsed })
           .subscribe(() => this.refreshMeta());
       } catch {
-        this.errorMessage.set('JSON de auth inválido.');
+        this.errorMessage.set('Invalid auth JSON.');
       }
     });
   }
 
   deleteCollection(id: string): void {
     if (typeof window === 'undefined') return;
-    if (!window.confirm('Eliminar esta collection e todos os pedidos guardados?')) {
+    if (!window.confirm('Delete this collection and all saved requests?')) {
       return;
     }
     this.api.deleteCollection(id).subscribe(() => {
@@ -421,7 +427,7 @@ export class WebsocketWorkspacePageComponent implements OnDestroy {
     requestId: string;
   }): void {
     if (typeof window === 'undefined') return;
-    if (!window.confirm('Eliminar este pedido guardado?')) return;
+    if (!window.confirm('Delete this saved request?')) return;
     this.api
       .deleteStoredRequest(event.collectionId, event.requestId)
       .subscribe(() => {
@@ -459,11 +465,11 @@ export class WebsocketWorkspacePageComponent implements OnDestroy {
 
   statusLabel(): string {
     const s = this.connStatus();
-    if (s === 'open') return 'Ligado';
-    if (s === 'connecting') return 'A ligar…';
-    if (s === 'error') return 'Erro';
-    if (s === 'closed') return 'Desligado';
-    return 'Pronto';
+    if (s === 'open') return 'Connected';
+    if (s === 'connecting') return 'Connecting…';
+    if (s === 'error') return 'Error';
+    if (s === 'closed') return 'Disconnected';
+    return 'Ready';
   }
 
   ngOnDestroy(): void {
@@ -496,13 +502,13 @@ export class WebsocketWorkspacePageComponent implements OnDestroy {
             kind: st === 'error' ? 'error' : 'status',
             title:
               st === 'open'
-                ? 'Ligado'
+                ? 'Connected'
                 : st === 'connecting'
-                  ? 'A ligar'
+                  ? 'Connecting'
                   : st === 'closed'
-                    ? 'Fechado'
+                    ? 'Closed'
                     : st === 'error'
-                      ? 'Erro'
+                      ? 'Error'
                       : String(st),
             body: raw.message ?? '',
           });
@@ -511,10 +517,10 @@ export class WebsocketWorkspacePageComponent implements OnDestroy {
           const bin = Boolean(raw.binary);
           const title =
             dir === 'out'
-              ? '[ENVIADO]'
+              ? '[SENT]'
               : bin
-                ? '[RECEBIDO — binário base64]'
-                : '[RECEBIDO]';
+                ? '[RECEIVED — binary base64]'
+                : '[RECEIVED]';
           this.pushLine({
             kind: dir,
             title: `${raw.at ? `${raw.at} ` : ''}${title}`,
@@ -532,7 +538,9 @@ export class WebsocketWorkspacePageComponent implements OnDestroy {
     };
     es.onerror = () => {
       this.connStatus.set('error');
-      this.errorMessage.set('Stream SSE interrompido (rede ou sessão expirada).');
+      this.errorMessage.set(
+        'SSE stream interrupted (network or session expired).',
+      );
       this.closeEventSourceOnly();
     };
   }

@@ -3,17 +3,17 @@
     <p
       class="text-xs font-semibold uppercase tracking-wide text-slate-500"
     >
-      Histórico
+      History
     </p>
     @if (loading()) {
-      <span class="text-[10px] text-junny-blue">A carregar…</span>
+      <span class="text-[10px] text-junny-blue">Loading…</span>
     }
   </div>
 
   <input
     type="search"
     class="mb-2 w-full shrink-0 rounded-lg border border-white/10 bg-slate-900 px-2 py-1.5 text-xs text-slate-100 placeholder:text-slate-600 focus:border-junny-violet/50 focus:outline-none"
-    placeholder="Pesquisar histórico…"
+    placeholder="Search history…"
     [value]="ui.searchQuery()"
     (input)="updateSearch($any($event.target).value)"
   />
@@ -24,7 +24,7 @@
       [value]="ui.protocolFilter()"
       (change)="updateProtocol($any($event.target).value)"
     >
-      <option value="ALL">Todos os protocolos</option>
+      <option value="ALL">All protocols</option>
       <option value="REST">REST</option>
       <option value="GRAPHQL">GraphQL</option>
       <option value="SOAP">SOAP</option>
@@ -34,18 +34,18 @@
       [value]="ui.statusGroup()"
       (change)="updateStatus($any($event.target).value)"
     >
-      <option value="any">Qualquer status HTTP</option>
-      <option value="2xx">2xx Sucesso</option>
-      <option value="3xx">3xx Redireção</option>
-      <option value="4xx">4xx Cliente</option>
-      <option value="5xx">5xx Servidor</option>
+      <option value="any">Any HTTP status</option>
+      <option value="2xx">2xx Success</option>
+      <option value="3xx">3xx Redirect</option>
+      <option value="4xx">4xx Client</option>
+      <option value="5xx">5xx Server</option>
     </select>
   </div>
 
   <input
     type="text"
     class="mb-2 w-full shrink-0 rounded-lg border border-white/10 bg-slate-900 px-2 py-1.5 text-[11px] text-slate-100 placeholder:text-slate-600 focus:border-junny-violet/50 focus:outline-none"
-    placeholder="Método (ex.: GET)"
+    placeholder="Method (e.g. GET)"
     [value]="ui.methodFilter()"
     (input)="updateMethod($any($event.target).value)"
   />
@@ -56,14 +56,14 @@
       class="rounded-lg border border-white/10 px-2 py-1 text-[10px] text-slate-400 hover:border-junny-violet/40 hover:text-slate-200"
       (click)="clearFilters()"
     >
-      Limpar filtros
+      Clear filters
     </button>
     <button
       type="button"
       class="rounded-lg border border-rose-500/30 px-2 py-1 text-[10px] text-rose-300 hover:bg-rose-950/40"
       (click)="clearAllHistory()"
     >
-      Limpar histórico
+      Clear history
     </button>
   </div>
 
@@ -146,7 +146,7 @@
     }
     @if (!loading() && !items().length) {
       <p class="py-4 text-center text-[11px] text-slate-600">
-        Sem entradas para estes filtros.
+        No entries for these filters.
       </p>
     }
   </div>

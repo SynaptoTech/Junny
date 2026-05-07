@@ -34,6 +34,7 @@ import {
   type HistoryEntryDto,
 } from '../../../requests/services/rest-workspace-api.service';
 import { WorkspacePersistenceService } from '../../../requests/services/workspace-persistence.service';
+import { WorkspaceAppHeaderComponent } from '../../../../shared/components/workspace-app-header/workspace-app-header.component';
 import { GraphqlQueryEditorComponent } from '../../components/graphql-query-editor/graphql-query-editor.component';
 import type { GraphqlTabState } from '../../models/graphql-workspace.models';
 import { GraphqlWorkspacePersistenceService } from '../../services/graphql-workspace-persistence.service';
@@ -63,6 +64,7 @@ const INTROSPECTION_MINIMAL = `query IntrospectionMinimal {
     BodyEditorComponent,
     ResponseViewerComponent,
     WorkspaceSidebarComponent,
+    WorkspaceAppHeaderComponent,
     EnvironmentEditorModalComponent,
     GraphqlQueryEditorComponent,
   ],
@@ -252,18 +254,22 @@ export class GraphqlWorkspacePageComponent {
     });
   }
 
-  loadStoredRequest(r: {
-    id: string;
-    method: string;
-    url: string;
-    headers: unknown;
-    params?: unknown;
-    body: string | null;
-    tag?: string | null;
-    protocol?: string;
-    graphqlVariables?: unknown;
-    authConfig?: unknown;
+  loadStoredRequest(event: {
+    storageFolderId: string;
+    request: {
+      id: string;
+      method: string;
+      url: string;
+      headers: unknown;
+      params?: unknown;
+      body: string | null;
+      tag?: string | null;
+      protocol?: string;
+      graphqlVariables?: unknown;
+      authConfig?: unknown;
+    };
   }): void {
+    const r = event.request;
     const headers: KeyValueRow[] = toHeaderRows(r.headers);
     const vars =
       r.graphqlVariables !== undefined && r.graphqlVariables !== null
@@ -333,7 +339,7 @@ export class GraphqlWorkspacePageComponent {
 
   renameCollection(c: CollectionRow): void {
     if (typeof window === 'undefined') return;
-    const name = window.prompt('Novo nome da collection', c.name);
+    const name = window.prompt('New collection name', c.name);
     if (!name?.trim()) return;
     this.api
       .updateCollection(c.id, { name: name.trim() })
@@ -365,7 +371,7 @@ export class GraphqlWorkspacePageComponent {
           .updateCollection(c.id, { authConfig: parsed })
           .subscribe(() => this.refreshMeta());
       } catch {
-        this.errorMessage.set('JSON de auth inválido.');
+        this.errorMessage.set('Invalid auth JSON.');
       }
     });
   }
@@ -389,7 +395,7 @@ export class GraphqlWorkspacePageComponent {
     requestId: string;
   }): void {
     if (typeof window === 'undefined') return;
-    if (!window.confirm('Eliminar este pedido guardado?')) return;
+    if (!window.confirm('Delete this saved request?')) return;
     this.api
       .deleteStoredRequest(event.collectionId, event.requestId)
       .subscribe(() => {
@@ -427,7 +433,7 @@ export class GraphqlWorkspacePageComponent {
       const t = tab.variablesText.trim();
       graphqlVariables = t ? (JSON.parse(t) as Record<string, unknown>) : {};
     } catch {
-      this.errorMessage.set('Variables: JSON inválido.');
+      this.errorMessage.set('Variables: invalid JSON.');
       return;
     }
     this.errorMessage.set(null);
@@ -452,7 +458,7 @@ export class GraphqlWorkspacePageComponent {
       const t = tab.variablesText.trim();
       variables = t ? (JSON.parse(t) as Record<string, unknown>) : {};
     } catch {
-      this.errorMessage.set('Variables: JSON inválido.');
+      this.errorMessage.set('Variables: invalid JSON.');
       return;
     }
     this.loading.set(true);

@@ -18,7 +18,7 @@ import {
 } from '../../services/history-ui-persistence.service';
 import {
   bucketForCreatedAt,
-  bucketLabelPt,
+  bucketLabel,
   type HistoryDateBucket,
 } from '../../utils/history-date-buckets';
 import { historyEntryProtocol } from '../../utils/history-entry-protocol';
@@ -79,7 +79,7 @@ export class HistoryPanelComponent {
   }
 
   labelBucket(bucket: HistoryDateBucket): string {
-    return bucketLabelPt(bucket);
+    return bucketLabel(bucket);
   }
 
   protocolShort(entry: HistoryEntryDto): string {
@@ -165,7 +165,7 @@ export class HistoryPanelComponent {
     if (typeof window === 'undefined') return;
     if (
       !window.confirm(
-        'Tem certeza que deseja eliminar todo o histórico? Esta ação não pode ser desfeita.',
+        'Delete all history? This cannot be undone.',
       )
     ) {
       return;

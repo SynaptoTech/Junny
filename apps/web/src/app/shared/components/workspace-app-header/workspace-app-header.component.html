@@ -1,0 +1,95 @@
+<header
+  class="flex min-h-[3.25rem] shrink-0 flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-junny-bg/95 px-3 py-2 backdrop-blur-sm md:px-4"
+>
+  <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-1 gap-y-2 md:gap-x-2">
+    <a
+      class="shrink-0 text-sm font-semibold text-slate-200 transition hover:text-white"
+      href="/"
+      >← Home</a
+    >
+
+    <span class="hidden text-slate-600 sm:inline" aria-hidden="true">|</span>
+
+    <nav
+      class="flex flex-wrap items-center gap-x-1 gap-y-1.5"
+      aria-label="Workspace navigation"
+    >
+      @for (menu of menus; track menu.id) {
+        <div class="relative">
+          <button
+            type="button"
+            class="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition md:text-sm"
+            [ngClass]="
+              menuHasActive(menu.links)
+                ? 'border-junny-violet/40 bg-junny-violet/10 text-slate-100'
+                : 'border-white/10 bg-slate-950/40 text-slate-300 hover:border-white/20'
+            "
+            [attr.aria-expanded]="openId() === menu.id"
+            [attr.aria-controls]="'ws-menu-' + menu.id"
+            (click)="toggleMenu(menu.id, $event)"
+          >
+            {{ menu.label }}
+            <span class="text-[10px] opacity-70" aria-hidden="true">▾</span>
+          </button>
+
+          @if (openId() === menu.id) {
+            <div
+              class="absolute left-0 z-[80] mt-1.5 max-h-[min(70vh,22rem)] w-[min(100vw-2rem,16rem)] overflow-y-auto rounded-xl border border-white/10 bg-slate-950/98 py-1.5 shadow-2xl shadow-black/50 ring-1 ring-white/5"
+              [id]="'ws-menu-' + menu.id"
+              role="menu"
+              (click)="$event.stopPropagation()"
+            >
+              @for (link of menu.links; track link.href) {
+                <a
+                  class="block whitespace-nowrap px-3 py-2 text-sm transition"
+                  [ngClass]="
+                    linkActive(link.href)
+                      ? 'bg-white/5 font-semibold text-junny-blue'
+                      : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                  "
+                  role="menuitem"
+                  [href]="link.href"
+                  (click)="closeMenus()"
+                  >{{ link.label }}</a
+                >
+              }
+            </div>
+          }
+        </div>
+      }
+    </nav>
+  </div>
+
+  <div class="flex shrink-0 flex-wrap items-center justify-end gap-2 md:gap-3">
+    @if (auth.currentUser(); as u) {
+      <span
+        class="inline max-w-[7rem] truncate text-xs text-slate-500 sm:max-w-[14rem]"
+        [attr.title]="u.email"
+        >{{ u.email }}</span
+      >
+      <button
+        type="button"
+        class="rounded-lg border border-white/10 bg-slate-950/40 px-2.5 py-1.5 text-xs font-medium text-slate-300 ring-1 ring-white/5 transition hover:border-white/25 hover:text-white"
+        (click)="logout()"
+      >
+        Sign out
+      </button>
+    }
+    @if (contextLabel(); as label) {
+      <span
+        class="max-w-[12rem] truncate text-xs font-medium text-slate-500 md:max-w-none md:text-sm"
+        >{{ label }}</span
+      >
+    }
+    @if (showImportOpenApi()) {
+      <button
+        type="button"
+        class="rounded-lg border border-white/15 bg-slate-900/80 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-junny-violet/40 hover:text-white"
+        (click)="onImportClick($event)"
+      >
+        Import OpenAPI
+      </button>
+    }
+    <ng-content select="[workspaceHeaderEnd]" />
+  </div>
+</header>

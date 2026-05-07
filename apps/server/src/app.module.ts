@@ -42,11 +42,13 @@ import { AiOpenapiModule } from "./modules/ai-openapi/ai-openapi.module";
 import { StreamingModule } from "./modules/streaming/streaming.module";
 import { GitModule } from "./modules/git/git.module";
 import { PublicApiModule } from "./modules/public-api/public-api.module";
+import { UserAuthModule } from "./modules/user-auth/user-auth.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
+    UserAuthModule,
     RestModule,
     SoapModule,
     GraphqlModule,

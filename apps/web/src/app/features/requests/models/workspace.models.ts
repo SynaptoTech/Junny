@@ -22,6 +22,13 @@ export interface KeyValueRow {
   value: string;
 }
 
+/** Pedido já persistido no backend (raiz ou numa collection). */
+export interface LinkedStoredRef {
+  requestId: string;
+  /** `null` = raiz (sem collection) */
+  collectionId: string | null;
+}
+
 export interface WorkspaceTabState {
   id: string;
   title: string;
@@ -31,6 +38,9 @@ export interface WorkspaceTabState {
   paramRows: KeyValueRow[];
   bodyText: string;
   auth: RequestAuthConfig;
+  linkedStored?: LinkedStoredRef;
+  /** Último conteúdo considerado “guardado” localmente / no servidor. */
+  savedFingerprint: string;
 }
 
 export interface RestExecuteResponse {

@@ -112,30 +112,59 @@ export class CollectionsService {
     return this.findOne(created.id);
   }
 
+  private buildParamsJson(dto: CreateStoredRequestDto): Prisma.InputJsonValue {
+    return dto.params && Object.keys(dto.params).length > 0
+      ? (dto.params as Prisma.InputJsonValue)
+      : ({} as Prisma.InputJsonValue);
+  }
+
+  private createStoredRequestInput(
+    collectionId: string | null,
+    dto: CreateStoredRequestDto,
+  ): Prisma.StoredRequestUncheckedCreateInput {
+    return {
+      collectionId,
+      protocol: dto.protocol ?? 'REST',
+      method: dto.method,
+      url: dto.url,
+      headers: dto.headers as Prisma.InputJsonValue,
+      params: this.buildParamsJson(dto),
+      body: dto.body ?? null,
+      graphqlVariables:
+        dto.graphqlVariables !== undefined
+          ? (dto.graphqlVariables as Prisma.InputJsonValue)
+          : undefined,
+      authConfig:
+        dto.authConfig !== undefined
+          ? (dto.authConfig as unknown as Prisma.InputJsonValue)
+          : undefined,
+      tag:
+        dto.tag === undefined
+          ? undefined
+          : dto.tag === null || String(dto.tag).trim() === ''
+            ? null
+            : String(dto.tag).trim(),
+    };
+  }
+
   async addStoredRequest(collectionId: string, dto: CreateStoredRequestDto) {
     await this.findOne(collectionId);
-    const params =
-      dto.params && Object.keys(dto.params).length > 0
-        ? (dto.params as Prisma.InputJsonValue)
-        : ({} as Prisma.InputJsonValue);
     return this.prisma.storedRequest.create({
-      data: {
-        collectionId,
-        protocol: dto.protocol ?? 'REST',
-        method: dto.method,
-        url: dto.url,
-        headers: dto.headers as Prisma.InputJsonValue,
-        params,
-        body: dto.body ?? null,
-        graphqlVariables:
-          dto.graphqlVariables !== undefined
-            ? (dto.graphqlVariables as Prisma.InputJsonValue)
-            : undefined,
-        authConfig:
-          dto.authConfig !== undefined
-            ? (dto.authConfig as unknown as Prisma.InputJsonValue)
-            : undefined,
-      },
+      data: this.createStoredRequestInput(collectionId, dto),
+    });
+  }
+
+  /** Request sem collection (raiz). */
+  async addRootStoredRequest(dto: CreateStoredRequestDto) {
+    return this.prisma.storedRequest.create({
+      data: this.createStoredRequestInput(null, dto),
+    });
+  }
+
+  listRootStoredRequests() {
+    return this.prisma.storedRequest.findMany({
+      where: { collectionId: null },
+      orderBy: { updatedAt: 'desc' },
     });
   }
 
@@ -150,6 +179,50 @@ export class CollectionsService {
     if (!req) {
       throw new NotFoundException(`Request ${requestId} na collection ${collectionId}`);
     }
+    return this.applyStoredRequestPatch(requestId, dto);
+  }
+
+  async removeStoredRequest(collectionId: string, requestId: string) {
+    const req = await this.prisma.storedRequest.findFirst({
+      where: { id: requestId, collectionId },
+    });
+    if (!req) {
+      throw new NotFoundException(`Request ${requestId} na collection ${collectionId}`);
+    }
+    return this.prisma.storedRequest.delete({ where: { id: requestId } });
+  }
+
+  async updateRootStoredRequest(
+    requestId: string,
+    dto: UpdateStoredRequestDto,
+  ) {
+    const req = await this.prisma.storedRequest.findFirst({
+      where: { id: requestId, collectionId: null },
+    });
+    if (!req) {
+      throw new NotFoundException(
+        `Request ${requestId} not found in root (no collection)`,
+      );
+    }
+    return this.applyStoredRequestPatch(requestId, dto);
+  }
+
+  async removeRootStoredRequest(requestId: string) {
+    const req = await this.prisma.storedRequest.findFirst({
+      where: { id: requestId, collectionId: null },
+    });
+    if (!req) {
+      throw new NotFoundException(
+        `Request ${requestId} not found in root (no collection)`,
+      );
+    }
+    return this.prisma.storedRequest.delete({ where: { id: requestId } });
+  }
+
+  private applyStoredRequestPatch(
+    requestId: string,
+    dto: UpdateStoredRequestDto,
+  ) {
     const data: Prisma.StoredRequestUpdateInput = {};
     if (dto.method !== undefined) data.method = dto.method;
     if (dto.url !== undefined) data.url = dto.url;
@@ -173,19 +246,15 @@ export class CollectionsService {
     if (dto.authConfig !== undefined) {
       data.authConfig = dto.authConfig as unknown as Prisma.InputJsonValue;
     }
+    if (dto.tag !== undefined) {
+      data.tag =
+        dto.tag === null || String(dto.tag).trim() === ''
+          ? null
+          : String(dto.tag).trim();
+    }
     return this.prisma.storedRequest.update({
       where: { id: requestId },
       data,
     });
-  }
-
-  async removeStoredRequest(collectionId: string, requestId: string) {
-    const req = await this.prisma.storedRequest.findFirst({
-      where: { id: requestId, collectionId },
-    });
-    if (!req) {
-      throw new NotFoundException(`Request ${requestId} na collection ${collectionId}`);
-    }
-    return this.prisma.storedRequest.delete({ where: { id: requestId } });
   }
 }

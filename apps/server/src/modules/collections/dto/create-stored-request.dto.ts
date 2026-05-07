@@ -58,6 +58,15 @@ export class CreateStoredRequestDto {
   body?: string | null;
 
   @ApiPropertyOptional({
+    description:
+      'Nome / rótulo na lista (sidebar). Reutiliza o campo tag no armazenamento.',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  tag?: string | null;
+
+  @ApiPropertyOptional({
     description: 'Auth específica; omite para herdar da collection.',
   })
   @IsOptional()

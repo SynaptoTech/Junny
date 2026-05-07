@@ -21,7 +21,7 @@ import { RestWorkspaceApiService } from '../../../requests/services/rest-workspa
         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
         role="button"
         tabindex="0"
-        aria-label="Fechar"
+        aria-label="Close"
         (click)="close()"
         (keydown.enter)="close()"
         (keydown.space)="$event.preventDefault(); close()"
@@ -36,13 +36,13 @@ import { RestWorkspaceApiService } from '../../../requests/services/rest-workspa
         >
           <div class="flex items-start justify-between gap-3">
             <h2 class="text-lg font-semibold text-slate-100">
-              {{ mode() === 'create' ? 'Novo environment' : 'Editar environment' }}
+              {{ mode() === 'create' ? 'New environment' : 'Edit environment' }}
             </h2>
             <button
               type="button"
               class="rounded-lg px-2 py-1 text-slate-500 hover:bg-white/10 hover:text-slate-200"
               (click)="close()"
-              aria-label="Fechar"
+              aria-label="Close"
             >
               ✕
             </button>
@@ -52,7 +52,7 @@ import { RestWorkspaceApiService } from '../../../requests/services/rest-workspa
             <label
               class="mb-1 block text-xs font-medium text-slate-500"
               for="env-modal-name"
-              >Nome</label
+              >Name</label
             >
             <input
               id="env-modal-name"
@@ -66,7 +66,7 @@ import { RestWorkspaceApiService } from '../../../requests/services/rest-workspa
 
           <div class="min-h-0 flex-1 overflow-hidden">
             <app-key-value-table
-              label="Variáveis (chaves: baseUrl, token, …)"
+              label="Variables (e.g. baseUrl, token, …)"
               [rows]="varRows()"
               (rowsChange)="varRows.set($event)"
             />
@@ -84,7 +84,7 @@ import { RestWorkspaceApiService } from '../../../requests/services/rest-workspa
                 [disabled]="saving()"
                 (click)="remove()"
               >
-                Eliminar
+                Delete
               </button>
             }
             <button
@@ -93,7 +93,7 @@ import { RestWorkspaceApiService } from '../../../requests/services/rest-workspa
               [disabled]="saving()"
               (click)="close()"
             >
-              Cancelar
+              Cancel
             </button>
             <button
               type="button"
@@ -102,7 +102,7 @@ import { RestWorkspaceApiService } from '../../../requests/services/rest-workspa
               [ngClass]="{ 'opacity-40': saving() }"
               (click)="save()"
             >
-              {{ saving() ? 'A guardar…' : 'Guardar' }}
+              {{ saving() ? 'Saving…' : 'Save' }}
             </button>
           </div>
         </div>
@@ -147,7 +147,7 @@ export class EnvironmentEditorModalComponent {
           );
         },
         error: () =>
-          this.error.set('Não foi possível carregar o environment.'),
+          this.error.set('Could not load environment.'),
       });
     });
   }
@@ -171,7 +171,7 @@ export class EnvironmentEditorModalComponent {
         },
         error: () => {
           this.saving.set(false);
-          this.error.set('Erro ao criar.');
+          this.error.set('Failed to create.');
         },
       });
       return;
@@ -186,7 +186,7 @@ export class EnvironmentEditorModalComponent {
       },
       error: () => {
         this.saving.set(false);
-        this.error.set('Erro ao guardar.');
+        this.error.set('Failed to save.');
       },
     });
   }
@@ -194,7 +194,7 @@ export class EnvironmentEditorModalComponent {
   remove(): void {
     const id = this.environmentId();
     if (!id) return;
-    if (typeof window !== 'undefined' && !window.confirm('Eliminar este environment?')) {
+    if (typeof window !== 'undefined' && !window.confirm('Delete this environment?')) {
       return;
     }
     this.saving.set(true);
@@ -206,7 +206,7 @@ export class EnvironmentEditorModalComponent {
       },
       error: () => {
         this.saving.set(false);
-        this.error.set('Erro ao eliminar.');
+        this.error.set('Failed to delete.');
       },
     });
   }

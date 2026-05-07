@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, NgClass } from '@angular/common';
 import {
   afterNextRender,
   Component,
@@ -16,10 +16,21 @@ import type * as Monaco from 'monaco-editor';
 @Component({
   selector: 'app-body-editor',
   standalone: true,
+  imports: [NgClass],
   template: `
-    <div class="flex flex-col gap-2">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-medium text-slate-400">{{ label() }}</span>
+    <div
+      class="flex flex-col gap-2"
+      [class.min-h-0]="embedded()"
+      [class.flex-1]="embedded()"
+    >
+      <div
+        class="flex items-center gap-2"
+        [class.justify-between]="!embedded()"
+        [class.justify-end]="embedded()"
+      >
+        @if (!embedded()) {
+          <span class="text-xs font-medium text-slate-400">{{ label() }}</span>
+        }
         <button
           type="button"
           class="rounded-lg px-2 py-1 text-xs text-junny-blue hover:bg-white/5"
@@ -30,7 +41,12 @@ import type * as Monaco from 'monaco-editor';
       </div>
       <div
         #editorHost
-        class="min-h-[220px] overflow-hidden rounded-xl border border-white/10 bg-[#0d1117]"
+        class="overflow-hidden rounded-xl border border-white/10 bg-[#0d1117]"
+        [ngClass]="
+          embedded()
+            ? 'min-h-[300px] min-h-0 flex-1'
+            : 'min-h-[220px]'
+        "
       ></div>
     </div>
   `,
@@ -40,6 +56,8 @@ export class BodyEditorComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly label = input<string>('Body');
+  /** Request sub-tab layout: omit title row; taller editor */
+  readonly embedded = input(false);
   readonly value = input.required<string>();
   readonly valueChange = output<string>();
 

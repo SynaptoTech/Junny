@@ -1,100 +1,15 @@
 <div
   class="flex h-dvh min-h-0 flex-col bg-junny-bg text-slate-100 selection:bg-junny-violet/25"
 >
-  <header
-    class="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-3"
+  <app-workspace-app-header
+    contextLabel="REST workspace"
+    [showImportOpenApi]="true"
+    (importOpenApi)="openOpenApiImport()"
   >
-    <div class="flex flex-wrap items-center gap-3">
-      <a class="text-sm font-semibold text-slate-200 hover:text-white" href="/">← Home</a>
-      <a class="text-sm text-slate-400 hover:text-junny-blue" href="/app/graphql"
-        >GraphQL</a
-      >
-      <a class="text-sm text-slate-400 hover:text-junny-blue" href="/app/soap">SOAP</a>
-      <a class="text-sm text-slate-400 hover:text-junny-blue" href="/app/websocket"
-        >WebSocket</a
-      >
-      <a class="text-sm text-slate-400 hover:text-amber-200" href="/app/kafka">Kafka</a>
-      <a class="text-sm text-slate-400 hover:text-indigo-200" href="/app/plugins"
-        >Plugins</a
-      >
-      <a class="text-sm text-slate-400 hover:text-sky-300" href="/app/ai">AI</a>
-      <a class="text-sm text-slate-400 hover:text-teal-300" href="/app/grpc">gRPC</a>
-      <a class="text-sm text-slate-400 hover:text-fuchsia-300" href="/app/codegen"
-        >cURL+</a
-      >
-      <a class="text-sm text-slate-400 hover:text-emerald-300" href="/app/runner"
-        >Runner</a
-      >
-      <a class="text-sm text-slate-400 hover:text-cyan-300" href="/app/mock">Mock</a>
-      <a class="text-sm text-slate-400 hover:text-rose-300" href="/app/security"
-        >Security</a
-      >
-      <a class="text-sm text-slate-400 hover:text-blue-400" href="/app/sync">Sync</a>
-      <a class="text-sm text-slate-400 hover:text-purple-400" href="/app/workspace-layout"
-        >Layout</a
-      >
-      <a class="text-sm text-slate-400 hover:text-orange-400" href="/app/desktop"
-        >Desktop</a
-      >
-      <a class="text-sm text-slate-400 hover:text-pink-400" href="/app/team">Team</a>
-      <a class="text-sm text-slate-400 hover:text-sky-400" href="/app/official"
-        >Official</a
-      >
-      <a class="text-sm text-slate-400 hover:text-lime-400" href="/app/monitoring"
-        >Monitor</a
-      >
-      <a class="text-sm text-slate-400 hover:text-violet-400" href="/app/contracts"
-        >Contracts</a
-      >
-      <a class="text-sm text-slate-400 hover:text-amber-300" href="/app/diff">Diff</a>
-      <a class="text-sm text-slate-400 hover:text-teal-400" href="/app/interceptor"
-        >Traffic</a
-      >
-      <a
-        class="text-sm text-slate-400 hover:text-indigo-400"
-        href="/app/browser-extension"
-        >Extension</a
-      >
-      <a class="text-sm text-slate-400 hover:text-purple-400" href="/app/ai-generator"
-        >AI Gen</a
-      >
-      <a class="text-sm text-slate-400 hover:text-cyan-400" href="/app/ai-analyzer"
-        >AI An</a
-      >
-      <a class="text-sm text-slate-400 hover:text-amber-300" href="/app/workflows"
-        >Flow</a
-      >
-      <a class="text-sm text-slate-400 hover:text-fuchsia-400" href="/app/marketplace"
-        >Market</a
-      >
-      <a class="text-sm text-slate-400 hover:text-sky-400" href="/app/enterprise">Ent</a>
-      <a class="text-sm text-slate-400 hover:text-green-400" href="/app/profiler">Perf</a>
-      <a class="text-sm text-slate-400 hover:text-blue-400" href="/app/observability"
-        >Obs</a
-      >
-      <a class="text-sm text-slate-400 hover:text-rose-400" href="/app/vault">Vault</a>
-      <a class="text-sm text-slate-400 hover:text-violet-400" href="/app/ai-docs">Docs</a>
-      <a class="text-sm text-slate-400 hover:text-lime-400" href="/app/ai-openapi"
-        >Spec</a
-      >
-      <a class="text-sm text-slate-400 hover:text-teal-400" href="/app/streaming"
-        >Stream</a
-      >
-      <a class="text-sm text-slate-400 hover:text-amber-300" href="/app/git">Git</a>
-      <a class="text-sm text-slate-400 hover:text-indigo-300" href="/app/sdk">SDK</a>
-      <span class="text-sm text-slate-500">REST workspace</span>
-      <button
-        type="button"
-        class="rounded-lg border border-white/15 bg-slate-900/80 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-junny-violet/40 hover:text-white"
-        (click)="openOpenApiImport()"
-      >
-        Import OpenAPI
-      </button>
-    </div>
     @if (loading()) {
-      <span class="text-xs text-junny-blue">Sending…</span>
+      <span workspaceHeaderEnd class="text-xs text-junny-blue">Sending…</span>
     }
-  </header>
+  </app-workspace-app-header>
 
   <div class="flex min-h-0 flex-1 flex-col md:flex-row">
     <app-workspace-sidebar
@@ -104,6 +19,7 @@
       [selectedEnvironmentId]="store.selectedEnvironmentId()"
       [expandedCollectionId]="store.expandedCollectionId()"
       [collectionRequests]="expandedRequests()"
+      [rootFolderId]="rootFolderId"
       [historyReloadTick]="historyReloadTick()"
       (envChange)="onEnvChange($event)"
       (openEnvCreate)="openEnvironmentCreate()"
@@ -111,6 +27,7 @@
       (toggleCollection)="toggleCollection($event)"
       (loadStored)="loadStoredRequest($event)"
       (deleteStoredRequest)="onDeleteStoredRequest($event)"
+      (renameStoredRequest)="onRenameStoredRequest($event)"
       (replayHistory)="onReplayHistory($event)"
       (newCollection)="newCollection()"
       (duplicateCollection)="duplicateCollection($event)"
@@ -122,115 +39,207 @@
     <div class="flex min-w-0 min-h-0 flex-1 flex-col">
       <div class="shrink-0 border-b border-white/5 px-2 pt-2">
         <app-request-tabs
-          [tabs]="store.tabs()"
+          [tabs]="tabsForView()"
           [activeId]="store.activeTabId()"
           (tabSelected)="onSelectTab($event)"
           (tabClosed)="onCloseTab($event)"
           (tabAdded)="addTab()"
+          (tabRenamed)="onTabRenamed($event)"
+          (tabDuplicated)="onTabDuplicated($event)"
+          (tabsClosedOthers)="onCloseOtherTabs($event)"
+          (tabsClosedToRight)="onCloseTabsToRight($event)"
+          (tabsClosedAll)="onCloseAllTabs()"
         />
       </div>
 
       <div
-        class="grid min-h-0 flex-1 grid-rows-1 gap-0 overflow-hidden md:grid-cols-1 md:grid-rows-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
+        class="grid min-h-0 flex-1 gap-0 overflow-hidden md:grid-cols-1"
+        [ngClass]="
+          showResponsePanel()
+            ? 'grid-rows-1 md:grid-rows-[minmax(0,1.1fr)_minmax(0,0.9fr)]'
+            : 'grid-rows-1'
+        "
       >
         <div class="min-h-0 space-y-4 overflow-y-auto p-4">
           @if (activeTab(); as tab) {
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-end">
-              <div class="sm:w-32">
-                <label class="mb-1 block text-xs text-slate-500" for="ws-method"
-                  >Method</label
-                >
-                <select
-                  id="ws-method"
-                  class="w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-2 text-sm font-mono text-slate-100 focus:border-junny-violet/50 focus:outline-none"
-                  [value]="tab.method"
-                  (change)="updateMethod($any($event.target).value)"
-                >
-                  <option value="GET">GET</option>
-                  <option value="POST">POST</option>
-                  <option value="PUT">PUT</option>
-                  <option value="PATCH">PATCH</option>
-                  <option value="DELETE">DELETE</option>
-                </select>
-              </div>
-              <div class="min-w-0 flex-1">
-                <label class="mb-1 block text-xs text-slate-500" for="ws-url">URL</label>
-                <input
-                  id="ws-url"
-                  type="url"
-                  class="w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-2 font-mono text-sm text-slate-100 placeholder:text-slate-600 focus:border-junny-violet/50 focus:outline-none"
-                  [value]="tab.url"
-                  (input)="updateUrl($any($event.target).value)"
-                  placeholder="https://api.example.com/recurso"
-                />
-              </div>
-              <div class="flex gap-2">
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <label class="text-xs text-slate-500">Request</label>
                 <button
                   type="button"
-                  class="rounded-xl bg-junny-blue px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-junny-blue/20 transition hover:bg-blue-600 disabled:opacity-40"
-                  [disabled]="loading()"
-                  (click)="send()"
+                  class="shrink-0 rounded-lg px-2 py-0.5 text-xs text-junny-blue hover:bg-white/5"
+                  (click)="importCurlFromPrompt()"
                 >
-                  Send
+                  Import cURL
                 </button>
+              </div>
+              <div
+                class="flex flex-col gap-2 lg:flex-row lg:items-stretch"
+              >
+                <div
+                  class="flex min-w-0 flex-1 items-stretch overflow-hidden rounded-xl border border-white/10 bg-slate-900 focus-within:border-junny-violet/50"
+                >
+                  <div
+                    class="relative flex shrink-0 items-center border-r border-white/10"
+                    [ngClass]="methodTone(tab.method).bg"
+                  >
+                    <select
+                      id="ws-method"
+                      class="appearance-none bg-transparent py-2 pl-3 pr-7 font-mono text-sm font-bold uppercase tracking-wide focus:outline-none"
+                      [ngClass]="methodTone(tab.method).text"
+                      [value]="tab.method"
+                      (change)="updateMethod($any($event.target).value)"
+                      aria-label="HTTP method"
+                    >
+                      <option value="GET">GET</option>
+                      <option value="POST">POST</option>
+                      <option value="PUT">PUT</option>
+                      <option value="PATCH">PATCH</option>
+                      <option value="DELETE">DELETE</option>
+                      <option value="HEAD">HEAD</option>
+                      <option value="OPTIONS">OPTIONS</option>
+                    </select>
+                    <span
+                      class="pointer-events-none absolute right-2 text-[10px] text-slate-400"
+                      aria-hidden="true"
+                      >▾</span
+                    >
+                  </div>
+                  <input
+                    id="ws-url"
+                    type="url"
+                    class="min-w-0 flex-1 bg-transparent px-3 py-2 font-mono text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none"
+                    [value]="tab.url"
+                    (input)="updateUrl($any($event.target).value)"
+                    (paste)="onUrlPaste($event)"
+                    placeholder="https://api.example.com/resource — or paste a cURL here"
+                  />
+                </div>
+                <div class="flex gap-2">
+                  <button
+                    type="button"
+                    class="rounded-xl border border-white/15 px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-junny-violet/40 hover:bg-white/5 disabled:opacity-40"
+                    [disabled]="!activeTab()"
+                    (click)="openSaveModal()"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    class="rounded-xl bg-junny-blue px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-junny-blue/20 transition hover:bg-blue-600 disabled:opacity-40"
+                    [disabled]="loading()"
+                    (click)="send()"
+                  >
+                    Send
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div class="grid gap-4 lg:grid-cols-2">
-              <app-key-value-table
-                label="Headers"
-                [rows]="tab.headerRows"
-                (rowsChange)="onHeadersChange($event)"
-              />
-              <app-key-value-table
-                label="Query params"
-                [rows]="tab.paramRows"
-                (rowsChange)="onParamsChange($event)"
-              />
-            </div>
-
-            <app-authorization-editor
-              [auth]="tab.auth"
-              (authChange)="onAuthChange($event)"
-            />
-
-            <app-body-editor
-              [value]="tab.bodyText"
-              (valueChange)="onBodyChange($event)"
-            />
-
             <div
-              class="flex flex-wrap items-center gap-2 rounded-xl border border-white/10 bg-slate-950/50 p-3"
+              class="overflow-hidden rounded-xl border border-white/10 bg-slate-950/30"
             >
-              <span class="text-xs text-slate-500">Save to collection</span>
-              <select
-                class="rounded-lg border border-white/10 bg-slate-900 px-2 py-1.5 text-sm"
-                [value]="saveCollectionId()"
-                (change)="saveCollectionId.set($any($event.target).value)"
+              <div
+                class="flex flex-wrap gap-0 border-b border-white/10"
+                role="tablist"
+                aria-label="Request parts"
               >
-                <option value="">Select…</option>
-                @for (c of collections(); track c.id) {
-                  <option [value]="c.id">{{ c.name }}</option>
+                @for (sec of restRequestSections; track sec.id) {
+                  <button
+                    type="button"
+                    role="tab"
+                    [attr.aria-selected]="restRequestSection() === sec.id"
+                    class="border-b-2 px-3 py-2.5 text-xs font-medium transition hover:text-slate-300"
+                    [class.border-transparent]="restRequestSection() !== sec.id"
+                    [class.text-slate-500]="restRequestSection() !== sec.id"
+                    [class.border-junny-blue]="restRequestSection() === sec.id"
+                    [class.text-slate-100]="restRequestSection() === sec.id"
+                    (click)="restRequestSection.set(sec.id)"
+                  >
+                    {{ sec.label }}
+                  </button>
                 }
-              </select>
-              <button
-                type="button"
-                class="rounded-lg border border-white/10 px-3 py-1.5 text-sm hover:border-junny-violet/40"
-                [disabled]="!saveCollectionId()"
-                (click)="saveToCollection()"
-              >
-                Save
-              </button>
+              </div>
+              <div class="flex min-h-[280px] min-h-0 flex-col p-3 md:min-h-[340px]">
+                @switch (restRequestSection()) {
+                  @case ('params') {
+                    <app-key-value-table
+                      class="min-h-0 flex-1"
+                      [embedded]="true"
+                      label="Query params"
+                      [rows]="tab.paramRows"
+                      (rowsChange)="onParamsChange($event)"
+                    />
+                  }
+                  @case ('authorization') {
+                    <app-authorization-editor
+                      class="min-h-0 flex-1"
+                      [embedded]="true"
+                      [auth]="tab.auth"
+                      (authChange)="onAuthChange($event)"
+                    />
+                  }
+                  @case ('headers') {
+                    <app-key-value-table
+                      class="min-h-0 flex-1"
+                      [embedded]="true"
+                      label="Headers"
+                      [rows]="tab.headerRows"
+                      (rowsChange)="onHeadersChange($event)"
+                    />
+                  }
+                  @case ('body') {
+                    <app-body-editor
+                      class="flex min-h-0 flex-1 flex-col"
+                      [embedded]="true"
+                      [value]="tab.bodyText"
+                      (valueChange)="onBodyChange($event)"
+                    />
+                  }
+                }
+              </div>
             </div>
           }
         </div>
 
-        <div class="min-h-0 border-t border-white/10 p-4">
-          <app-response-viewer [res]="response()" [errorText]="errorMessage()" />
-        </div>
+        @if (showResponsePanel()) {
+          <div class="min-h-0 border-t border-white/10 p-4">
+            <app-response-viewer [res]="response()" [errorText]="errorMessage()" />
+          </div>
+        }
       </div>
     </div>
   </div>
+
+  @if (confirmConfig(); as cfg) {
+    <app-confirm-dialog
+      [open]="true"
+      [title]="cfg.title"
+      [message]="cfg.message"
+      [confirmLabel]="cfg.confirmLabel"
+      [cancelLabel]="cfg.cancelLabel"
+      [tone]="cfg.tone"
+      (confirmed)="onConfirmDialogAccepted()"
+      (cancelled)="onConfirmDialogCancelled()"
+    />
+  }
+
+  @if (promptConfig(); as pc) {
+    <app-prompt-dialog
+      [open]="true"
+      [title]="pc.title"
+      [message]="pc.message"
+      [label]="pc.label"
+      [placeholder]="pc.placeholder"
+      [initialValue]="pc.initialValue"
+      [maxlength]="pc.maxlength"
+      [confirmLabel]="pc.confirmLabel"
+      [cancelLabel]="pc.cancelLabel"
+      [requireNonEmpty]="pc.requireNonEmpty"
+      (confirmed)="onPromptDialogConfirmed($event)"
+      (cancelled)="onPromptDialogCancelled()"
+    />
+  }
 
   <app-environment-editor-modal
     [open]="envModalOpen()"
@@ -245,4 +254,153 @@
     (closed)="openApiModalOpen.set(false)"
     (imported)="onOpenApiImported($event)"
   />
+
+  @if (closeTabPromptOpen()) {
+    <div
+      class="fixed inset-0 z-[55] flex items-center justify-center bg-black/60 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="close-tab-unsaved-title"
+      (click)="closeTabPromptCancel()"
+    >
+      <div
+        class="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900 p-5 shadow-xl"
+        (click)="$event.stopPropagation()"
+      >
+        <h2
+          id="close-tab-unsaved-title"
+          class="mb-2 text-lg font-semibold text-slate-100"
+        >
+          Unsaved changes
+        </h2>
+        <p class="mb-5 text-sm text-slate-400">
+          Save this request before closing the tab?
+        </p>
+        <div class="flex flex-wrap justify-end gap-2">
+          <button
+            type="button"
+            class="rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300 hover:bg-white/5"
+            (click)="closeTabPromptCancel()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300 hover:bg-white/5"
+            (click)="closeTabPromptDiscard()"
+          >
+            Don't save
+          </button>
+          <button
+            type="button"
+            class="rounded-xl bg-junny-blue px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600"
+            (click)="closeTabPromptSave()"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (saveModalOpen()) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="save-request-title"
+      (click)="closeSaveModal()"
+    >
+      <div
+        class="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900 p-5 shadow-xl"
+        (click)="$event.stopPropagation()"
+      >
+        <h2
+          id="save-request-title"
+          class="mb-4 text-lg font-semibold text-slate-100"
+        >
+          Save request
+        </h2>
+        <p class="mb-3 text-xs text-slate-500">
+          Store in the root, or pick a collection.
+        </p>
+        <label class="mb-4 block">
+          <span class="mb-1 block text-xs text-slate-500">Request name</span>
+          <input
+            type="text"
+            class="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-junny-violet/50 focus:outline-none"
+            placeholder="My API call"
+            maxlength="200"
+            [value]="saveModalRequestName()"
+            (input)="saveModalRequestName.set($any($event.target).value)"
+          />
+        </label>
+        @if (errorMessage()) {
+          <p class="mb-3 text-xs text-rose-400">{{ errorMessage() }}</p>
+        }
+        <fieldset class="mb-4 space-y-2 border-0 p-0">
+          <label
+            class="flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-200 hover:bg-white/5"
+          >
+            <input
+              type="radio"
+              name="save-dest"
+              class="shrink-0"
+              [checked]="saveModalDestination() === 'root'"
+              (change)="setSaveModalDestination('root')"
+            />
+            Root (no collection)
+          </label>
+          <label
+            class="flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-200 hover:bg-white/5"
+          >
+            <input
+              type="radio"
+              name="save-dest"
+              class="shrink-0"
+              [checked]="saveModalDestination() === 'collection'"
+              (change)="setSaveModalDestination('collection')"
+            />
+            Collection
+          </label>
+        </fieldset>
+        @if (saveModalDestination() === 'collection') {
+          <label class="mb-4 block">
+            <span class="mb-1 block text-xs text-slate-500">Collection</span>
+            <select
+              class="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-junny-violet/50 focus:outline-none"
+              [value]="saveModalCollectionId()"
+              (change)="saveModalCollectionId.set($any($event.target).value)"
+            >
+              <option value="">Select a collection…</option>
+              @for (c of collections(); track c.id) {
+                <option [value]="c.id">{{ c.name }}</option>
+              }
+            </select>
+          </label>
+        }
+        <div class="flex justify-end gap-2">
+          <button
+            type="button"
+            class="rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300 hover:bg-white/5"
+            (click)="closeSaveModal()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="rounded-xl bg-junny-blue px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600 disabled:opacity-40"
+            [disabled]="
+              !saveModalRequestName().trim() ||
+              (saveModalDestination() === 'collection' &&
+                !saveModalCollectionId().trim())
+            "
+            (click)="confirmSaveFromModal()"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </div>

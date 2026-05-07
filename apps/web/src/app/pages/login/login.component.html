@@ -1,0 +1,150 @@
+<div
+  class="flex min-h-dvh flex-col bg-junny-bg text-slate-100 selection:bg-junny-violet/25"
+>
+  <header class="border-b border-white/10 px-4 py-4">
+    <a
+      routerLink="/"
+      class="text-sm font-semibold text-slate-300 transition hover:text-white"
+      >← Junny</a
+    >
+  </header>
+
+  <main class="flex flex-1 flex-col items-center justify-center px-4 py-10">
+    <div
+      class="w-full max-w-md rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-2xl shadow-black/30 ring-1 ring-white/5 backdrop-blur-sm"
+    >
+      <h1 class="text-xl font-semibold text-white">
+        @if (mode() === 'login') {
+          Sign in
+        } @else {
+          Create account
+        }
+      </h1>
+      <p class="mt-1 text-sm text-slate-500">
+        The workspace requires an authenticated Junny API session.
+      </p>
+
+      @if (error()) {
+        <p
+          class="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-200"
+        >
+          {{ error() }}
+        </p>
+      }
+
+      @if (mode() === 'login') {
+        <form class="mt-6 space-y-4" (ngSubmit)="submitLogin()">
+          <div>
+            <label class="mb-1 block text-xs font-medium text-slate-500" for="email"
+              >Email</label
+            >
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="username"
+              [(ngModel)]="email"
+              class="w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-junny-violet/50 focus:outline-none"
+              [disabled]="loading()"
+            />
+          </div>
+          <div>
+            <label class="mb-1 block text-xs font-medium text-slate-500" for="password"
+              >Password</label
+            >
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              [(ngModel)]="password"
+              class="w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-junny-violet/50 focus:outline-none"
+              [disabled]="loading()"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full rounded-xl bg-junny-blue py-2.5 text-sm font-semibold text-white shadow-lg shadow-junny-blue/20 transition hover:opacity-95 disabled:opacity-40"
+            [disabled]="loading()"
+          >
+            {{ loading() ? 'Signing in…' : 'Sign in' }}
+          </button>
+        </form>
+      } @else {
+        <form class="mt-6 space-y-4" (ngSubmit)="submitRegister()">
+          <div>
+            <label class="mb-1 block text-xs font-medium text-slate-500" for="name"
+              >Name (optional)</label
+            >
+            <input
+              id="name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              [(ngModel)]="name"
+              class="w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-junny-violet/50 focus:outline-none"
+              [disabled]="loading()"
+            />
+          </div>
+          <div>
+            <label class="mb-1 block text-xs font-medium text-slate-500" for="remail"
+              >Email</label
+            >
+            <input
+              id="remail"
+              name="remail"
+              type="email"
+              autocomplete="username"
+              [(ngModel)]="email"
+              class="w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-junny-violet/50 focus:outline-none"
+              [disabled]="loading()"
+            />
+          </div>
+          <div>
+            <label class="mb-1 block text-xs font-medium text-slate-500" for="rpassword"
+              >Password (min. 8 characters)</label
+            >
+            <input
+              id="rpassword"
+              name="rpassword"
+              type="password"
+              autocomplete="new-password"
+              [(ngModel)]="password"
+              class="w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-junny-violet/50 focus:outline-none"
+              [disabled]="loading()"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full rounded-xl bg-junny-blue py-2.5 text-sm font-semibold text-white shadow-lg shadow-junny-blue/20 transition hover:opacity-95 disabled:opacity-40"
+            [disabled]="loading()"
+          >
+            {{ loading() ? 'Creating account…' : 'Create account' }}
+          </button>
+        </form>
+      }
+
+      <p class="mt-6 text-center text-sm text-slate-500">
+        @if (mode() === 'login') {
+          No account yet?
+          <button
+            type="button"
+            class="font-semibold text-junny-violet hover:text-violet-300"
+            (click)="toggleMode()"
+          >
+            Create one
+          </button>
+        } @else {
+          Already have an account?
+          <button
+            type="button"
+            class="font-semibold text-junny-violet hover:text-violet-300"
+            (click)="toggleMode()"
+          >
+            Sign in
+          </button>
+        }
+      </p>
+    </div>
+  </main>
+</div>
