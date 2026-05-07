@@ -35,4 +35,4 @@ EXPOSE 3000
 
 WORKDIR /repo
 
-CMD ["node", "apps/server/dist/main.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy --schema apps/server/prisma/schema.prisma && exec node apps/server/dist/main.js"]
