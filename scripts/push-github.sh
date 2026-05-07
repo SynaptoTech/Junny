@@ -47,9 +47,13 @@ if ! git diff --cached --quiet; then
   git commit -m "chore(public): refresh public branch"
 fi
 
-git push -u "$REMOTE" "$PUBLIC_BRANCH"
+git push --force-with-lease -u "$REMOTE" "$PUBLIC_BRANCH"
 
 echo "OK: pushed $PUBLIC_BRANCH to $REMOTE"
+
+# Após `git rm --cached`, os ficheiros ficam na árvore como untracked e impedem
+# `git switch main`. Estas pastas são reconstruídas ao voltar para main.
+git clean -fdq .gitea images infra md 2>/dev/null || true
 
 git switch "$BASE_BRANCH"
 echo "Switched back to $BASE_BRANCH"
