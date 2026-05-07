@@ -23,6 +23,14 @@ fi
 
 TMP_BRANCH="publish-github-$(date +%s)"
 
+cleanup() {
+  local code=$?
+  git checkout "${CURRENT}" 2>/dev/null || true
+  git branch -D "${TMP_BRANCH}" 2>/dev/null || true
+  exit "${code}"
+}
+trap cleanup ERR INT
+
 git branch "${TMP_BRANCH}"
 git checkout "${TMP_BRANCH}"
 
@@ -30,6 +38,7 @@ git rm -rf --cached .gitea md infra coverage images 2>/dev/null || true
 
 if git diff --cached --quiet; then
   echo "Nada a remover do índice (pastas já ausentes ou não rastreadas)."
+  trap - ERR INT
   git checkout "${CURRENT}"
   git branch -D "${TMP_BRANCH}"
   exit 0
@@ -39,6 +48,7 @@ git commit -m "chore: snapshot público para GitHub (sem caminhos privados)"
 
 git push "${REMOTE}" "${TMP_BRANCH}:${BRANCH}" --force
 
+trap - ERR INT
 git checkout "${CURRENT}"
 git branch -D "${TMP_BRANCH}"
 
