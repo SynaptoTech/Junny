@@ -7,9 +7,6 @@ on:
 jobs:
   deploy:
     runs-on: docker
-    container:
-      # Evita pull de GHCR sem autenticação no runner
-      image: ubuntu:22.04
 
     steps:
       - name: ✅ Checkout código
@@ -17,8 +14,22 @@ jobs:
 
       - name: 🧰 Dependências do runner (ssh, tar)
         run: |
-          apt-get update
-          apt-get install -y --no-install-recommends openssh-client ca-certificates tar gzip
+          set -e
+          if command -v ssh >/dev/null 2>&1 && command -v tar >/dev/null 2>&1; then
+            echo "✅ Dependências já presentes"
+            exit 0
+          fi
+          echo "📦 Instalando dependências..."
+          if command -v apt-get >/dev/null 2>&1; then
+            sudo -n true >/dev/null 2>&1 || true
+            (sudo -n apt-get update || apt-get update)
+            (sudo -n apt-get install -y --no-install-recommends openssh-client ca-certificates tar gzip || apt-get install -y --no-install-recommends openssh-client ca-certificates tar gzip)
+          elif command -v apk >/dev/null 2>&1; then
+            (sudo -n apk add --no-cache openssh-client ca-certificates tar gzip || apk add --no-cache openssh-client ca-certificates tar gzip)
+          else
+            echo "❌ Não sei instalar dependências (sem apt/apk)."
+            exit 1
+          fi
 
       - name: 🔑 Configura SSH
         env:
