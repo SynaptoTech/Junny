@@ -8,11 +8,17 @@ jobs:
   deploy:
     runs-on: docker
     container:
-      image: ghcr.io/catthehacker/ubuntu:act-22.04
+      # Evita pull de GHCR sem autenticação no runner
+      image: ubuntu:22.04
 
     steps:
       - name: ✅ Checkout código
         uses: actions/checkout@v4
+
+      - name: 🧰 Dependências do runner (ssh, tar)
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends openssh-client ca-certificates tar gzip
 
       - name: 🔑 Configura SSH
         env:
@@ -38,7 +44,7 @@ jobs:
           APP_DIR: ${{ secrets.APP_DIR }}
         run: |
           echo "🧹 Limpando cache Angular/Vite antes do envio..."
-          sudo rm -fR $APP_DIR || true
+          rm -rf "$APP_DIR" || true
 
           echo "📤 Enviando código atualizado..."
           ssh $SSH_USER@$SSH_HOST "
