@@ -1,0 +1,67 @@
+# Portas publicadas no host (evitar conflito com outros stacks):
+#   API:        28471 -> 3000
+#   Site:       36284 -> 80
+#   Postgres:   51793 -> 5432
+#
+# Nginx no servidor deve apontar para 127.0.0.1 nessas portas (ver infra/nginx/).
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-junny_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-junny}
+    volumes:
+      - junny_pg_data:/var/lib/postgresql/data
+    ports:
+      - '51793:5432'
+    networks:
+      - junny-network
+    healthcheck:
+      test:
+        ['CMD-SHELL', 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '28471:3000'
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${POSTGRES_USER:-junny_user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      DB_DATABASE: ${POSTGRES_DB:-junny}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - junny-network
+
+  site:
+    build:
+      context: ./site
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '36284:80'
+    networks:
+      - junny-network
+
+volumes:
+  junny_pg_data:
+
+networks:
+  junny-network:
+    driver: bridge

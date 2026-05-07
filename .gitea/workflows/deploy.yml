@@ -1,0 +1,132 @@
+name: junny-deploy-pipeline
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  deploy:
+    runs-on: docker
+    container:
+      image: ghcr.io/catthehacker/ubuntu:act-22.04
+
+    steps:
+      - name: ✅ Checkout código
+        uses: actions/checkout@v4
+
+      - name: 🔑 Configura SSH
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          printf "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" > ~/.ssh/config
+
+      - name: 🧹 Limpa cache de imagens antigas
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          echo "🧹 Limpando imagens antigas no servidor..."
+          ssh $SSH_USER@$SSH_HOST "docker image prune -a -f || true"
+
+      - name: 📦 Envia código e atualiza diretório remoto
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          APP_DIR: ${{ secrets.APP_DIR }}
+        run: |
+          echo "🧹 Limpando cache Angular/Vite antes do envio..."
+          sudo rm -fR $APP_DIR || true
+
+          echo "📤 Enviando código atualizado..."
+          ssh $SSH_USER@$SSH_HOST "
+            sudo mkdir -p $APP_DIR &&
+            sudo chown -R $SSH_USER:$SSH_USER $APP_DIR &&
+            sudo chmod -R 755 $APP_DIR
+          "
+          tar --exclude-vcs -czf - . | ssh $SSH_USER@$SSH_HOST "cd $APP_DIR && tar -xzf -"
+
+      - name: 🏗️ Build sem cache e sobe containers
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          APP_DIR: ${{ secrets.APP_DIR }}
+        run: |
+          echo "🏗️ Rebuildando containers sem cache..."
+          ssh $SSH_USER@$SSH_HOST "
+            cd $APP_DIR &&
+            docker compose build --no-cache &&
+            docker compose up -d --force-recreate --remove-orphans
+          "
+
+      - name: 🌐 Atualiza configuração Nginx
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          APP_DIR: ${{ secrets.APP_DIR }}
+        run: |
+          echo "🌐 Atualizando configurações Nginx a partir de $APP_DIR/infra/nginx..."
+          ssh $SSH_USER@$SSH_HOST bash -s <<EOF
+            set -e
+            CONFIG_DIR="$APP_DIR/infra/nginx"
+
+            echo "📂 Listando arquivos encontrados em \$CONFIG_DIR:"
+            ls -l \$CONFIG_DIR || echo "⚠️ Diretório não encontrado"
+
+            shopt -s nullglob
+
+            files=(\${CONFIG_DIR}/*.conf)
+            if [ \${#files[@]} -eq 0 ]; then
+              echo "⚠️ Nenhum arquivo .conf encontrado em \$CONFIG_DIR — ignorando atualização."
+              exit 0
+            fi
+
+            echo "➡️ Limpando links simbólicos quebrados..."
+            sudo find /etc/nginx/sites-enabled/ -xtype l -delete || true
+
+            echo "➡️ Copiando arquivos de configuração..."
+            sudo mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
+
+            for conf in "\${files[@]}"; do
+              name=\$(basename "\$conf")
+              echo "🔸 Copiando \$name..."
+              sudo cp "\$conf" /etc/nginx/sites-available/"\$name"
+              sudo ln -sf /etc/nginx/sites-available/"\$name" /etc/nginx/sites-enabled/"\$name"
+              echo "✅ Config aplicado: \$name"
+            done
+
+            echo "➡️ Testando configuração..."
+            sudo nginx -t
+
+            echo "➡️ Recarregando Nginx..."
+            sudo systemctl reload nginx || sudo nginx -s reload
+
+            echo "✅ Nginx atualizado com sucesso!"
+          EOF
+
+      - name: 🔒 Ativa HTTPS (Certbot + Nginx)
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          APP_DIR: ${{ secrets.APP_DIR }}
+        run: |
+          ssh $SSH_USER@$SSH_HOST "
+            cd $APP_DIR/infra/scripts &&
+            sudo chmod +x enable-https.sh &&
+            sudo ./enable-https.sh
+          "
+
+      - name: ✅ Testa containers e Nginx
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          echo "🔍 Verificando status..."
+          ssh $SSH_USER@$SSH_HOST "
+            echo '📦 Containers:' &&
+            docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' &&
+            echo '\n🌐 Sites Nginx ativos:' &&
+            sudo ls -l /etc/nginx/sites-enabled/
+          "
