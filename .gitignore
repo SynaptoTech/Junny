@@ -18,6 +18,8 @@ apps/server/prisma/dev.db
 apps/server/prisma/dev.db-journal
 apps/server/prisma/test.db
 apps/server/prisma/test.db-journal
+apps/server/prisma/prisma/*.db
+test-results/
 
 apps/docs/.vitepress/cache
 apps/docs/.vitepress/dist
