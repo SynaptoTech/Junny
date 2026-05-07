@@ -1,15 +1,18 @@
 import { Controller, Get } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { PrismaService } from '../../config/prisma.service';
 
-@Controller('health')
+@ApiTags('health')
+@Controller('v1/health')
 export class HealthController {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Healthcheck da API e SQLite' })
   async get() {
     let database: 'ok' | 'error' = 'ok';
     try {
-      await this.dataSource.query('SELECT 1');
+      await this.prisma.$queryRaw`SELECT 1`;
     } catch {
       database = 'error';
     }

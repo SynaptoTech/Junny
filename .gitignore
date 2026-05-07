@@ -10,6 +10,8 @@ apps/web/.angular
 apps/server/node_modules
 apps/server/dist
 apps/server/data/*.sqlite
+apps/server/prisma/dev.db
+apps/server/prisma/dev.db-journal
 
 apps/docs/.vitepress/cache
 apps/docs/.vitepress/dist

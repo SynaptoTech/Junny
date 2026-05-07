@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
+import { EnvironmentsController } from './environments.controller';
+import { EnvironmentsService } from './environments.service';
 
-/** Environments — variáveis e perfis por ambiente. */
-@Module({})
+@Module({
+  controllers: [EnvironmentsController],
+  providers: [EnvironmentsService],
+})
 export class EnvironmentsModule {}

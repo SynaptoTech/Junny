@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
+import { CollectionsController } from './collections.controller';
+import { CollectionsService } from './collections.service';
 
-/** Collections — agrupamento de requests (MVP). */
-@Module({})
+@Module({
+  controllers: [CollectionsController],
+  providers: [CollectionsService],
+})
 export class CollectionsModule {}

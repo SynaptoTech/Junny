@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
+import { HistoryController } from './history.controller';
+import { HistoryService } from './history.service';
 
-/** Histórico de requests — persistência local (SQLite inicialmente). */
-@Module({})
+@Module({
+  controllers: [HistoryController],
+  providers: [HistoryService],
+})
 export class HistoryModule {}

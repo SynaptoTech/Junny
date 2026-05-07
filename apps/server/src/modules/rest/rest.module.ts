@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { HealthController } from './health.controller';
+import { ProxyController } from './proxy.controller';
+import { ProxyService } from './proxy.service';
 
-/** REST — prioridade do MVP (proxy, requests, OpenAPI). */
 @Module({
-  controllers: [HealthController],
+  controllers: [HealthController, ProxyController],
+  providers: [ProxyService],
 })
 export class RestModule {}

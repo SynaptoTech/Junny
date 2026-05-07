@@ -1,8 +1,8 @@
 # Portas publicadas no host (evitar conflito com outros stacks):
-#   API:   28471 -> 3000
+#   API:   28471 -> 3000 (container; dev local usa PORT=13050 sem Docker)
 #   Web:   36284 -> 80
 #
-# API usa SQLite (volume `junny_sqlite`). PostgreSQL é opcional no futuro.
+# API usa SQLite via Prisma (volume `junny_sqlite`). DATABASE_URL no container.
 # Nginx no servidor deve apontar para 127.0.0.1 nessas portas (ver infra/nginx/).
 
 services:
@@ -16,7 +16,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      SQLITE_PATH: /app/data/junny.sqlite
+      DATABASE_URL: file:/app/data/dev.db
     volumes:
       - junny_sqlite:/app/data
     networks:

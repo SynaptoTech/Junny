@@ -1,7 +1,5 @@
 FROM node:20-alpine AS build
 
-RUN apk add --no-cache python3 make g++
-
 WORKDIR /repo
 
 COPY package.json package-lock.json ./
@@ -14,8 +12,6 @@ RUN npm run build -w @junny/server
 
 FROM node:20-alpine AS prod
 
-RUN apk add --no-cache python3 make g++
-
 WORKDIR /repo
 
 COPY package.json package-lock.json ./
@@ -26,11 +22,14 @@ COPY examples ./examples
 RUN npm ci --omit=dev --workspace=@junny/server
 
 COPY --from=build /repo/apps/server/dist ./apps/server/dist
+COPY --from=build /repo/node_modules/.prisma ./node_modules/.prisma
+COPY --from=build /repo/node_modules/@prisma ./node_modules/@prisma
 
 RUN mkdir -p /app/data
 
-ENV SQLITE_PATH=/app/data/junny.sqlite
+ENV DATABASE_URL=file:/app/data/dev.db
 ENV NODE_ENV=production
+ENV PORT=3000
 
 EXPOSE 3000
 

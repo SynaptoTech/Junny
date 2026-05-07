@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Collection {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime        @default(now())
+  requests    StoredRequest[]
+}
+
+model StoredRequest {
+  id           String      @id @default(cuid())
+  method       String
+  url          String
+  headers      Json
+  body         String?
+  collectionId String?
+  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+  createdAt    DateTime    @default(now())
+}
+
+model Environment {
+  id        String   @id @default(cuid())
+  name      String
+  variables Json
+  createdAt DateTime @default(now())
+}
+
+model HistoryEntry {
+  id        String   @id @default(cuid())
+  request   Json
+  response  Json
+  status    Int
+  duration  Int
+  createdAt DateTime @default(now())
+}
