@@ -22,3 +22,6 @@ apps/server/prisma/test.db-journal
 apps/docs/.vitepress/cache
 apps/docs/.vitepress/dist
 apps/docs/dist
+
+# scripts locais (não versionar)
+/scripts
