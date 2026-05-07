@@ -1,0 +1,48 @@
+<footer class="border-t border-white/5 bg-junny-bg/90 py-12">
+  <div class="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
+    <div
+      class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between"
+    >
+      <div class="space-y-2">
+        <p class="text-sm font-semibold text-slate-200">Junny</p>
+        <p class="max-w-sm text-sm leading-relaxed text-slate-400">
+          {{ brand.slogan }} — open source, developer-first, dark-first.
+        </p>
+      </div>
+      <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm" aria-label="Footer">
+        <a
+          class="text-slate-400 transition hover:text-junny-blue"
+          [href]="brand.urls.github"
+          rel="noopener noreferrer"
+          target="_blank"
+          >GitHub</a
+        >
+        <a
+          class="text-slate-400 transition hover:text-junny-blue"
+          [href]="brand.urls.license"
+          rel="noopener noreferrer"
+          target="_blank"
+          >License</a
+        >
+        <a
+          class="text-slate-400 transition hover:text-junny-blue"
+          [href]="brand.urls.website"
+          >Website</a
+        >
+        <a
+          class="text-slate-400 transition hover:text-junny-violet"
+          [href]="brand.urls.synapto"
+          rel="noopener noreferrer"
+          target="_blank"
+          >Synapto</a
+        >
+      </nav>
+    </div>
+    <div
+      class="flex flex-col gap-3 border-t border-white/5 pt-8 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {{ year() }} {{ brand.name }}. MIT License.</p>
+      <p class="text-slate-400">{{ brand.footer.builtBy }}</p>
+    </div>
+  </div>
+</footer>

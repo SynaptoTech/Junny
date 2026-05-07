@@ -1,0 +1,36 @@
+<div
+  class="relative min-h-dvh selection:bg-junny-violet/25 selection:text-white"
+>
+  <div
+    class="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+    aria-hidden="true"
+  >
+    <div
+      class="absolute -left-1/3 top-0 h-[420px] w-[120%] bg-gradient-to-br from-junny-blue/15 via-junny-violet/10 to-transparent blur-3xl"
+    ></div>
+    <div
+      class="absolute -right-1/4 bottom-0 h-[360px] w-[80%] bg-gradient-to-tl from-fuchsia-500/10 via-junny-bg/0 to-transparent blur-3xl"
+    ></div>
+  </div>
+
+  <app-navbar />
+  <main>
+    <app-hero />
+    <app-section
+      title="Protocols"
+      subtitle="Prioridade de entrega: REST primeiro; demais protocolos em sequência no roadmap."
+      labelId="protocols-heading"
+    >
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        @for (p of protocols; track p.id) {
+          <app-protocol-card
+            [title]="p.title"
+            [description]="p.description"
+            [status]="p.status"
+          />
+        }
+      </div>
+    </app-section>
+  </main>
+  <app-footer />
+</div>
