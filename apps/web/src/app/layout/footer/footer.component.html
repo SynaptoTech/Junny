@@ -95,7 +95,15 @@
       class="flex flex-col gap-3 border-t border-white/5 pt-8 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between"
     >
       <p>© {{ year() }} {{ brand.name }}. MIT License.</p>
-      <p class="text-slate-400">{{ brand.footer.builtBy }}</p>
+      <p class="text-slate-400">
+        <a
+          class="text-slate-400 transition hover:text-white"
+          [href]="brand.urls.synapto"
+          rel="noopener noreferrer"
+          target="_blank"
+          >{{ brand.footer.builtBy }}</a
+        >
+      </p>
     </div>
   </div>
 </footer>

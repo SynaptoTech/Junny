@@ -11,10 +11,10 @@ export const BRAND = {
     docs: '/docs/',
     license:
       'https://github.com/SynaptoTech/Junny/blob/main/LICENSE',
-    synapto: 'https://synapto.com.br',
+    synapto: 'https://www.synapto.com.br',
     ogImage: 'https://junny.dev.br/images/logo.png',
   },
   footer: {
-    builtBy: 'Built with ❤️ by Synapto',
+    builtBy: 'Built by Synapto',
   },
 } as const;

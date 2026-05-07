@@ -7,6 +7,8 @@
 
 Official public repository: **[github.com/SynaptoTech/Junny](https://github.com/SynaptoTech/Junny)** · Website: **[junny.dev.br](https://junny.dev.br)**
 
+Built by **[Synapto](https://www.synapto.com.br)**.
+
 ---
 
 ## Screenshots
@@ -193,3 +195,16 @@ Early development — feedback and PRs welcome.
 ## License
 
 [MIT](LICENSE)
+
+## Ownership, branding, and official distribution
+
+Junny is an **open source integration platform**.
+
+- **Open Source Core**: the code is open source under the project license.
+- **Official Distribution**: official releases and docs are maintained by **Synapto**.
+- **Branding Protection**: the Junny name, logo, branding, and official assets are protected.
+
+See:
+
+- [`TRADEMARK.md`](TRADEMARK.md)
+- [`BRANDING.md`](BRANDING.md)

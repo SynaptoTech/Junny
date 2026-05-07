@@ -122,7 +122,8 @@ export default defineConfig({
     ],
 
     footer: {
-      message: 'Released under the MIT License.',
+      message:
+        'Released under the MIT License. Built by Synapto (https://www.synapto.com.br).',
       copyright: 'Copyright © Synapto / Junny contributors',
     },
 
