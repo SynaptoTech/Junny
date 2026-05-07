@@ -1,0 +1,12 @@
+{
+  "name": "@junny/core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Tipos, interfaces e helpers compartilhados",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

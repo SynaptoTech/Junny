@@ -1,0 +1,22 @@
+{
+  "name": "junny",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Junny — Open Integration Studio (monorepo)",
+  "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @junny/web && npm run build -w @junny/server && npm run build -w @junny/docs",
+    "build:web": "npm run build -w @junny/web",
+    "build:server": "npm run build -w @junny/server",
+    "build:docs": "npm run build -w @junny/docs",
+    "start:web": "npm run start -w @junny/web",
+    "start:server": "npm run start:dev -w @junny/server"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
