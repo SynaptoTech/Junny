@@ -1,0 +1,8 @@
+{
+  "name": "example-internal",
+  "version": "0.0.0",
+  "author": "junny",
+  "type": "protocol",
+  "junnyPluginApi": "0",
+  "description": "Placeholder internal plugin — not loaded by the runtime yet (MD19)."
+}

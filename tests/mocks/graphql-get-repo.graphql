@@ -1,0 +1,6 @@
+query RepositoryInfo {
+  repository(owner: "SynaptoTech", name: "Junny") {
+    description
+    url
+  }
+}

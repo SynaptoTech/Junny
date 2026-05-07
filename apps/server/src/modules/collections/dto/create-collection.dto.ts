@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsOptional, IsString, MaxLength, MinLength, ValidateNested } from 'class-validator';
+import { RequestAuthDto } from '../../auth/dto/request-auth.dto';
 
 export class CreateCollectionDto {
   @ApiProperty()
@@ -13,4 +15,12 @@ export class CreateCollectionDto {
   @IsString()
   @MaxLength(2000)
   description?: string;
+
+  @ApiPropertyOptional({
+    description: 'Auth predefinida para pedidos sem authConfig próprio.',
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => RequestAuthDto)
+  authConfig?: RequestAuthDto;
 }

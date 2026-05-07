@@ -1,0 +1,191 @@
+<div
+  class="min-h-dvh bg-junny-bg text-slate-100 selection:bg-junny-violet/25"
+>
+  <header class="border-b border-white/10 px-6 py-4">
+    <div
+      class="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3"
+    >
+      <div class="flex flex-wrap items-center gap-3 text-sm">
+        <a class="font-semibold text-slate-200 hover:text-white" href="/">← Home</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app">REST</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/graphql">GraphQL</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/soap">SOAP</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/websocket">WebSocket</a>
+        <a class="text-slate-400 hover:text-amber-200" href="/app/kafka">Kafka</a>
+        <a class="text-slate-400 hover:text-junny-violet" href="/app/design-system">Design system</a>
+        <a class="text-slate-400 hover:text-indigo-200" href="/app/plugins">Plugins</a>
+        <a class="text-slate-400 hover:text-sky-300" href="/app/ai">AI</a>
+        <a class="text-slate-400 hover:text-teal-300" href="/app/grpc">gRPC</a>
+        <a class="text-slate-400 hover:text-fuchsia-300" href="/app/codegen">cURL+</a>
+        <a class="text-slate-400 hover:text-emerald-300" href="/app/runner">Runner</a>
+        <a class="text-slate-400 hover:text-rose-300" href="/app/security">Security</a>
+        <a class="text-slate-400 hover:text-blue-400" href="/app/sync">Sync</a>
+        <a class="text-slate-400 hover:text-purple-400" href="/app/workspace-layout">Layout</a>
+        <a class="text-slate-400 hover:text-orange-400" href="/app/desktop">Desktop</a>
+        <a class="text-slate-400 hover:text-pink-400" href="/app/team">Team</a>
+        <a class="text-slate-400 hover:text-sky-400" href="/app/official">Official</a>
+        <a class="text-slate-400 hover:text-lime-400" href="/app/monitoring">Monitor</a>
+        <a class="text-slate-400 hover:text-violet-400" href="/app/contracts">Contracts</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/diff">Diff</a>
+        <a class="text-slate-400 hover:text-teal-400" href="/app/interceptor">Traffic</a>
+        <a class="text-slate-400 hover:text-indigo-400" href="/app/browser-extension">Extension</a>
+        <a class="text-slate-400 hover:text-purple-400" href="/app/ai-generator">AI Gen</a>
+        <a class="text-slate-400 hover:text-cyan-400" href="/app/ai-analyzer">AI An</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/workflows">Flow</a>
+        <a class="text-slate-400 hover:text-fuchsia-400" href="/app/marketplace">Market</a>
+        <a class="text-slate-400 hover:text-sky-400" href="/app/enterprise">Ent</a>
+        <a class="text-slate-400 hover:text-green-400" href="/app/profiler">Perf</a>
+        <a class="text-slate-400 hover:text-blue-400" href="/app/observability">Obs</a>
+        <a class="text-slate-400 hover:text-rose-400" href="/app/vault">Vault</a>
+        <a class="text-slate-400 hover:text-violet-400" href="/app/ai-docs">Docs</a>
+        <a class="text-slate-400 hover:text-lime-400" href="/app/ai-openapi">Spec</a>
+        <a class="text-slate-400 hover:text-teal-400" href="/app/streaming">Stream</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/git">Git</a>
+        <a class="text-slate-400 hover:text-indigo-300" href="/app/sdk">SDK</a>
+        <span class="text-sm font-medium text-cyan-300/90">Mock servers</span>
+      </div>
+      <span
+        class="rounded-full border border-cyan-500/35 bg-cyan-950/35 px-3 py-1 text-xs font-medium text-cyan-100"
+        >Roadmap</span
+      >
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-6 py-10">
+    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+      {{ mdRef }}
+    </p>
+    <h1 class="mt-2 text-2xl font-semibold tracking-tight text-white">
+      Mock server · APIs falsas e desenvolvimento offline
+    </h1>
+    <p class="mt-2 text-sm leading-relaxed text-slate-400">
+      Posicionar o Junny como <strong class="text-slate-200">plataforma de integração completa</strong>:
+      criar endpoints REST simulados, editar respostas (JSON no Monaco), iniciar um runtime local e consumir APIs fake para
+      frontend, QA e protótipos — <span class="font-mono text-slate-300">localhost-only</span> no início.
+    </p>
+
+    @if (apiRoadmap(); as r) {
+      <div
+        class="mt-6 rounded-xl border border-cyan-500/25 bg-cyan-950/20 px-4 py-3 text-sm text-cyan-100"
+      >
+        <p class="font-medium text-cyan-50">Backend local</p>
+        <p class="mt-1 text-cyan-100/90">
+          Fase: <span class="font-mono">{{ r.phase }}</span> · porta sugerida:
+          <span class="font-mono">{{ r.defaultPort }}</span>
+        </p>
+        <p class="mt-2 text-xs leading-relaxed text-cyan-200/85">{{ r.description }}</p>
+      </div>
+    }
+    @if (apiError(); as err) {
+      <div
+        class="mt-6 rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-xs text-slate-400"
+      >
+        {{ err }}
+      </div>
+    }
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Layout planejado
+      </h2>
+      <pre
+        class="overflow-x-auto rounded-xl border border-white/10 bg-slate-950/70 p-4 font-mono text-xs leading-relaxed text-slate-300"
+>Mock Endpoints
+Response Editor
+Server Status</pre>
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Exemplo rápido
+      </h2>
+      <p class="text-xs text-slate-500">Endpoint mock</p>
+      <pre
+        class="overflow-x-auto rounded-xl border border-white/10 bg-slate-950/70 p-4 font-mono text-sm text-slate-200"
+>GET /users</pre>
+      <p class="text-xs text-slate-500">Corpo de resposta</p>
+      <pre
+        class="overflow-x-auto rounded-xl border border-white/10 bg-slate-950/70 p-4 font-mono text-[11px] leading-relaxed text-slate-300"
+>{{ exampleJsonBody }}</pre>
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        MVP mock
+      </h2>
+      @if (apiRoadmap(); as r) {
+        <ul class="space-y-2 text-sm text-slate-300">
+          @for (cap of r.mvpCapabilities; track cap) {
+            <li class="flex items-start gap-2">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400/90"></span>
+              <span class="font-mono text-xs text-cyan-100/90">{{ cap }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <ul class="list-inside list-disc space-y-2 text-sm text-slate-300">
+          <li>REST mock · endpoints configuráveis · respostas custom</li>
+          <li>Runtime local · editor mock (Monaco JSON)</li>
+        </ul>
+      }
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Códigos de estado previstos
+      </h2>
+      @if (apiRoadmap(); as r) {
+        <div class="flex flex-wrap gap-2">
+          @for (code of r.statusCodesSupported; track code) {
+            <span class="rounded-lg border border-white/10 bg-slate-900/70 px-2 py-1 font-mono text-xs text-slate-200">{{
+              code
+            }}</span>
+          }
+        </div>
+      } @else {
+        <p class="text-sm font-mono text-slate-400">200 · 201 · 400 · 401 · 404 · 500</p>
+      }
+      <p class="text-xs text-slate-500">Simulação de atraso (futuro): <span class="font-mono text-slate-400">Delay 1000ms</span></p>
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Componentes front-end
+      </h2>
+      <div class="flex flex-wrap gap-2">
+        @for (name of frontendComponentLabels; track name) {
+          <span class="rounded-lg border border-white/10 bg-slate-900/70 px-2 py-1 font-mono text-xs text-slate-200">{{
+            name
+          }}</span>
+        }
+      </div>
+      <p class="text-xs text-slate-500">
+        Sidebar global: entrada <strong class="text-slate-300">Mock Servers</strong> (planejado).
+      </p>
+    </section>
+
+    <section class="mt-10 space-y-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Backend planeado
+      </h2>
+      <pre
+        class="overflow-x-auto rounded-xl border border-white/10 bg-slate-950/70 p-4 font-mono text-xs leading-relaxed text-slate-400"
+>/modules/mock
+  /controllers
+  /services
+  /runtime</pre>
+      <p class="text-xs text-slate-500">
+        Logs: pedidos recebidos, respostas enviadas e timestamps. Integração collections:
+        <span class="font-mono text-slate-400">Request para Mock Endpoint</span>.
+      </p>
+    </section>
+
+    <section class="mt-10 rounded-xl border border-amber-500/20 bg-amber-950/15 p-5">
+      <h2 class="text-sm font-semibold text-amber-100">Fora do âmbito inicial</h2>
+      <ul class="mt-2 list-inside list-disc text-xs text-amber-100/85">
+        <li>Hosting público, mocks na cloud ou execução distribuída</li>
+        <li>Geração de mocks por IA</li>
+      </ul>
+    </section>
+  </main>
+</div>

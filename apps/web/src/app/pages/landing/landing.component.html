@@ -1,24 +1,357 @@
-<div
-  class="relative min-h-dvh selection:bg-junny-violet/25 selection:text-white"
->
+<div class="relative min-h-dvh selection:bg-junny-violet/25 selection:text-white">
   <div
-    class="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+    class="pointer-events-none fixed inset-0 -z-10 isolate contain-paint overflow-hidden"
     aria-hidden="true"
   >
     <div
-      class="absolute -left-1/3 top-0 h-[420px] w-[120%] bg-gradient-to-br from-junny-blue/15 via-junny-violet/10 to-transparent blur-3xl"
+      class="absolute inset-0 bg-[radial-gradient(900px_circle_at_20%_10%,rgba(124,58,237,0.16),transparent_55%),radial-gradient(700px_circle_at_80%_20%,rgba(6,182,212,0.12),transparent_55%),radial-gradient(900px_circle_at_50%_90%,rgba(37,99,235,0.10),transparent_60%)]"
     ></div>
     <div
-      class="absolute -right-1/4 bottom-0 h-[360px] w-[80%] bg-gradient-to-tl from-fuchsia-500/10 via-junny-bg/0 to-transparent blur-3xl"
+      class="absolute -left-1/3 top-0 h-[420px] w-[120%] bg-gradient-to-br from-junny-blue/15 via-junny-violet/10 to-transparent blur-3xl max-sm:blur-xl motion-reduce:blur-none"
+    ></div>
+    <div
+      class="absolute -right-1/4 bottom-0 h-[360px] w-[80%] bg-gradient-to-tl from-fuchsia-500/10 via-junny-bg/0 to-transparent blur-3xl max-sm:blur-xl motion-reduce:blur-none"
+    ></div>
+    <div
+      class="absolute inset-0 opacity-[0.12] motion-safe:[animation:var(--animate-grid-breathe)] [background-image:linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_35%,transparent_72%)]"
     ></div>
   </div>
 
-  <app-navbar />
-  <main>
-    <app-hero />
+  <app-navbar></app-navbar>
+  <div>
+    <!-- HERO V2 -->
+    <section class="mx-auto max-w-6xl px-4 pb-10 pt-12 sm:px-6 sm:pb-14 sm:pt-16">
+      <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-10">
+        <div class="space-y-6 motion-safe:animate-[fade-up_0.55s_ease-out_both]">
+          <p
+            class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-xs font-medium text-slate-200"
+          >
+            <span class="h-1.5 w-1.5 rounded-full bg-junny-violet"></span>
+            {{ copy().hero.badge }}
+          </p>
+
+          <div class="space-y-3">
+            <h1 class="text-4xl font-semibold tracking-tight text-slate-50 sm:text-5xl">
+              {{ copy().hero.title }}
+            </h1>
+            <p class="max-w-xl text-lg leading-relaxed text-slate-400">
+              {{ copy().hero.subtitle }}
+            </p>
+          </div>
+
+          <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <a
+              class="inline-flex items-center justify-center rounded-xl bg-junny-violet px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-junny-violet/25 ring-1 ring-white/10 transition hover:bg-junny-violet/90 hover:shadow-junny-violet/35"
+              href="/app"
+            >
+              {{ copy().hero.ctaPrimary }}
+            </a>
+            <a
+              class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-slate-950/30 px-5 py-3 text-sm font-semibold text-slate-200 ring-1 ring-white/5 transition hover:border-white/20 hover:bg-slate-950/45"
+              href="https://github.com/SynaptoTech/Junny"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {{ copy().hero.ctaGithub }}
+            </a>
+            <a
+              class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-slate-950/20 px-5 py-3 text-sm font-semibold text-slate-200 ring-1 ring-white/5 transition hover:border-cyan-500/30 hover:bg-slate-950/40"
+              href="/docs/getting-started/"
+            >
+              {{ copy().hero.ctaDocs }}
+            </a>
+          </div>
+
+          <p class="text-sm text-slate-500">
+            {{ copy().hero.note }}
+          </p>
+        </div>
+
+        <!-- HERO VISUAL (mockup) -->
+        <div
+          class="relative motion-safe:animate-[fade-up_0.65s_ease-out_both] motion-safe:[animation:var(--animate-float-slow)]"
+        >
+          <div
+            class="absolute -inset-5 rounded-3xl bg-gradient-to-tr from-junny-blue/25 via-junny-violet/25 to-teal-500/20 opacity-70 blur-3xl"
+            aria-hidden="true"
+          ></div>
+          <div
+            class="relative overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-2xl shadow-black/40 ring-1 ring-white/5"
+          >
+            <div
+              class="flex items-center justify-between border-b border-white/5 bg-slate-900/80 px-4 py-3"
+            >
+              <div class="flex items-center gap-2" aria-hidden="true">
+                <span class="h-2.5 w-2.5 rounded-full bg-rose-400/90"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-amber-400/90"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-400/90"></span>
+              </div>
+              <p class="text-xs text-slate-500">junny — integration studio</p>
+            </div>
+
+            <div class="space-y-4 p-4 sm:p-5">
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  class="rounded-md bg-junny-blue/15 px-2 py-1 text-xs font-medium text-blue-100"
+                  >REST</span
+                >
+                <span
+                  class="rounded-md bg-violet-500/15 px-2 py-1 text-xs font-medium text-violet-100"
+                  >GraphQL</span
+                >
+                <span
+                  class="rounded-md bg-teal-500/15 px-2 py-1 text-xs font-medium text-teal-100"
+                  >Streams</span
+                >
+                <span
+                  class="rounded-md bg-amber-500/15 px-2 py-1 text-xs font-medium text-amber-100"
+                  >Workflows</span
+                >
+                <span
+                  class="rounded-md bg-slate-500/15 px-2 py-1 text-xs font-medium text-slate-100"
+                  >AI (opt-in)</span
+                >
+              </div>
+
+              <div class="grid gap-3 sm:grid-cols-3">
+                <div class="rounded-lg border border-white/5 bg-slate-950/50 p-3">
+                  <p class="text-xs text-slate-500">Latency</p>
+                  <p class="mt-1 text-sm text-emerald-300">124ms</p>
+                </div>
+                <div class="rounded-lg border border-white/5 bg-slate-950/50 p-3">
+                  <p class="text-xs text-slate-500">Errors</p>
+                  <p class="mt-1 text-sm text-rose-300">0.2%</p>
+                </div>
+                <div class="rounded-lg border border-white/5 bg-slate-950/50 p-3">
+                  <p class="text-xs text-slate-500">Streams</p>
+                  <p class="mt-1 text-sm text-teal-200">live</p>
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-white/5 bg-slate-950/80 p-3">
+                <p class="text-xs font-medium text-slate-400">
+                  Traffic · Observability · Workflow step
+                </p>
+                <pre
+                  class="mt-2 overflow-x-auto font-mono text-[11px] leading-relaxed text-slate-300"
+                ><code>GET /users  →  validate  →  enrich OpenAPI  →  publish event
+
+topic: users.events
+payload: &#123; id: 1, name: "John" &#125;
+</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MD58 — global onboarding strip -->
+    <section
+      class="mx-auto max-w-6xl px-4 pb-8 sm:px-6"
+      aria-labelledby="onboarding-strip-heading"
+    >
+      <p id="onboarding-strip-heading" class="sr-only">{{ copy().onboarding.srHeading }}</p>
+      <div
+        class="rounded-2xl border border-white/10 bg-slate-950/35 px-4 py-5 ring-1 ring-white/5 sm:px-6"
+      >
+        <p class="text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
+          {{ copy().onboarding.eyebrow }}
+        </p>
+        <ol
+          class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4"
+        >
+          @for (s of onboardingSteps(); track s.step) {
+            <li>
+              <a
+                class="group flex h-full flex-col rounded-xl border border-white/10 bg-slate-950/40 p-4 text-left transition hover:border-cyan-500/25 hover:bg-slate-950/55"
+                [href]="s.href"
+              >
+                <span
+                  class="text-[10px] font-semibold uppercase tracking-wide text-cyan-400/90"
+                  >{{ copy().onboarding.stepLabel }} {{ s.step }}</span
+                >
+                <span class="mt-1 text-sm font-semibold text-slate-100 group-hover:text-white">{{
+                  s.title
+                }}</span>
+                <span class="mt-2 text-xs leading-relaxed text-slate-500">{{ s.hint }}</span>
+              </a>
+            </li>
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- MD60 — Explore (full nav moved out of navbar) -->
     <app-section
-      title="Protocols"
-      subtitle="Prioridade de entrega: REST primeiro; demais protocolos em sequência no roadmap."
+      data-reveal
+      class="junny-reveal"
+      [title]="copy().sections.explore.title"
+      [subtitle]="copy().sections.explore.subtitle"
+      labelId="explore-heading"
+    >
+      <div class="grid gap-4 lg:grid-cols-4">
+        @for (g of exploreGroups(); track g.title) {
+          <div class="rounded-2xl border border-white/10 bg-slate-950/25 p-5">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              {{ g.title }}
+            </p>
+            <div class="mt-4 space-y-2">
+              @for (i of g.items; track i.title) {
+                <a
+                  class="group block rounded-xl border border-white/10 bg-slate-950/35 px-4 py-3 transition hover:border-white/20 hover:bg-slate-950/55"
+                  [href]="i.href"
+                >
+                  <p class="text-sm font-semibold text-slate-100 group-hover:text-white">
+                    {{ i.title }}
+                  </p>
+                  <p class="mt-1 text-xs leading-relaxed text-slate-500 group-hover:text-slate-400">
+                    {{ i.subtitle }}
+                  </p>
+                </a>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </app-section>
+
+    <!-- SECTION 2 — Trusted Developer Platform -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      [title]="copy().sections.trusted.title"
+      [subtitle]="copy().sections.trusted.subtitle"
+      labelId="trusted-heading"
+    >
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        @for (c of trustedPlatformCards; track c.title) {
+          <div
+            class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:-translate-y-0.5"
+            [class]="c.accent"
+          >
+            <p class="text-sm font-semibold text-slate-100">{{ c.title }}</p>
+            <p class="mt-2 text-sm leading-relaxed text-slate-400">{{ c.subtitle }}</p>
+          </div>
+        }
+      </div>
+    </app-section>
+
+    <!-- SECTION 3 — More than an API client -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      [title]="copy().sections.moreThan.title"
+      [subtitle]="copy().sections.moreThan.subtitle"
+      labelId="more-than-heading"
+    >
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @for (c of moreThanCards; track c.title) {
+          <a
+            class="group rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-slate-950/35"
+            [class]="c.accent"
+            [href]="c.href"
+          >
+            <p class="text-sm font-semibold text-slate-100">{{ c.title }}</p>
+            <p class="mt-2 text-sm leading-relaxed text-slate-400">{{ c.subtitle }}</p>
+            <p
+              class="mt-4 text-xs font-medium text-slate-500 transition group-hover:text-slate-300"
+            >
+              Explore →
+            </p>
+          </a>
+        }
+      </div>
+
+      <!-- Mockup 1 — Main workspace (MD54) -->
+      <div
+        class="mt-10 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/25 shadow-2xl shadow-black/35 ring-1 ring-white/5"
+      >
+        <div
+          class="flex items-center justify-between border-b border-white/10 bg-slate-950/40 px-4 py-3"
+        >
+          <div class="flex items-center gap-2">
+            <span class="h-2.5 w-2.5 rounded-full bg-rose-400/90"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-amber-400/90"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-emerald-400/90"></span>
+          </div>
+          <p class="text-xs text-slate-500">Main workspace · REST</p>
+        </div>
+        <div class="grid gap-0 lg:grid-cols-12">
+          <div
+            class="border-b border-white/10 bg-slate-950/35 p-4 lg:col-span-4 lg:border-b-0 lg:border-r"
+          >
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Collections
+            </p>
+            <div class="mt-3 space-y-2">
+              <div class="rounded-lg border border-white/10 bg-slate-950/40 px-3 py-2">
+                <p class="text-sm font-medium text-slate-200">Core API</p>
+                <p class="mt-1 text-xs text-slate-500">users · auth · billing</p>
+              </div>
+              <div class="rounded-lg border border-white/10 bg-slate-950/20 px-3 py-2">
+                <p class="text-sm font-medium text-slate-200/90">Observability</p>
+                <p class="mt-1 text-xs text-slate-500">metrics · streams</p>
+              </div>
+              <div class="rounded-lg border border-white/10 bg-slate-950/20 px-3 py-2">
+                <p class="text-sm font-medium text-slate-200/90">Workflows</p>
+                <p class="mt-1 text-xs text-slate-500">chains · runners</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 lg:col-span-8">
+            <div class="flex flex-wrap items-center gap-2">
+              <span
+                class="rounded-md bg-junny-blue/15 px-2 py-1 text-xs font-medium text-blue-100"
+                >GET</span
+              >
+              <span class="font-mono text-xs text-slate-300">/v1/users</span>
+              <span
+                class="ml-auto rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-xs text-slate-400"
+                >prod</span
+              >
+            </div>
+            <div class="mt-3 grid gap-3 sm:grid-cols-3">
+              <div class="rounded-lg border border-white/10 bg-slate-950/40 p-3">
+                <p class="text-xs text-slate-500">Status</p>
+                <p class="mt-1 text-sm text-emerald-300">200 OK</p>
+              </div>
+              <div class="rounded-lg border border-white/10 bg-slate-950/40 p-3">
+                <p class="text-xs text-slate-500">Time</p>
+                <p class="mt-1 text-sm text-slate-200">124ms</p>
+              </div>
+              <div class="rounded-lg border border-white/10 bg-slate-950/40 p-3">
+                <p class="text-xs text-slate-500">Size</p>
+                <p class="mt-1 text-sm text-slate-200">2.1KB</p>
+              </div>
+            </div>
+            <div class="mt-3 rounded-xl border border-white/10 bg-slate-950/60 p-4">
+              <div class="flex items-center gap-2">
+                <span
+                  class="rounded-md bg-violet-500/15 px-2 py-1 text-[10px] font-medium text-violet-100"
+                  >Response</span
+                >
+                <span class="text-xs text-slate-500">syntax highlight</span>
+              </div>
+              <pre
+                class="mt-3 overflow-x-auto font-mono text-[11px] leading-relaxed text-slate-300"
+              ><code>[
+  &#123; "id": 1, "name": "John" &#125;,
+  &#123; "id": 2, "name": "Ana" &#125;
+]</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </app-section>
+
+    <!-- SECTION 4 — Multi protocol platform -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      [title]="copy().sections.multiProtocol.title"
+      [subtitle]="copy().sections.multiProtocol.subtitle"
       labelId="protocols-heading"
     >
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -30,7 +363,928 @@
           />
         }
       </div>
+
+      <!-- Mockup 2 — GraphQL studio (MD54) -->
+      <div class="mt-10 grid gap-4 lg:grid-cols-2">
+        <div class="rounded-2xl border border-white/10 bg-slate-950/25 p-6">
+          <p class="text-sm font-semibold text-slate-100">GraphQL studio</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Query, variables and response — with schema explorer roadmap.
+          </p>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <pre
+              class="overflow-x-auto rounded-xl border border-white/10 bg-slate-950/60 p-4 font-mono text-[11px] leading-relaxed text-slate-300"
+            ><code>query Users($limit: Int!) &#123;
+  users(limit: $limit) &#123;
+    id
+    name
+  &#125;
+&#125;</code></pre>
+            <pre
+              class="overflow-x-auto rounded-xl border border-white/10 bg-slate-950/60 p-4 font-mono text-[11px] leading-relaxed text-slate-300"
+            ><code>&#123;
+  "limit": 20
+&#125;</code></pre>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-slate-950/25 p-6">
+          <p class="text-sm font-semibold text-slate-100">Response</p>
+          <pre
+            class="mt-4 overflow-x-auto rounded-xl border border-white/10 bg-slate-950/60 p-4 font-mono text-[11px] leading-relaxed text-slate-300"
+          ><code>&#123;
+  "data": &#123;
+    "users": [
+      &#123; "id": 1, "name": "John" &#125;
+    ]
+  &#125;
+&#125;</code></pre>
+          <div class="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
+            <span class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1"
+              >variables</span
+            >
+            <span class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1"
+              >schema explorer (future)</span
+            >
+            <span class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1"
+              >history</span
+            >
+          </div>
+        </div>
+      </div>
     </app-section>
-  </main>
-  <app-footer />
+
+    <!-- SECTION 5 — Realtime observability -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      [title]="copy().sections.observability.title"
+      [subtitle]="copy().sections.observability.subtitle"
+      labelId="obs-heading"
+    >
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/observability"
+        >
+          <p class="text-sm font-semibold text-slate-100">Dashboards</p>
+          <p class="mt-2 text-sm text-slate-400">Realtime views and streams (roadmap).</p>
+        </a>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/monitoring"
+        >
+          <p class="text-sm font-semibold text-slate-100">Monitoring</p>
+          <p class="mt-2 text-sm text-slate-400">Uptime, health and alerts (roadmap).</p>
+        </a>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/profiler"
+        >
+          <p class="text-sm font-semibold text-slate-100">Profiler</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Waterfall & latency analysis (roadmap).
+          </p>
+        </a>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/interceptor"
+        >
+          <p class="text-sm font-semibold text-slate-100">Traffic</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Inspect HTTP traffic and debug quickly.
+          </p>
+        </a>
+      </div>
+
+      <!-- Mockup obrigatório (MD53) -->
+      <div class="mt-8 rounded-2xl border border-white/10 bg-slate-950/25 p-5">
+        <div class="flex items-center justify-between gap-3">
+          <p class="text-sm font-semibold text-slate-100">Realtime dashboard mock</p>
+          <span
+            class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-xs text-slate-300"
+            >preview</span
+          >
+        </div>
+        <div class="mt-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+            <p class="text-xs text-slate-500">p95 latency</p>
+            <p class="mt-1 text-lg font-semibold text-emerald-200">182ms</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+            <p class="text-xs text-slate-500">error rate</p>
+            <p class="mt-1 text-lg font-semibold text-rose-200">0.3%</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+            <p class="text-xs text-slate-500">streams</p>
+            <p class="mt-1 text-lg font-semibold text-teal-200">live</p>
+          </div>
+        </div>
+        <div class="mt-4 grid gap-3 lg:grid-cols-2">
+          <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+            <p class="text-xs font-medium text-slate-400">Latency chart</p>
+            <div
+              class="mt-3 h-24 rounded-lg bg-gradient-to-tr from-emerald-500/15 via-junny-blue/10 to-transparent"
+            ></div>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+            <p class="text-xs font-medium text-slate-400">Streams</p>
+            <pre
+              class="mt-3 overflow-x-auto rounded-lg bg-slate-950/60 p-3 font-mono text-[11px] leading-relaxed text-slate-300"
+            ><code>topic: users.events
+offset: 1902341
+payload: &#123; id: 1, action: "updated" &#125;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mockup 9 — Traffic interceptor (MD54) -->
+      <div class="mt-6 rounded-2xl border border-white/10 bg-slate-950/25 p-5">
+        <div class="flex items-center justify-between gap-3">
+          <p class="text-sm font-semibold text-slate-100">Traffic interceptor</p>
+          <span
+            class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-xs text-slate-300"
+            >timeline</span
+          >
+        </div>
+        <div class="mt-4 grid gap-3 lg:grid-cols-12">
+          <div class="lg:col-span-5">
+            <div class="space-y-2">
+              <div class="rounded-xl border border-white/10 bg-slate-950/40 p-3">
+                <p class="text-xs text-slate-500">
+                  <span class="text-junny-blue">GET</span> /v1/users
+                </p>
+                <p class="mt-1 text-xs text-slate-400">124ms · 200</p>
+              </div>
+              <div class="rounded-xl border border-white/10 bg-slate-950/40 p-3">
+                <p class="text-xs text-slate-500">
+                  <span class="text-amber-200">POST</span> /v1/auth/login
+                </p>
+                <p class="mt-1 text-xs text-slate-400">98ms · 200</p>
+              </div>
+              <div class="rounded-xl border border-white/10 bg-slate-950/40 p-3">
+                <p class="text-xs text-slate-500">
+                  <span class="text-rose-200">GET</span> /v1/billing
+                </p>
+                <p class="mt-1 text-xs text-slate-400">412ms · 500</p>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-7">
+            <pre
+              class="overflow-x-auto rounded-xl border border-white/10 bg-slate-950/60 p-4 font-mono text-[11px] leading-relaxed text-slate-300"
+            ><code>filters:
+  method: GET
+  status: 5xx
+  search: billing
+
+replay:
+  enabled (future)</code></pre>
+          </div>
+        </div>
+      </div>
+    </app-section>
+
+    <!-- SECTION 6 — AI powered (optional) -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      [title]="copy().sections.ai.title"
+      [subtitle]="copy().sections.ai.subtitle"
+      labelId="ai-heading"
+    >
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/ai-generator"
+        >
+          <p class="text-sm font-semibold text-slate-100">AI requests</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Generate requests from prompts (roadmap).
+          </p>
+        </a>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/ai-analyzer"
+        >
+          <p class="text-sm font-semibold text-slate-100">AI debugging</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Analyze responses and fix issues (roadmap).
+          </p>
+        </a>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/ai-docs"
+        >
+          <p class="text-sm font-semibold text-slate-100">AI docs</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Generate documentation and guides (roadmap).
+          </p>
+        </a>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/ai-openapi"
+        >
+          <p class="text-sm font-semibold text-slate-100">AI OpenAPI</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Infer specs and schemas from traffic (roadmap).
+          </p>
+        </a>
+      </div>
+      <p class="mt-6 text-sm text-slate-500">
+        AI is optional: never send secrets/tokens/passwords automatically. Providers and
+        payload sharing are explicit opt-ins.
+      </p>
+
+      <!-- Mockup 6 — AI assistant (MD54) -->
+      <div class="mt-8 grid gap-4 lg:grid-cols-2">
+        <div class="rounded-2xl border border-white/10 bg-slate-950/25 p-6">
+          <p class="text-sm font-semibold text-slate-100">AI assistant panel</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Clean, optional and action-oriented — not a generic chatbot.
+          </p>
+          <div class="mt-4 space-y-2">
+            <div class="rounded-xl border border-white/10 bg-slate-950/40 p-3">
+              <p class="text-xs text-slate-500">Prompt</p>
+              <p class="mt-1 text-sm text-slate-200">
+                Generate a request for “List users” with auth.
+              </p>
+            </div>
+            <div class="rounded-xl border border-violet-500/20 bg-violet-950/15 p-3">
+              <p class="text-xs text-violet-200/80">Suggestion</p>
+              <p class="mt-1 text-sm text-violet-50">GET /v1/users (Bearer token)</p>
+            </div>
+            <div class="rounded-xl border border-white/10 bg-slate-950/40 p-3">
+              <p class="text-xs text-slate-500">Safety</p>
+              <p class="mt-1 text-sm text-slate-300">
+                Never send secrets automatically. Opt-in required.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-slate-950/25 p-6">
+          <p class="text-sm font-semibold text-slate-100">Generated docs / OpenAPI</p>
+          <pre
+            class="mt-4 overflow-x-auto rounded-xl border border-white/10 bg-slate-950/60 p-4 font-mono text-[11px] leading-relaxed text-slate-300"
+          ><code>openapi: 3.0.0
+paths:
+  /v1/users:
+    get:
+      summary: List users
+      security:
+        - bearerAuth: []</code></pre>
+          <div class="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
+            <span class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1"
+              >docs</span
+            >
+            <span class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1"
+              >schemas</span
+            >
+            <span class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1"
+              >examples</span
+            >
+          </div>
+        </div>
+      </div>
+    </app-section>
+
+    <!-- SECTION 7 — Built for Developers -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      [title]="copy().sections.built.title"
+      [subtitle]="copy().sections.built.subtitle"
+      labelId="built-for-devs-heading"
+    >
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/sdk"
+        >
+          <p class="text-sm font-semibold text-slate-100">Public SDK</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Local-first developer APIs for automation and external tooling (roadmap).
+          </p>
+        </a>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/git"
+        >
+          <p class="text-sm font-semibold text-slate-100">Git native collections</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Version your collections like code: diff, history, branches (roadmap).
+          </p>
+        </a>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/workflows"
+        >
+          <p class="text-sm font-semibold text-slate-100">Workflows</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Chain requests, build automation, and run repeatable flows.
+          </p>
+        </a>
+      </div>
+
+      <!-- Mockup 4 — Workflow builder (MD54) -->
+      <div class="mt-8 rounded-2xl border border-white/10 bg-slate-950/25 p-5">
+        <div class="flex items-center justify-between gap-3">
+          <p class="text-sm font-semibold text-slate-100">Workflow builder</p>
+          <span
+            class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-xs text-slate-300"
+            >visual automation</span
+          >
+        </div>
+        <div class="mt-4 grid gap-3 lg:grid-cols-12">
+          <div class="lg:col-span-4">
+            <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Nodes
+              </p>
+              <div class="mt-3 space-y-2">
+                <div
+                  class="rounded-lg border border-white/10 bg-slate-950/30 px-3 py-2 text-sm text-slate-200"
+                >
+                  Request
+                </div>
+                <div
+                  class="rounded-lg border border-white/10 bg-slate-950/30 px-3 py-2 text-sm text-slate-200"
+                >
+                  Condition
+                </div>
+                <div
+                  class="rounded-lg border border-white/10 bg-slate-950/30 px-3 py-2 text-sm text-slate-200"
+                >
+                  Transform
+                </div>
+                <div
+                  class="rounded-lg border border-white/10 bg-slate-950/30 px-3 py-2 text-sm text-slate-200"
+                >
+                  Publish event
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-8">
+            <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+              <p class="text-xs font-medium text-slate-400">Flow</p>
+              <div class="mt-3 grid gap-3 sm:grid-cols-3">
+                <div class="rounded-xl border border-white/10 bg-slate-950/30 p-3">
+                  <p class="text-xs text-slate-500">1</p>
+                  <p class="mt-1 text-sm font-medium text-slate-200">GET /users</p>
+                </div>
+                <div class="rounded-xl border border-white/10 bg-slate-950/30 p-3">
+                  <p class="text-xs text-slate-500">2</p>
+                  <p class="mt-1 text-sm font-medium text-slate-200">if status == 200</p>
+                </div>
+                <div class="rounded-xl border border-white/10 bg-slate-950/30 p-3">
+                  <p class="text-xs text-slate-500">3</p>
+                  <p class="mt-1 text-sm font-medium text-slate-200">
+                    publish users.events
+                  </p>
+                </div>
+              </div>
+              <p class="mt-4 text-xs text-slate-500">Arrows/graph UI planned.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </app-section>
+
+    <!-- SECTION 8 — Git Native Collections -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      [title]="copy().sections.git.title"
+      [subtitle]="copy().sections.git.subtitle"
+      labelId="git-native-heading"
+    >
+      <div class="grid gap-4 lg:grid-cols-2">
+        <div class="rounded-2xl border border-white/10 bg-slate-950/25 p-6">
+          <p class="text-sm font-semibold text-slate-100">
+            Workflow like software development
+          </p>
+          <p class="mt-2 text-sm text-slate-400">
+            Connect a repo, track changes, review diffs and ship collections the same way
+            you ship code.
+          </p>
+          <pre
+            class="mt-4 overflow-x-auto rounded-xl border border-white/10 bg-slate-950/60 p-4 font-mono text-[11px] leading-relaxed text-slate-300"
+          ><code>collections/
+  payments.json
+  users.json
+
+git status
+git diff
+git commit -m "feat: add retry policy"</code></pre>
+        </div>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-6 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/git"
+        >
+          <p class="text-sm font-semibold text-slate-100">Explore Git roadmap</p>
+          <p class="mt-2 text-sm text-slate-400">
+            See version control strategy, diff visualization and collaboration plans.
+          </p>
+          <p class="mt-4 text-xs font-medium text-slate-500">Open →</p>
+        </a>
+      </div>
+
+      <!-- Mockup 7 — Git native (MD54) -->
+      <div class="mt-8 grid gap-4 lg:grid-cols-12">
+        <div class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 lg:col-span-5">
+          <p class="text-sm font-semibold text-slate-100">Commit history</p>
+          <div class="mt-4 space-y-2">
+            <div class="rounded-xl border border-white/10 bg-slate-950/40 p-3">
+              <p class="text-xs text-slate-500">feat: add retry policy</p>
+              <p class="mt-1 text-xs text-slate-400">a1b2c3 · 2 files changed</p>
+            </div>
+            <div class="rounded-xl border border-white/10 bg-slate-950/40 p-3">
+              <p class="text-xs text-slate-500">chore: rename endpoints</p>
+              <p class="mt-1 text-xs text-slate-400">d4e5f6 · 1 file changed</p>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 lg:col-span-7">
+          <p class="text-sm font-semibold text-slate-100">Diff viewer</p>
+          <pre
+            class="mt-4 overflow-x-auto rounded-xl border border-white/10 bg-slate-950/60 p-4 font-mono text-[11px] leading-relaxed text-slate-300"
+          ><code>+ GET /v1/users?limit=20
+- GET /v1/users?page=1
+
+ headers:
+   Authorization: Bearer ***</code></pre>
+        </div>
+      </div>
+    </app-section>
+
+    <!-- SECTION 9 — Plugin Marketplace -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      title="Plugin Marketplace"
+      subtitle="An extensible ecosystem: protocols, workflow nodes and AI tools — powered by plugins."
+      labelId="marketplace-heading"
+    >
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/plugins"
+        >
+          <p class="text-sm font-semibold text-slate-100">Plugin system</p>
+          <p class="mt-2 text-sm text-slate-400">
+            SDK-first extensibility for integrations and UI surfaces (roadmap).
+          </p>
+        </a>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/marketplace"
+        >
+          <p class="text-sm font-semibold text-slate-100">Marketplace</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Discover and share integrations, protocols and workflow packs (roadmap).
+          </p>
+        </a>
+        <a
+          class="rounded-2xl border border-white/10 bg-slate-950/25 p-5 transition hover:border-white/20 hover:bg-slate-950/35"
+          href="/app/sdk"
+        >
+          <p class="text-sm font-semibold text-slate-100">Developer platform</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Public APIs + SDK to automate and extend Junny (roadmap).
+          </p>
+        </a>
+      </div>
+
+      <!-- Mockup 8 — Marketplace (MD54) -->
+      <div class="mt-8 rounded-2xl border border-white/10 bg-slate-950/25 p-5">
+        <div class="flex items-center justify-between gap-3">
+          <p class="text-sm font-semibold text-slate-100">Marketplace UI</p>
+          <span
+            class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-xs text-slate-300"
+            >install flow</span
+          >
+        </div>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+            <p class="text-sm font-semibold text-slate-200">Kafka toolbox</p>
+            <p class="mt-2 text-sm text-slate-400">Topics, consumers, stream viewer.</p>
+            <p class="mt-4 text-xs text-slate-500">Install →</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+            <p class="text-sm font-semibold text-slate-200">Auth helpers</p>
+            <p class="mt-2 text-sm text-slate-400">OAuth flows, token refresh.</p>
+            <p class="mt-4 text-xs text-slate-500">Install →</p>
+          </div>
+          <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+            <p class="text-sm font-semibold text-slate-200">AI docs pack</p>
+            <p class="mt-2 text-sm text-slate-400">Templates, prompts, exporters.</p>
+            <p class="mt-4 text-xs text-slate-500">Install →</p>
+          </div>
+        </div>
+      </div>
+    </app-section>
+
+    <!-- SECTION 10 — Enterprise + trust (MD57) -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      title="Enterprise-ready when you need it"
+      subtitle="Open and local-first by default. Junny grows with you — from side project to regulated teams — without selling a legacy suite."
+      labelId="enterprise-heading"
+    >
+      <div class="grid gap-12 lg:grid-cols-2 lg:items-start">
+        <!-- Messaging -->
+        <div class="flex flex-col gap-10">
+          <div class="space-y-5">
+            <p class="text-lg font-medium leading-relaxed text-slate-200">
+              Enterprise-ready when you need it.<br />
+              <span class="text-slate-400">Open and local-first by default.</span>
+            </p>
+            <p class="text-sm leading-relaxed text-slate-400">
+              Modern developer platform with enterprise capabilities. Same MIT-licensed core —
+              optional scale for companies, fintech, backend orgs and observability-heavy teams.
+            </p>
+            <div class="space-y-2 border-l border-emerald-500/30 pl-4">
+              <p class="text-sm italic text-slate-300">Built for developers.</p>
+              <p class="text-sm italic text-slate-300">Ready for teams.</p>
+              <p class="text-sm italic text-slate-300">Designed for enterprise scale.</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            @for (tag of enterpriseSecurityTags; track tag) {
+              <span
+                class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-xs font-medium text-slate-300"
+                >{{ tag }}</span
+              >
+            }
+          </div>
+
+          <div class="grid gap-3 sm:grid-cols-2">
+            @for (cap of enterpriseCapabilities; track cap.title) {
+              <a
+                class="group rounded-2xl border border-white/10 bg-slate-950/20 p-4 transition hover:border-emerald-500/25 hover:bg-slate-950/35"
+                [href]="cap.href"
+              >
+                <p
+                  class="text-sm font-semibold text-slate-100 group-hover:text-emerald-200/95"
+                >
+                  {{ cap.title }}
+                </p>
+                <p class="mt-1 text-xs leading-relaxed text-slate-500 group-hover:text-slate-400">
+                  {{ cap.subtitle }}
+                </p>
+              </a>
+            }
+          </div>
+
+          <div class="space-y-4 rounded-2xl border border-white/10 bg-slate-950/25 p-6">
+            <p class="text-sm font-semibold text-slate-200">Self-hosted &amp; private infra</p>
+            <p class="text-sm leading-relaxed text-slate-400">
+              Ship with Docker, keep data on your network, and plan toward Kubernetes and
+              air-gapped deployments — without giving up the open-source workflow.
+            </p>
+            <p class="text-sm font-semibold text-slate-200">Governance &amp; lifecycle</p>
+            <p class="text-sm leading-relaxed text-slate-400">
+              API lifecycle, contracts, validation and monitoring stay visible — so progress is
+              measurable, not a slide deck.
+            </p>
+          </div>
+
+          <div
+            class="flex flex-col items-stretch gap-4 rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-950/20 to-slate-950/40 p-6 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div>
+              <p class="text-sm font-semibold text-slate-100">Trust through transparency</p>
+              <p class="mt-1 text-sm text-slate-400">
+                Public roadmap · open development on GitHub · no enterprise-only gatekeeping.
+              </p>
+            </div>
+            <a
+              class="inline-flex items-center justify-center rounded-xl border border-emerald-500/40 bg-emerald-950/30 px-5 py-3 text-center text-sm font-semibold text-emerald-100 ring-1 ring-emerald-500/20 transition hover:border-emerald-400/50 hover:bg-emerald-950/45"
+              href="/app/enterprise"
+            >
+              Explore Enterprise Features
+            </a>
+          </div>
+
+          <p class="text-center text-xs text-slate-500 sm:text-left">
+            Use it personally today — roll the same stack into your company tomorrow.
+          </p>
+        </div>
+
+        <!-- Mockup: Linear + Datadog-inspired control plane -->
+        <div
+          class="relative mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none motion-safe:[animation:var(--animate-float-slow)]"
+        >
+          <div
+            class="pointer-events-none absolute -inset-6 rounded-[28px] bg-gradient-to-br from-emerald-500/15 via-cyan-500/10 to-slate-900/0 opacity-80 blur-2xl"
+            aria-hidden="true"
+          ></div>
+          <div
+            class="relative overflow-hidden rounded-2xl border border-white/10 bg-slate-950/70 shadow-2xl shadow-black/50 ring-1 ring-emerald-500/10"
+          >
+            <header
+              class="flex items-center justify-between gap-2 border-b border-white/10 bg-slate-950/90 px-3 py-2.5 sm:px-4"
+            >
+              <div class="flex min-w-0 items-center gap-2">
+                <span
+                  class="truncate rounded-lg border border-white/10 bg-slate-900/80 px-2 py-1 text-[10px] font-medium text-slate-300 sm:text-xs"
+                  >Acme Platform</span
+                >
+                <span class="hidden text-xs text-slate-500 sm:inline">/ Observability</span>
+              </div>
+              <span
+                class="shrink-0 rounded-full border border-emerald-500/30 bg-emerald-950/40 px-2 py-0.5 text-[10px] font-medium text-emerald-200/95"
+                >live</span
+              >
+            </header>
+
+            <div class="flex min-h-[280px] flex-col sm:min-h-[320px] lg:flex-row">
+              <aside
+                class="border-b border-white/10 bg-slate-950/80 p-3 sm:p-4 lg:w-[38%] lg:border-b-0 lg:border-r"
+              >
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                  Workspaces
+                </p>
+                <ul class="mt-2 space-y-1.5 text-xs">
+                  <li
+                    class="rounded-lg border border-emerald-500/30 bg-emerald-950/25 px-2 py-1.5 text-emerald-100"
+                  >
+                    Payments API
+                  </li>
+                  <li class="rounded-lg border border-white/5 px-2 py-1.5 text-slate-400">
+                    Core services
+                  </li>
+                  <li class="rounded-lg border border-white/5 px-2 py-1.5 text-slate-400">
+                    Data plane
+                  </li>
+                </ul>
+                <p class="mt-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                  Governance
+                </p>
+                <p class="mt-1 text-[11px] text-slate-400">12 policies · 3 contracts</p>
+              </aside>
+
+              <div class="flex flex-1 flex-col gap-3 p-3 sm:p-4">
+                <div class="grid grid-cols-3 gap-2">
+                  <div class="rounded-lg border border-white/5 bg-slate-900/60 p-2">
+                    <p class="text-[10px] text-slate-500">Req/min</p>
+                    <p class="mt-0.5 text-sm font-semibold text-slate-100">4.2k</p>
+                    <div class="mt-2 flex h-8 items-end gap-0.5">
+                      <span
+                        class="junny-chart-bar h-[40%] w-1 rounded-sm bg-emerald-500/80 [animation-delay:0ms]"
+                      ></span>
+                      <span
+                        class="junny-chart-bar h-[70%] w-1 rounded-sm bg-emerald-500/80 [animation-delay:120ms]"
+                      ></span>
+                      <span
+                        class="junny-chart-bar h-[55%] w-1 rounded-sm bg-emerald-500/80 [animation-delay:240ms]"
+                      ></span>
+                      <span
+                        class="junny-chart-bar h-[85%] w-1 rounded-sm bg-emerald-500/80 [animation-delay:360ms]"
+                      ></span>
+                      <span
+                        class="junny-chart-bar h-[62%] w-1 rounded-sm bg-emerald-500/80 [animation-delay:480ms]"
+                      ></span>
+                    </div>
+                  </div>
+                  <div class="rounded-lg border border-white/5 bg-slate-900/60 p-2">
+                    <p class="text-[10px] text-slate-500">Errors</p>
+                    <p class="mt-0.5 text-sm font-semibold text-rose-200/95">0.08%</p>
+                    <p class="mt-2 text-[10px] text-slate-500">SLO stable</p>
+                  </div>
+                  <div class="rounded-lg border border-white/5 bg-slate-900/60 p-2">
+                    <p class="text-[10px] text-slate-500">Vault</p>
+                    <p class="mt-0.5 text-sm font-semibold text-cyan-200/95">locked</p>
+                    <p class="mt-2 text-[10px] text-slate-500">42 secrets</p>
+                  </div>
+                </div>
+
+                <div class="rounded-xl border border-white/10 bg-slate-950/80 p-3">
+                  <div class="flex items-center justify-between gap-2">
+                    <p class="text-xs font-medium text-slate-300">Traffic (staging)</p>
+                    <span class="text-[10px] text-slate-500">last 24h</span>
+                  </div>
+                  <div
+                    class="mt-3 flex h-16 items-end justify-between gap-1 rounded-lg bg-slate-900/50 px-2 pb-2 pt-1"
+                  >
+                    <span
+                      class="junny-chart-bar w-full max-w-[12%] rounded-sm bg-gradient-to-t from-cyan-600/40 to-cyan-400/90 [animation-delay:0ms]"
+                    ></span>
+                    <span
+                      class="junny-chart-bar w-full max-w-[12%] rounded-sm bg-gradient-to-t from-cyan-600/40 to-cyan-400/90 [animation-delay:100ms]"
+                    ></span>
+                    <span
+                      class="junny-chart-bar w-full max-w-[12%] rounded-sm bg-gradient-to-t from-cyan-600/40 to-cyan-400/90 [animation-delay:200ms]"
+                    ></span>
+                    <span
+                      class="junny-chart-bar w-full max-w-[12%] rounded-sm bg-gradient-to-t from-cyan-600/40 to-cyan-400/90 [animation-delay:300ms]"
+                    ></span>
+                    <span
+                      class="junny-chart-bar w-full max-w-[12%] rounded-sm bg-gradient-to-t from-cyan-600/40 to-cyan-400/90 [animation-delay:400ms]"
+                    ></span>
+                    <span
+                      class="junny-chart-bar w-full max-w-[12%] rounded-sm bg-gradient-to-t from-cyan-600/40 to-cyan-400/90 [animation-delay:500ms]"
+                    ></span>
+                    <span
+                      class="junny-chart-bar w-full max-w-[12%] rounded-sm bg-gradient-to-t from-cyan-600/40 to-cyan-400/90 [animation-delay:600ms]"
+                    ></span>
+                    <span
+                      class="junny-chart-bar w-full max-w-[12%] rounded-sm bg-gradient-to-t from-emerald-600/30 to-emerald-400/85 [animation-delay:700ms]"
+                    ></span>
+                  </div>
+                </div>
+
+                <div class="grid gap-2 sm:grid-cols-2">
+                  <div class="rounded-lg border border-white/5 bg-slate-900/50 p-2.5">
+                    <p class="text-[10px] font-medium text-slate-500">Audit trail</p>
+                    <p class="mt-1 font-mono text-[10px] text-slate-400">
+                      role:deploy · vault.read
+                    </p>
+                    <p class="mt-0.5 font-mono text-[10px] text-slate-500">policy OK · 14:02</p>
+                  </div>
+                  <div class="rounded-lg border border-white/5 bg-slate-900/50 p-2.5">
+                    <p class="text-[10px] font-medium text-slate-500">Organizations</p>
+                    <p class="mt-1 text-[11px] text-slate-300">2 orgs · 6 seats</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </app-section>
+
+    <!-- SECTION 11 — Roadmap visual -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      title="Roadmap"
+      subtitle="A clear view of what is available today and what’s next."
+      labelId="roadmap-heading"
+    >
+      <div class="grid gap-4 lg:grid-cols-3">
+        @for (col of roadmap; track col.title) {
+          <div class="rounded-2xl border border-white/10 p-5" [class]="col.tone">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full" [class]="col.dot"></span>
+              <p class="text-sm font-semibold text-slate-100">{{ col.title }}</p>
+            </div>
+            <ul class="mt-4 space-y-2 text-sm text-slate-300">
+              @for (i of col.items; track i) {
+                <li class="flex gap-2">
+                  <span class="text-slate-500">•</span>
+                  {{ i }}
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </app-section>
+
+    <!-- SECTION 12 — Open Source Ecosystem -->
+    <app-section
+      data-reveal
+      class="junny-reveal"
+      title="Open Source Ecosystem"
+      subtitle="MIT licensed, community-first. Build integrations, plugins and tooling around Junny."
+      labelId="oss-heading"
+    >
+      <div class="grid gap-4 lg:grid-cols-2">
+        <div class="rounded-2xl border border-white/10 bg-slate-950/25 p-6">
+          <p class="text-sm font-semibold text-slate-100">GitHub is the growth engine</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Star, fork, open issues and contribute. Junny is built by developers for
+            developers — no lock-in, optional cloud, optional AI, and local-first by
+            default.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2 text-xs">
+            <span
+              class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-slate-300"
+              >MIT</span
+            >
+            <span
+              class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-slate-300"
+              >Open source</span
+            >
+            <span
+              class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-slate-300"
+              >Local-first</span
+            >
+            <span
+              class="rounded-full border border-white/10 bg-slate-950/40 px-3 py-1 text-slate-300"
+              >Privacy-first</span
+            >
+          </div>
+          <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+            <a
+              class="inline-flex items-center justify-center rounded-xl bg-junny-violet px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-junny-violet/25 ring-1 ring-white/10 transition hover:bg-junny-violet/90 hover:shadow-junny-violet/35"
+              href="https://github.com/SynaptoTech/Junny"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Star on GitHub
+            </a>
+            <a
+              class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-slate-950/30 px-5 py-3 text-sm font-semibold text-slate-200 ring-1 ring-white/5 transition hover:border-white/20 hover:bg-slate-950/45"
+              href="https://github.com/SynaptoTech/Junny/issues"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Open an issue
+            </a>
+          </div>
+          <div
+            class="mt-3 flex flex-col gap-2 text-xs text-slate-500 sm:flex-row sm:flex-wrap"
+          >
+            <a
+              class="underline-offset-4 hover:underline"
+              href="https://github.com/SynaptoTech/Junny/fork"
+              rel="noopener noreferrer"
+              target="_blank"
+              >Fork</a
+            >
+            <span class="hidden sm:inline">·</span>
+            <a
+              class="underline-offset-4 hover:underline"
+              href="https://github.com/SynaptoTech/Junny/discussions"
+              rel="noopener noreferrer"
+              target="_blank"
+              >Discussions</a
+            >
+            <span class="hidden sm:inline">·</span>
+            <a class="underline-offset-4 hover:underline" href="/app/official">Roadmap</a>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-slate-950/25 p-6">
+          <p class="text-sm font-semibold text-slate-100">Open source positioning</p>
+          <p class="mt-2 text-sm text-slate-400">
+            Junny is an open integration platform for modern APIs and workflows — a
+            local-first Postman alternative with observability, streaming and automation
+            in the roadmap.
+          </p>
+          <div class="mt-5 grid gap-3 sm:grid-cols-2">
+            <a
+              class="rounded-xl border border-white/10 bg-slate-950/30 p-4 transition hover:border-white/20 hover:bg-slate-950/45"
+              href="/app"
+            >
+              <p class="text-sm font-semibold text-slate-200">Get started</p>
+              <p class="mt-2 text-sm text-slate-400">
+                Open the workspace and explore features.
+              </p>
+            </a>
+            <a
+              class="rounded-xl border border-white/10 bg-slate-950/30 p-4 transition hover:border-white/20 hover:bg-slate-950/45"
+              href="/app/official"
+            >
+              <p class="text-sm font-semibold text-slate-200">Follow the roadmap</p>
+              <p class="mt-2 text-sm text-slate-400">
+                Transparent progress: available, in progress and planned.
+              </p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </app-section>
+
+    <!-- SECTION 13 — CTA Final -->
+    <section
+      data-reveal
+      class="junny-reveal mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20"
+    >
+      <div class="rounded-3xl border border-white/10 bg-slate-950/35 p-8 sm:p-10">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div class="max-w-2xl space-y-2">
+            <h2 class="text-2xl font-semibold tracking-tight text-slate-50 sm:text-3xl">
+              Start Building Modern API Workflows Today
+            </h2>
+            <p class="text-base leading-relaxed text-slate-400">
+              Explore the workspace, follow the roadmap, and help shape Junny as an open
+              integration platform.
+            </p>
+          </div>
+          <div class="flex flex-col gap-3 sm:flex-row">
+            <a
+              class="inline-flex items-center justify-center rounded-xl bg-junny-violet px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-junny-violet/25 ring-1 ring-white/10 transition hover:bg-junny-violet/90 hover:shadow-junny-violet/35"
+              href="/app"
+            >
+              Get Started
+            </a>
+            <a
+              class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-slate-950/30 px-5 py-3 text-sm font-semibold text-slate-200 ring-1 ring-white/5 transition hover:border-white/20 hover:bg-slate-950/45"
+              href="https://github.com/SynaptoTech/Junny"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <app-footer></app-footer>
 </div>

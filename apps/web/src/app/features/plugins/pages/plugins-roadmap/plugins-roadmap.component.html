@@ -1,0 +1,148 @@
+<div
+  class="min-h-dvh bg-junny-bg text-slate-100 selection:bg-junny-violet/25"
+>
+  <header class="border-b border-white/10 px-6 py-4">
+    <div
+      class="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3"
+    >
+      <div class="flex flex-wrap items-center gap-3 text-sm">
+        <a class="font-semibold text-slate-200 hover:text-white" href="/">← Home</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app">REST</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/graphql">GraphQL</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/soap">SOAP</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/websocket">WebSocket</a>
+        <a class="text-slate-400 hover:text-amber-200" href="/app/kafka">Kafka</a>
+        <a class="text-slate-400 hover:text-junny-violet" href="/app/design-system">Design system</a>
+        <a class="text-slate-400 hover:text-sky-300" href="/app/ai">AI</a>
+        <a class="text-slate-400 hover:text-teal-300" href="/app/grpc">gRPC</a>
+        <a class="text-slate-400 hover:text-fuchsia-300" href="/app/codegen">cURL+</a>
+        <a class="text-slate-400 hover:text-emerald-300" href="/app/runner">Runner</a>
+        <a class="text-slate-400 hover:text-cyan-300" href="/app/mock">Mock</a>
+        <a class="text-slate-400 hover:text-rose-300" href="/app/security">Security</a>
+        <a class="text-slate-400 hover:text-blue-400" href="/app/sync">Sync</a>
+        <a class="text-slate-400 hover:text-purple-400" href="/app/workspace-layout">Layout</a>
+        <a class="text-slate-400 hover:text-orange-400" href="/app/desktop">Desktop</a>
+        <a class="text-slate-400 hover:text-pink-400" href="/app/team">Team</a>
+        <a class="text-slate-400 hover:text-sky-400" href="/app/official">Official</a>
+        <a class="text-slate-400 hover:text-lime-400" href="/app/monitoring">Monitor</a>
+        <a class="text-slate-400 hover:text-violet-400" href="/app/contracts">Contracts</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/diff">Diff</a>
+        <a class="text-slate-400 hover:text-teal-400" href="/app/interceptor">Traffic</a>
+        <a class="text-slate-400 hover:text-indigo-400" href="/app/browser-extension">Extension</a>
+        <a class="text-slate-400 hover:text-purple-400" href="/app/ai-generator">AI Gen</a>
+        <a class="text-slate-400 hover:text-cyan-400" href="/app/ai-analyzer">AI An</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/workflows">Flow</a>
+        <a class="text-slate-400 hover:text-fuchsia-400" href="/app/marketplace">Market</a>
+        <a class="text-slate-400 hover:text-sky-400" href="/app/enterprise">Ent</a>
+        <a class="text-slate-400 hover:text-green-400" href="/app/profiler">Perf</a>
+        <a class="text-slate-400 hover:text-blue-400" href="/app/observability">Obs</a>
+        <a class="text-slate-400 hover:text-rose-400" href="/app/vault">Vault</a>
+        <a class="text-slate-400 hover:text-violet-400" href="/app/ai-docs">Docs</a>
+        <a class="text-slate-400 hover:text-lime-400" href="/app/ai-openapi">Spec</a>
+        <a class="text-slate-400 hover:text-teal-400" href="/app/streaming">Stream</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/git">Git</a>
+        <a class="text-slate-400 hover:text-indigo-300" href="/app/sdk">SDK</a>
+        <span class="text-sm text-slate-500">Plugins</span>
+      </div>
+      <span
+        class="rounded-full border border-indigo-500/35 bg-indigo-950/40 px-3 py-1 text-xs font-medium text-indigo-100"
+        >Architecture</span
+      >
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-6 py-10">
+    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+      {{ mdRef }}
+    </p>
+    <h1 class="mt-2 text-2xl font-semibold tracking-tight text-white">
+      Plugin system
+    </h1>
+    <p class="mt-2 text-sm leading-relaxed text-slate-400">
+      Camada definida como <strong class="text-slate-200">arquitetura + roadmap</strong>;
+      não há instalador nem marketplace nesta fase. Objetivo: tornar o Junny numa <strong class="text-slate-200">plataforma extensível</strong>, não apenas um API client.
+    </p>
+
+    <p class="mt-4 text-xs text-slate-500">
+      Contrato TypeScript inicial (SDK stub):
+      <span class="font-mono text-slate-400">&#64;junny/plugin-sdk</span>
+      ·
+      <span class="font-mono text-slate-400">pluginApiVersion = {{ pluginSdkVersion }}</span>
+    </p>
+
+    @if (apiRoadmap(); as r) {
+      <div
+        class="mt-6 rounded-xl border border-emerald-500/25 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-100"
+      >
+        <p class="font-medium text-emerald-50">Backend local</p>
+        <p class="mt-1 text-emerald-100/90">
+          Fase:
+          <span class="font-mono">{{ r.phase }}</span>
+          · API negociação:
+          <span class="font-mono">{{ r.pluginApiVersion }}</span>
+          · Pacote:
+          <span class="font-mono">{{ r.sdkPackage }}</span>
+        </p>
+      </div>
+    }
+    @if (apiError(); as err) {
+      <div
+        class="mt-6 rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-xs text-slate-400"
+      >
+        {{ err }}
+      </div>
+    }
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Tipos de plugins
+      </h2>
+      <ul class="list-inside list-disc space-y-2 text-sm text-slate-300">
+        <li><strong class="text-slate-100">Protocol</strong> — novos protocolos, engines e clientes.</li>
+        <li><strong class="text-slate-100">UI</strong> — páginas, painéis e visualizadores.</li>
+        <li><strong class="text-slate-100">Automation</strong> — workflows e scripts.</li>
+        <li><strong class="text-slate-100">AI</strong> — prompts, geração de pedidos e análise de respostas.</li>
+      </ul>
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Lifecycle planejado
+      </h2>
+      <pre
+        class="overflow-x-auto rounded-xl border border-white/10 bg-slate-950/70 p-4 font-mono text-xs leading-relaxed text-slate-400"
+      >onLoad()
+onUnload()
+onRequest()</pre>
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Estrutura no repo
+      </h2>
+      <ul class="space-y-2 text-sm text-slate-400">
+        <li>
+          <span class="font-mono text-slate-300">/plugins/</span>
+          —
+          manifests (exemplo:
+          <span class="font-mono text-slate-500">example-internal</span>).
+        </li>
+        <li>
+          <span class="font-mono text-slate-300">packages/plugin-sdk</span>
+          —
+          tipos Manifest + lifecycle.
+        </li>
+      </ul>
+    </section>
+
+    <section class="mt-10 rounded-xl border border-rose-500/20 bg-rose-950/20 p-5">
+      <h2 class="text-sm font-semibold text-rose-100">Fora de âmbito (inicial)</h2>
+      <ul class="mt-2 list-inside list-disc text-xs text-rose-100/85">
+        <li>Marketplace</li>
+        <li>Sandbox completa</li>
+        <li>Plugins remotos</li>
+        <li>Monetização por plugin</li>
+      </ul>
+    </section>
+  </main>
+</div>

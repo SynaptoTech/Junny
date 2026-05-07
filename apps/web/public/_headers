@@ -1,0 +1,8 @@
+# MD60 — Cloudflare Pages / Netlify-style flat headers (copia para dist via Angular assets)
+# Ajustar no painel CDN se o host não ler este ficheiro.
+
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()

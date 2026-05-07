@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Ideas & general discussion
+    url: https://github.com/SynaptoTech/Junny/discussions
+    about: Roadmap ideas, Q&A, and community chat (use Issues for bugs and tracked work).

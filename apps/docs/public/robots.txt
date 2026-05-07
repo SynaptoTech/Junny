@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://junny.dev.br/docs/sitemap.xml

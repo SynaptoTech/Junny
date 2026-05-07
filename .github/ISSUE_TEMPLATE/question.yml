@@ -1,0 +1,21 @@
+name: Question
+description: Ask something that is not clearly a bug or feature (prefer Discussions when unsure)
+title: "[q] "
+labels: ["discussion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For open-ended ideas or roadmap chat, [GitHub Discussions](https://github.com/SynaptoTech/Junny/discussions) may be a better fit.
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context (what you tried, environment)
+    validations:
+      required: false

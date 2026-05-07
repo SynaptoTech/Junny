@@ -7,7 +7,8 @@ export const BRAND = {
   urls: {
     github: 'https://github.com/SynaptoTech/Junny',
     website: 'https://junny.dev.br',
-    docs: 'https://junny.dev.br',
+    /** Same-origin (VitePress `base: /docs/`). Use absolute URL in meta tags if needed. */
+    docs: '/docs/',
     license:
       'https://github.com/SynaptoTech/Junny/blob/main/LICENSE',
     synapto: 'https://synapto.com.br',

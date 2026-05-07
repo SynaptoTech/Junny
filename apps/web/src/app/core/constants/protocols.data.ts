@@ -18,31 +18,33 @@ export const PROTOCOL_ITEMS: readonly ProtocolItem[] = [
   {
     id: 'soap',
     title: 'SOAP',
-    description: 'XML, envelopes e contratos — planejado após REST estável.',
-    status: 'planned',
+    description: 'XML, envelopes SOAP, headers e resposta com indentação no workspace.',
+    status: 'available',
   },
   {
     id: 'graphql',
     title: 'GraphQL',
     description: 'Queries, mutations e schema introspection.',
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'kafka',
     title: 'Kafka',
-    description: 'Streaming e tópicos para integrações event-driven.',
+    description:
+      'Streaming e tópicos; veja a página /app/kafka para o plano.',
     status: 'planned',
   },
   {
     id: 'websocket',
     title: 'WebSocket',
     description: 'Conexões persistentes e mensagens em tempo real.',
-    status: 'planned',
+    status: 'available',
   },
   {
     id: 'grpc',
     title: 'gRPC',
-    description: 'Contratos protobuf e chamadas de alto desempenho.',
+    description:
+      'Protobuf, explorer e unary; veja a página /app/grpc. Contratos e microserviços.',
     status: 'coming',
   },
 ] as const;

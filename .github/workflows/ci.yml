@@ -1,0 +1,36 @@
+# MD18 — quality gates: install, test, build (lint can be added per workspace).
+
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Unit & API integration tests
+        run: npm test
+
+      - name: Monorepo build
+        run: npm run build
+
+      - name: E2E (Playwright, specs disabled unless E2E=1)
+        run: npm run test:e2e

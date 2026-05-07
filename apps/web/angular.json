@@ -40,6 +40,11 @@
             "styles": [
               "src/styles.scss"
             ],
+            "loader": {
+              ".ttf": "file",
+              ".woff": "file",
+              ".woff2": "file"
+            },
             "scripts": [],
             "server": "src/main.server.ts",
             "security": {

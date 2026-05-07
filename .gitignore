@@ -2,6 +2,10 @@
 .DS_Store
 node_modules
 coverage
+**/coverage/
+
+# SQLite / dados locais (MD15); não versionar
+/data
 
 apps/web/node_modules
 apps/web/dist
@@ -12,6 +16,8 @@ apps/server/dist
 apps/server/data/*.sqlite
 apps/server/prisma/dev.db
 apps/server/prisma/dev.db-journal
+apps/server/prisma/test.db
+apps/server/prisma/test.db-journal
 
 apps/docs/.vitepress/cache
 apps/docs/.vitepress/dist

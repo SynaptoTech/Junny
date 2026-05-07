@@ -1,0 +1,153 @@
+<section class="flex min-h-0 flex-1 flex-col overflow-hidden border-t border-white/10 pt-3">
+  <div class="mb-2 shrink-0 flex items-center justify-between gap-2">
+    <p
+      class="text-xs font-semibold uppercase tracking-wide text-slate-500"
+    >
+      Histórico
+    </p>
+    @if (loading()) {
+      <span class="text-[10px] text-junny-blue">A carregar…</span>
+    }
+  </div>
+
+  <input
+    type="search"
+    class="mb-2 w-full shrink-0 rounded-lg border border-white/10 bg-slate-900 px-2 py-1.5 text-xs text-slate-100 placeholder:text-slate-600 focus:border-junny-violet/50 focus:outline-none"
+    placeholder="Pesquisar histórico…"
+    [value]="ui.searchQuery()"
+    (input)="updateSearch($any($event.target).value)"
+  />
+
+  <div class="mb-2 grid shrink-0 grid-cols-2 gap-2">
+    <select
+      class="rounded-lg border border-white/10 bg-slate-900 px-2 py-1.5 text-[11px] text-slate-200 focus:border-junny-violet/50 focus:outline-none"
+      [value]="ui.protocolFilter()"
+      (change)="updateProtocol($any($event.target).value)"
+    >
+      <option value="ALL">Todos os protocolos</option>
+      <option value="REST">REST</option>
+      <option value="GRAPHQL">GraphQL</option>
+      <option value="SOAP">SOAP</option>
+    </select>
+    <select
+      class="rounded-lg border border-white/10 bg-slate-900 px-2 py-1.5 text-[11px] text-slate-200 focus:border-junny-violet/50 focus:outline-none"
+      [value]="ui.statusGroup()"
+      (change)="updateStatus($any($event.target).value)"
+    >
+      <option value="any">Qualquer status HTTP</option>
+      <option value="2xx">2xx Sucesso</option>
+      <option value="3xx">3xx Redireção</option>
+      <option value="4xx">4xx Cliente</option>
+      <option value="5xx">5xx Servidor</option>
+    </select>
+  </div>
+
+  <input
+    type="text"
+    class="mb-2 w-full shrink-0 rounded-lg border border-white/10 bg-slate-900 px-2 py-1.5 text-[11px] text-slate-100 placeholder:text-slate-600 focus:border-junny-violet/50 focus:outline-none"
+    placeholder="Método (ex.: GET)"
+    [value]="ui.methodFilter()"
+    (input)="updateMethod($any($event.target).value)"
+  />
+
+  <div class="mb-2 flex shrink-0 flex-wrap gap-2">
+    <button
+      type="button"
+      class="rounded-lg border border-white/10 px-2 py-1 text-[10px] text-slate-400 hover:border-junny-violet/40 hover:text-slate-200"
+      (click)="clearFilters()"
+    >
+      Limpar filtros
+    </button>
+    <button
+      type="button"
+      class="rounded-lg border border-rose-500/30 px-2 py-1 text-[10px] text-rose-300 hover:bg-rose-950/40"
+      (click)="clearAllHistory()"
+    >
+      Limpar histórico
+    </button>
+  </div>
+
+  <div class="min-h-0 flex-1 space-y-3 overflow-y-auto pr-0.5">
+    @for (bucket of bucketOrder; track trackBucket(bucket)) {
+      @if (grouped()[bucket].length) {
+        <div>
+          <p class="mb-1 text-[10px] font-semibold uppercase text-slate-600">
+            {{ labelBucket(bucket) }}
+          </p>
+          <div class="space-y-1">
+            @for (h of grouped()[bucket]; track h.id) {
+              <div class="rounded-lg border border-white/5 bg-slate-950/40">
+                <button
+                  type="button"
+                  class="flex w-full flex-col gap-1 px-2 py-1.5 text-left"
+                  (click)="toggleExpand(h)"
+                >
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span
+                      class="rounded border px-1 py-0.5 text-[9px] font-semibold uppercase"
+                      [ngClass]="protocolBadgeClass(h)"
+                      >{{ protocolShort(h) }}</span
+                    >
+                    <span class="font-mono text-[10px] text-slate-400">{{
+                      displayMethod(h)
+                    }}</span>
+                    <span
+                      class="rounded-full px-1.5 py-0.5 font-mono text-[10px]"
+                      [ngClass]="statusPillClass(h.status)"
+                      >{{ h.status }}</span
+                    >
+                    <span class="text-[10px] text-slate-500"
+                      >{{ h.duration }} ms</span
+                    >
+                    <span class="ml-auto text-[10px] text-slate-600">{{
+                      h.createdAt | date: 'HH:mm:ss'
+                    }}</span>
+                  </div>
+                  <span class="truncate font-mono text-[10px] text-slate-300">{{
+                    displayUrl(h)
+                  }}</span>
+                </button>
+                <div class="flex border-t border-white/5 px-2 pb-2 pt-1">
+                  <button
+                    type="button"
+                    class="rounded-lg border border-junny-violet/40 bg-junny-violet/10 px-2 py-1 text-[10px] font-medium text-junny-violet hover:bg-junny-violet/20"
+                    (click)="onReplay(h, $event)"
+                  >
+                    Replay
+                  </button>
+                </div>
+                @if (expandedId() === h.id) {
+                  <div class="space-y-2 border-t border-white/5 px-2 pb-2 pt-2">
+                    <div>
+                      <p class="mb-0.5 text-[10px] font-medium text-slate-500">
+                        Request
+                      </p>
+                      <pre
+                        class="max-h-28 overflow-auto rounded bg-black/30 p-2 font-mono text-[9px] leading-relaxed text-slate-300"
+                        >{{ h.request | json }}</pre
+                      >
+                    </div>
+                    <div>
+                      <p class="mb-0.5 text-[10px] font-medium text-slate-500">
+                        Response
+                      </p>
+                      <pre
+                        class="max-h-28 overflow-auto rounded bg-black/30 p-2 font-mono text-[9px] leading-relaxed text-slate-300"
+                        >{{ h.response | json }}</pre
+                      >
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+    @if (!loading() && !items().length) {
+      <p class="py-4 text-center text-[11px] text-slate-600">
+        Sem entradas para estes filtros.
+      </p>
+    }
+  </div>
+</section>

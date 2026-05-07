@@ -1,40 +1,59 @@
-# Portas publicadas no host (evitar conflito com outros stacks):
-#   API:   28471 -> 3000 (container; dev local usa PORT=13050 sem Docker)
-#   Web:   36284 -> 80
+# Junny — ambiente de desenvolvimento (MD15)
+# Uso: docker compose up  (ou: docker compose up --build)
 #
-# API usa SQLite via Prisma (volume `junny_sqlite`). DATABASE_URL no container.
-# Nginx no servidor deve apontar para 127.0.0.1 nessas portas (ver infra/nginx/).
+# Depois: abrir http://localhost:${WEB_PORT:-12050} — a API fica em http://localhost:${SERVER_PORT:-13050}
+# Comunicação entre contentores (ex. futuro SSR): host interno do serviço `server` → http://server:13050
+#
+# SQLite: volume nomeado (não comitar). Opcional mapear ./data no host: descomentar em volumes do serviço server.
+
+name: junny-dev
 
 services:
-  api:
+  server:
     build:
       context: .
-      dockerfile: apps/server/Dockerfile
+      dockerfile: docker/server/Dockerfile.dev
     restart: unless-stopped
     ports:
-      - '28471:3000'
+      - '${SERVER_PORT:-13050}:13050'
     environment:
-      NODE_ENV: production
-      PORT: 3000
+      PORT: '13050'
+      NODE_ENV: development
       DATABASE_URL: file:/app/data/dev.db
     volumes:
-      - junny_sqlite:/app/data
+      - .:/repo
+      - junny_repo_node_modules:/repo/node_modules
+      # Evita usar node_modules do host (darwin) dentro do container (linux)
+      - /repo/apps/server/node_modules
+      - junny_sqlite_dev:/app/data
     networks:
       - junny-network
 
   web:
     build:
       context: .
-      dockerfile: apps/web/Dockerfile
+      dockerfile: docker/web/Dockerfile.dev
     restart: unless-stopped
     ports:
-      - '36284:80'
+      - '${WEB_PORT:-12050}:12050'
+    environment:
+      CHOKIDAR_USEPOLLING: '${CHOKIDAR_USEPOLLING:-true}'
+      WATCHPACK_POLLING: '${WATCHPACK_POLLING:-true}'
+    volumes:
+      - .:/repo
+      - junny_repo_node_modules:/repo/node_modules
+      # Evita usar node_modules do host (darwin) dentro do container (linux)
+      - /repo/apps/web/node_modules
+    depends_on:
+      - server
     networks:
       - junny-network
 
 volumes:
-  junny_sqlite:
+  junny_repo_node_modules:
+  junny_sqlite_dev:
 
 networks:
   junny-network:
+    name: junny-network
     driver: bridge

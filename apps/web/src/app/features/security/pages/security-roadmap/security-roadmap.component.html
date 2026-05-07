@@ -1,0 +1,199 @@
+<div
+  class="min-h-dvh bg-junny-bg text-slate-100 selection:bg-junny-violet/25"
+>
+  <header class="border-b border-white/10 px-6 py-4">
+    <div
+      class="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3"
+    >
+      <div class="flex flex-wrap items-center gap-3 text-sm">
+        <a class="font-semibold text-slate-200 hover:text-white" href="/">← Home</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app">REST</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/graphql">GraphQL</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/soap">SOAP</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/websocket">WebSocket</a>
+        <a class="text-slate-400 hover:text-amber-200" href="/app/kafka">Kafka</a>
+        <a class="text-slate-400 hover:text-junny-violet" href="/app/design-system">Design system</a>
+        <a class="text-slate-400 hover:text-indigo-200" href="/app/plugins">Plugins</a>
+        <a class="text-slate-400 hover:text-sky-300" href="/app/ai">AI</a>
+        <a class="text-slate-400 hover:text-teal-300" href="/app/grpc">gRPC</a>
+        <a class="text-slate-400 hover:text-fuchsia-300" href="/app/codegen">cURL+</a>
+        <a class="text-slate-400 hover:text-emerald-300" href="/app/runner">Runner</a>
+        <a class="text-slate-400 hover:text-cyan-300" href="/app/mock">Mock</a>
+        <a class="text-slate-400 hover:text-blue-400" href="/app/sync">Sync</a>
+        <a class="text-slate-400 hover:text-purple-400" href="/app/workspace-layout">Layout</a>
+        <a class="text-slate-400 hover:text-orange-400" href="/app/desktop">Desktop</a>
+        <a class="text-slate-400 hover:text-pink-400" href="/app/team">Team</a>
+        <a class="text-slate-400 hover:text-sky-400" href="/app/official">Official</a>
+        <a class="text-slate-400 hover:text-lime-400" href="/app/monitoring">Monitor</a>
+        <a class="text-slate-400 hover:text-violet-400" href="/app/contracts">Contracts</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/diff">Diff</a>
+        <a class="text-slate-400 hover:text-teal-400" href="/app/interceptor">Traffic</a>
+        <a class="text-slate-400 hover:text-indigo-400" href="/app/browser-extension">Extension</a>
+        <a class="text-slate-400 hover:text-purple-400" href="/app/ai-generator">AI Gen</a>
+        <a class="text-slate-400 hover:text-cyan-400" href="/app/ai-analyzer">AI An</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/workflows">Flow</a>
+        <a class="text-slate-400 hover:text-fuchsia-400" href="/app/marketplace">Market</a>
+        <a class="text-slate-400 hover:text-sky-400" href="/app/enterprise">Ent</a>
+        <a class="text-slate-400 hover:text-green-400" href="/app/profiler">Perf</a>
+        <a class="text-slate-400 hover:text-blue-400" href="/app/observability">Obs</a>
+        <a class="text-slate-400 hover:text-rose-400" href="/app/vault">Vault</a>
+        <a class="text-slate-400 hover:text-violet-400" href="/app/ai-docs">Docs</a>
+        <a class="text-slate-400 hover:text-lime-400" href="/app/ai-openapi">Spec</a>
+        <a class="text-slate-400 hover:text-teal-400" href="/app/streaming">Stream</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/git">Git</a>
+        <a class="text-slate-400 hover:text-indigo-300" href="/app/sdk">SDK</a>
+        <span class="text-sm font-medium text-rose-300/95">Security</span>
+      </div>
+      <span
+        class="rounded-full border border-rose-500/35 bg-rose-950/30 px-3 py-1 text-xs font-medium text-rose-100"
+        >Roadmap</span
+      >
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-6 py-10">
+    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+      {{ mdRef }}
+    </p>
+    <h1 class="mt-2 text-2xl font-semibold tracking-tight text-white">
+      Segurança e secrets · privacy-first
+    </h1>
+    <p class="mt-2 text-sm leading-relaxed text-slate-400">
+      O Junny manipula tokens, API keys, passwords e ambientes: a confiança exige <strong class="text-slate-200">armazenamento local</strong>, sem sincronização automática obrigatória, e UX que nunca exponha secrets por negligência —
+      com regras claras de logging e sanitização no histórico de pedidos.
+    </p>
+
+    @if (apiRoadmap(); as r) {
+      <div
+        class="mt-6 rounded-xl border border-rose-500/25 bg-rose-950/20 px-4 py-3 text-sm text-rose-100"
+      >
+        <p class="font-medium text-rose-50">Backend local</p>
+        <p class="mt-1 text-rose-100/90">
+          Fase: <span class="font-mono">{{ r.phase }}</span>
+        </p>
+        <p class="mt-2 text-xs leading-relaxed text-rose-200/90">{{ r.description }}</p>
+      </div>
+    }
+    @if (apiError(); as err) {
+      <div
+        class="mt-6 rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-xs text-slate-400"
+      >
+        {{ err }}
+      </div>
+    }
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Princípios
+      </h2>
+      @if (apiRoadmap(); as r) {
+        <ul class="space-y-2 text-sm text-slate-300">
+          @for (p of r.principles; track p) {
+            <li class="flex items-start gap-2">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400/90"></span>
+              <span class="font-mono text-xs text-rose-100/90">{{ p }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-sm text-slate-400">
+          Privacy-first · local-first · offline-first · telemetria não invasiva no arranque.
+        </p>
+      }
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        O que proteger
+      </h2>
+      @if (apiRoadmap(); as r) {
+        <div class="flex flex-wrap gap-2">
+          @for (c of r.secretCategories; track c) {
+            <span class="rounded-lg border border-white/10 bg-slate-900/70 px-2 py-1 font-mono text-xs text-slate-200">{{
+              c
+            }}</span>
+          }
+        </div>
+      } @else {
+        <p class="text-sm text-slate-400">
+          Bearer tokens, API keys, passwords; OAuth e certificados em roadmap futuro.
+        </p>
+      }
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Variáveis de ambiente
+      </h2>
+      <p class="text-sm text-slate-400">
+        Marcar valores sensíveis como <span class="font-mono text-rose-200/95">{{ envSecretLabel }}</span> nas definições (planeado no MD).
+      </p>
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        UX para secrets
+      </h2>
+      <ul class="list-inside list-disc space-y-2 text-sm text-slate-300">
+        @for (u of uxSecretBullets; track u) {
+          <li>{{ u }}</li>
+        }
+      </ul>
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Logs e histórico
+      </h2>
+      <p class="text-sm leading-relaxed text-slate-400">
+        Nunca registar passwords, tokens ou API keys em claro. Sanitizar automaticamente cabeçalhos equivalentes a
+        <span class="font-mono text-slate-300">Authorization</span> nos registos de pedidos quando o roadmap MVP estiver implementado.
+      </p>
+    </section>
+
+    <section class="mt-10 space-y-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        MVP segurança
+      </h2>
+      @if (apiRoadmap(); as r) {
+        <ul class="space-y-2 text-sm text-slate-300">
+          @for (cap of r.mvpCapabilities; track cap) {
+            <li class="flex items-start gap-2">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400/70"></span>
+              <span class="font-mono text-xs text-rose-100/85">{{ cap }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <ul class="list-inside list-disc space-y-2 text-sm text-slate-300">
+          <li>Armazenamento local · masking · sanitização · validação DTO · auth tratada com cuidado</li>
+        </ul>
+      }
+    </section>
+
+    <section class="mt-10 space-y-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Backend planeado
+      </h2>
+      <pre
+        class="overflow-x-auto rounded-xl border border-white/10 bg-slate-950/70 p-4 font-mono text-xs leading-relaxed text-slate-400"
+>/modules/security
+  /vault
+  /crypto
+  /auth</pre>
+      <p class="text-xs text-slate-500">
+        Encriptação local (AES) e cofre seguro ficam como evoluções após o núcleo de masking e sanitização (ver MD).
+      </p>
+    </section>
+
+    <section class="mt-10 rounded-xl border border-amber-500/20 bg-amber-950/15 p-5">
+      <h2 class="text-sm font-semibold text-amber-100">Fora do âmbito inicial</h2>
+      <ul class="mt-2 list-inside list-disc text-xs text-amber-100/85">
+        <li>Autenticação cloud obrigatória</li>
+        <li>Telemetria invasiva</li>
+        <li>Sincronização automática de secrets entre dispositivos</li>
+        <li>Secret sharing tipo equipa SaaS</li>
+      </ul>
+    </section>
+  </main>
+</div>

@@ -11,26 +11,51 @@ model Collection {
   id          String          @id @default(cuid())
   name        String
   description String?
+  /// Auth predefinida (JSON); pedidos podem sobrepor com authConfig próprio.
+  authConfig  Json?
   createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
   requests    StoredRequest[]
 }
 
 model StoredRequest {
   id           String      @id @default(cuid())
+  /// REST, GRAPHQL, SOAP ou WEBSOCKET
+  protocol     String      @default("REST")
   method       String
   url          String
   headers      Json
+  /// Query params guardados (objeto chave/valor)
+  params       Json        @default("{}")
+  /// Tag OpenAPI (agrupamento)
+  tag          String?
+  /// Variáveis GraphQL (JSON)
+  graphqlVariables Json?
   body         String?
+  /// Auth específica; null herda da collection.
+  authConfig   Json?
   collectionId String?
   collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
   createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model Environment {
-  id        String   @id @default(cuid())
+  id        String                @id @default(cuid())
   name      String
-  variables Json
-  createdAt DateTime @default(now())
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  variables EnvironmentVariable[]
+}
+
+model EnvironmentVariable {
+  id            String      @id @default(cuid())
+  environmentId String
+  environment   Environment @relation(fields: [environmentId], references: [id], onDelete: Cascade)
+  key           String
+  value         String
+
+  @@unique([environmentId, key])
 }
 
 model HistoryEntry {
@@ -40,4 +65,8 @@ model HistoryEntry {
   status    Int
   duration  Int
   createdAt DateTime @default(now())
+  /// REST | GRAPHQL | SOAP (denormalizado para listagem e filtros)
+  protocol  String   @default("REST")
+  method    String   @default("GET")
+  url       String   @default("")
 }

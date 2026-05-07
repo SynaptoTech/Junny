@@ -1,0 +1,43 @@
+# Stack de produção (imagem multi-stage + Nginx estático + API).
+# Uso: docker compose -f docker-compose.prod.yml up -d
+#
+# Portas publicadas no host (evitar conflito com outros stacks):
+#   API:   28471 -> 3000 (container)
+#   Web:   36284 -> 80
+#
+# API usa SQLite via Prisma (volume `junny_sqlite`). DATABASE_URL no container.
+# Nginx no servidor aponta para 127.0.0.1 nessas portas (ver infra/nginx/).
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    restart: unless-stopped
+    ports:
+      - '28471:3000'
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: file:/app/data/dev.db
+    volumes:
+      - junny_sqlite:/app/data
+    networks:
+      - junny-network
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    ports:
+      - '36284:80'
+    networks:
+      - junny-network
+
+volumes:
+  junny_sqlite:
+
+networks:
+  junny-network:
+    driver: bridge

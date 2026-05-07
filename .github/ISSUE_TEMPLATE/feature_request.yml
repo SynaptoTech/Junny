@@ -1,0 +1,39 @@
+name: Feature Request
+description: Suggest an enhancement or new capability
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What user or developer problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the feature at a high level. Mockups welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - REST / workspace
+        - GraphQL
+        - SOAP
+        - WebSocket
+        - Kafka / roadmap
+        - Docs / DX
+        - Other
+    validations:
+      required: false

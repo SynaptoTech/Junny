@@ -11,12 +11,18 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
         [href]="link"
         [attr.rel]="external() ? 'noopener noreferrer' : null"
         [attr.target]="external() ? '_blank' : null"
+        [attr.aria-label]="ariaLabel()"
         [class]="classes()"
       >
         <ng-content />
       </a>
     } @else {
-      <button type="button" [class]="classes()" [disabled]="disabled()">
+      <button
+        type="button"
+        [class]="classes()"
+        [disabled]="disabled()"
+        [attr.aria-label]="ariaLabel()"
+      >
         <ng-content />
       </button>
     }
@@ -27,6 +33,7 @@ export class ButtonComponent {
   readonly href = input<string | undefined>(undefined);
   readonly external = input(false);
   readonly disabled = input(false);
+  readonly ariaLabel = input<string | null>(null);
 
   readonly classes = computed(() => {
     const base =

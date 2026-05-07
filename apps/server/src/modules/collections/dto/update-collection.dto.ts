@@ -1,5 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsOptional, IsString, MaxLength, MinLength, ValidateNested } from 'class-validator';
+import { RequestAuthDto } from '../../auth/dto/request-auth.dto';
 
 export class UpdateCollectionDto {
   @ApiPropertyOptional()
@@ -14,4 +16,13 @@ export class UpdateCollectionDto {
   @IsString()
   @MaxLength(2000)
   description?: string;
+
+  @ApiPropertyOptional({
+    nullable: true,
+    description: 'Substituir auth predefinida; null remove.',
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => RequestAuthDto)
+  authConfig?: RequestAuthDto | null;
 }

@@ -13,10 +13,27 @@
     "build:web": "npm run build -w @junny/web",
     "build:server": "npm run build -w @junny/server",
     "build:docs": "npm run build -w @junny/docs",
+    "test": "npm run test -w @junny/server && npm run test -w @junny/core",
+    "test:cov": "npm run test:cov -w @junny/server && npm run test -w @junny/core",
+    "test:e2e": "playwright test --config tests/e2e/playwright.config.ts --pass-with-no-tests",
     "start:web": "npm run start -w @junny/web",
-    "start:server": "npm run start:dev -w @junny/server"
+    "start:server": "npm run start:dev -w @junny/server",
+    "docker:up": "docker compose up",
+    "docker:up:build": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:prod": "docker compose -f docker-compose.prod.yml up -d --build"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1"
+  },
+  "dependencies": {
+    "rxjs": "~7.8.0"
+  },
+  "overrides": {
+    "rxjs": "~7.8.0"
   }
 }

@@ -1,0 +1,24 @@
+name: Documentation
+description: Improve or fix docs (README, guides, MD files, website copy)
+title: "[docs] "
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: location
+    attributes:
+      label: Which documentation?
+      description: File path, URL, or section name.
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: What is wrong or missing?
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested wording or outline (optional)
+    validations:
+      required: false

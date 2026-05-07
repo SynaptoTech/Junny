@@ -1,41 +1,94 @@
 <footer class="border-t border-white/5 bg-junny-bg/90 py-12">
   <div class="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
-    <div
-      class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between"
-    >
-      <div class="space-y-2">
+    <div class="grid gap-10 lg:grid-cols-12 lg:gap-12">
+      <div class="space-y-3 lg:col-span-4">
         <p class="text-sm font-semibold text-slate-200">Junny</p>
         <p class="max-w-sm text-sm leading-relaxed text-slate-400">
-          {{ brand.slogan }} — open source, developer-first, dark-first.
+          {{ brand.slogan }} — {{ copy().footer.tagline }}
         </p>
+        <div class="flex flex-wrap gap-2 pt-2">
+          <a
+            class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-slate-950/30 px-3 py-2 text-xs font-semibold text-slate-200 ring-1 ring-white/5 transition hover:border-white/20 hover:bg-slate-950/45"
+            routerLink="/app"
+            >{{ copy().footer.ctaWorkspace }}</a
+          >
+          <a
+            class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-slate-950/30 px-3 py-2 text-xs font-semibold text-slate-200 ring-1 ring-white/5 transition hover:border-white/20 hover:bg-slate-950/45"
+            routerLink="/app/official"
+            >{{ copy().footer.ctaRoadmap }}</a
+          >
+          <a
+            class="inline-flex items-center justify-center rounded-xl border border-white/10 bg-slate-950/30 px-3 py-2 text-xs font-semibold text-slate-200 ring-1 ring-white/5 transition hover:border-white/20 hover:bg-slate-950/45"
+            [href]="brand.urls.docs"
+            >{{ copy().footer.ctaDocs }}</a
+          >
+        </div>
       </div>
-      <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm" aria-label="Footer">
-        <a
-          class="text-slate-400 transition hover:text-junny-blue"
-          [href]="brand.urls.github"
-          rel="noopener noreferrer"
-          target="_blank"
-          >GitHub</a
-        >
-        <a
-          class="text-slate-400 transition hover:text-junny-blue"
-          [href]="brand.urls.license"
-          rel="noopener noreferrer"
-          target="_blank"
-          >License</a
-        >
-        <a
-          class="text-slate-400 transition hover:text-junny-blue"
-          [href]="brand.urls.website"
-          >Website</a
-        >
-        <a
-          class="text-slate-400 transition hover:text-junny-violet"
-          [href]="brand.urls.synapto"
-          rel="noopener noreferrer"
-          target="_blank"
-          >Synapto</a
-        >
+
+      <nav class="grid gap-8 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-4" aria-label="Footer">
+        <div class="space-y-3">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">{{ copy().footer.groups.product }}</p>
+          <ul class="space-y-2 text-sm">
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app">Workspace</a></li>
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/official">Roadmap</a></li>
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/observability">Observability</a></li>
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/workflows">Workflows</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">{{ copy().footer.groups.dev }}</p>
+          <ul class="space-y-2 text-sm">
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/design-system">Design system</a></li>
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/plugins">Plugins</a></li>
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/sdk">SDK</a></li>
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/codegen">cURL & codegen</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">{{ copy().footer.groups.platform }}</p>
+          <ul class="space-y-2 text-sm">
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/security">Security</a></li>
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/vault">Vault</a></li>
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/enterprise">Enterprise</a></li>
+            <li><a class="text-slate-400 transition hover:text-white" routerLink="/app/git">Git native</a></li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">{{ copy().footer.groups.legal }}</p>
+          <ul class="space-y-2 text-sm">
+            <li>
+              <a
+                class="text-slate-400 transition hover:text-white"
+                [href]="brand.urls.github"
+                rel="noopener noreferrer"
+                target="_blank"
+                >GitHub</a
+              >
+            </li>
+            <li>
+              <a
+                class="text-slate-400 transition hover:text-white"
+                [href]="brand.urls.license"
+                rel="noopener noreferrer"
+                target="_blank"
+                >License</a
+              >
+            </li>
+            <li><a class="text-slate-400 transition hover:text-white" [href]="brand.urls.website">Website</a></li>
+            <li>
+              <a
+                class="text-slate-400 transition hover:text-white"
+                [href]="brand.urls.synapto"
+                rel="noopener noreferrer"
+                target="_blank"
+                >Synapto</a
+              >
+            </li>
+          </ul>
+        </div>
       </nav>
     </div>
     <div

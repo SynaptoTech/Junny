@@ -1,0 +1,23 @@
+# Desenvolvimento: Nest em watch; SQLite em volume; hot reload com bind mount do repo.
+FROM node:20-bookworm-slim
+
+WORKDIR /repo
+
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY package.json package-lock.json ./
+COPY apps ./apps
+COPY packages ./packages
+COPY examples ./examples
+
+RUN npm ci
+
+COPY docker/server/docker-entrypoint-dev.sh /usr/local/bin/docker-entrypoint-dev.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint-dev.sh
+
+ENV NODE_ENV=development
+ENV PORT=13050
+EXPOSE 13050
+
+ENTRYPOINT ["docker-entrypoint-dev.sh"]

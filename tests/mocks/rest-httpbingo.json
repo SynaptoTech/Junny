@@ -1,0 +1,8 @@
+{
+  "args": {},
+  "headers": {
+    "Host": "httpbingo.org"
+  },
+  "origin": "0.0.0.0",
+  "url": "https://httpbingo.org/get"
+}

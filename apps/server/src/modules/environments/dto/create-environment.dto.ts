@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsObject, IsString, MaxLength, MinLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsObject, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateEnvironmentDto {
   @ApiProperty()
@@ -8,10 +8,12 @@ export class CreateEnvironmentDto {
   @MaxLength(200)
   name!: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Variáveis chave/valor (strings)',
-    example: { API_URL: 'https://api.example.com' },
+    example: { baseUrl: 'https://api.example.com' },
+    default: {},
   })
+  @IsOptional()
   @IsObject()
-  variables!: Record<string, string>;
+  variables?: Record<string, string>;
 }

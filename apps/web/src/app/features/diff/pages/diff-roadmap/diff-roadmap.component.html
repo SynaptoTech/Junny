@@ -1,0 +1,243 @@
+<div
+  class="min-h-dvh bg-junny-bg text-slate-100 selection:bg-junny-violet/25"
+>
+  <header class="border-b border-white/10 px-6 py-4">
+    <div
+      class="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3"
+    >
+      <div class="flex flex-wrap items-center gap-3 text-sm">
+        <a class="font-semibold text-slate-200 hover:text-white" href="/">← Home</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app">REST</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/graphql">GraphQL</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/soap">SOAP</a>
+        <a class="text-slate-400 hover:text-junny-blue" href="/app/websocket">WebSocket</a>
+        <a class="text-slate-400 hover:text-amber-200" href="/app/kafka">Kafka</a>
+        <a class="text-slate-400 hover:text-junny-violet" href="/app/design-system">Design system</a>
+        <a class="text-slate-400 hover:text-indigo-200" href="/app/plugins">Plugins</a>
+        <a class="text-slate-400 hover:text-sky-300" href="/app/ai">AI</a>
+        <a class="text-slate-400 hover:text-teal-300" href="/app/grpc">gRPC</a>
+        <a class="text-slate-400 hover:text-fuchsia-300" href="/app/codegen">cURL+</a>
+        <a class="text-slate-400 hover:text-emerald-300" href="/app/runner">Runner</a>
+        <a class="text-slate-400 hover:text-cyan-300" href="/app/mock">Mock</a>
+        <a class="text-slate-400 hover:text-rose-300" href="/app/security">Security</a>
+        <a class="text-slate-400 hover:text-blue-400" href="/app/sync">Sync</a>
+        <a class="text-slate-400 hover:text-purple-400" href="/app/workspace-layout">Layout</a>
+        <a class="text-slate-400 hover:text-orange-400" href="/app/desktop">Desktop</a>
+        <a class="text-slate-400 hover:text-pink-400" href="/app/team">Team</a>
+        <a class="text-slate-400 hover:text-sky-400" href="/app/official">Official</a>
+        <a class="text-slate-400 hover:text-lime-400" href="/app/monitoring">Monitor</a>
+        <a class="text-slate-400 hover:text-violet-400" href="/app/contracts">Contracts</a>
+        <span class="text-sm font-medium text-amber-300/95">Diff</span>
+        <a class="text-slate-400 hover:text-teal-400" href="/app/interceptor">Traffic</a>
+        <a class="text-slate-400 hover:text-indigo-400" href="/app/browser-extension">Extension</a>
+        <a class="text-slate-400 hover:text-purple-400" href="/app/ai-generator">AI Gen</a>
+        <a class="text-slate-400 hover:text-cyan-400" href="/app/ai-analyzer">AI An</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/workflows">Flow</a>
+        <a class="text-slate-400 hover:text-fuchsia-400" href="/app/marketplace">Market</a>
+        <a class="text-slate-400 hover:text-sky-400" href="/app/enterprise">Ent</a>
+        <a class="text-slate-400 hover:text-green-400" href="/app/profiler">Perf</a>
+        <a class="text-slate-400 hover:text-blue-400" href="/app/observability">Obs</a>
+        <a class="text-slate-400 hover:text-rose-400" href="/app/vault">Vault</a>
+        <a class="text-slate-400 hover:text-violet-400" href="/app/ai-docs">Docs</a>
+        <a class="text-slate-400 hover:text-lime-400" href="/app/ai-openapi">Spec</a>
+        <a class="text-slate-400 hover:text-teal-400" href="/app/streaming">Stream</a>
+        <a class="text-slate-400 hover:text-amber-300" href="/app/git">Git</a>
+        <a class="text-slate-400 hover:text-indigo-300" href="/app/sdk">SDK</a>
+      </div>
+      <span
+        class="rounded-full border border-amber-500/35 bg-amber-950/20 px-3 py-1 text-xs font-medium text-amber-100"
+        >Roadmap</span
+      >
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-6 py-10">
+    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+      {{ mdRef }}
+    </p>
+    <h1 class="mt-2 text-2xl font-semibold tracking-tight text-white">
+      API Diff System
+    </h1>
+    <p class="mt-2 text-sm leading-relaxed text-slate-400">
+      Comparar contratos e respostas com visão
+      <strong class="text-slate-200">added / modified / removed</strong>
+      e sinais de breaking change, alinhado a CI e governança sem exigir motor enterprise na primeira entrega.
+    </p>
+
+    @if (roadmapView(); as r) {
+      <div
+        class="mt-6 rounded-xl border border-amber-500/25 bg-amber-950/15 px-4 py-3 text-sm text-amber-50"
+      >
+        <p class="font-medium text-amber-100">Stub backend</p>
+        <p class="mt-1 font-mono text-xs text-amber-200/90">Fase: {{ r.phase }}</p>
+        <p class="mt-2 text-xs leading-relaxed text-amber-100/85">{{ r.description }}</p>
+        <p class="mt-2 text-xs text-amber-200/80">{{ r.strategicGoals.join(' · ') }}</p>
+      </div>
+    }
+
+    @if (apiError(); as err) {
+      <div
+        class="mt-6 rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-xs text-slate-400"
+      >
+        {{ err }}
+      </div>
+    }
+
+    <section class="mt-10 space-y-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Tipos de diff
+      </h2>
+      @if (roadmapView(); as r) {
+        <p class="text-sm text-slate-300">{{ r.diffTypes.join(' · ') }}</p>
+      }
+    </section>
+
+    <section class="mt-10 space-y-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Fluxo principal (alvo)
+      </h2>
+      @if (roadmapView(); as r) {
+        <ol class="list-decimal space-y-2 pl-5 text-sm text-slate-300">
+          @for (step of r.mainFlowSteps; track step) {
+            <li>{{ step }}</li>
+          }
+        </ol>
+      }
+    </section>
+
+    <section class="mt-10 space-y-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Visual diff · estados UX
+      </h2>
+      @if (roadmapView(); as r) {
+        <p class="text-xs text-slate-500">
+          Classes: {{ r.visualDiffKinds.join(' · ') }}
+        </p>
+        <div class="mt-2 flex flex-wrap gap-2">
+          @for (s of r.statusVisual; track s.id) {
+            <span
+              class="rounded-lg border border-white/15 bg-slate-950/60 px-3 py-2 text-xs"
+            >
+              <span class="font-medium text-slate-100">{{ s.label }}</span>
+              <span class="text-slate-500"> — {{ s.colorPt }}</span>
+            </span>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="mt-10 grid gap-6 sm:grid-cols-2">
+      <div class="rounded-xl border border-white/10 bg-slate-950/50 p-5">
+        <h2 class="text-sm font-semibold text-slate-200">OpenAPI — compare</h2>
+        @if (roadmapView(); as r) {
+          <ul class="mt-3 space-y-1.5 text-xs text-slate-300">
+            @for (a of r.openapiCompareAreas; track a) {
+              <li class="flex gap-2">
+                <span class="text-amber-400/90">·</span>
+                {{ a }}
+              </li>
+            }
+          </ul>
+        }
+      </div>
+      <div class="rounded-xl border border-white/10 bg-slate-950/50 p-5">
+        <h2 class="text-sm font-semibold text-slate-200">GraphQL — compare</h2>
+        @if (roadmapView(); as r) {
+          <ul class="mt-3 space-y-1.5 text-xs text-slate-300">
+            @for (a of r.graphqlCompareAreas; track a) {
+              <li class="flex gap-2">
+                <span class="text-amber-400/90">·</span>
+                {{ a }}
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </section>
+
+    <section class="mt-10 space-y-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Response diff
+      </h2>
+      @if (roadmapView(); as r) {
+        <p class="text-sm text-slate-300">{{ r.responseCompareAreas.join(' · ') }}</p>
+      }
+    </section>
+
+    <section class="mt-10 space-y-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Breaking changes (sinais)
+      </h2>
+      @if (roadmapView(); as r) {
+        <div class="flex flex-wrap gap-2">
+          @for (b of r.breakingChangeSignals; track b) {
+            <span
+              class="rounded-lg border border-rose-500/20 bg-rose-950/15 px-3 py-1 text-xs text-rose-100"
+              >{{ b }}</span
+            >
+          }
+        </div>
+      }
+    </section>
+
+    <section class="mt-10 space-y-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Backend planejado
+      </h2>
+      <pre
+        class="overflow-x-auto rounded-xl border border-white/10 bg-slate-950/70 p-4 font-mono text-xs leading-relaxed text-slate-400"
+>{{ roadmapView().backendLayout.moduleRoot }}
+  comparators
+  schemas
+  reports</pre>
+    </section>
+
+    <section class="mt-10 space-y-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Componentes (planeados)
+      </h2>
+      @if (roadmapView(); as r) {
+        <ul class="grid gap-2 sm:grid-cols-2">
+          @for (c of r.componentsPlanned; track c) {
+            <li
+              class="rounded-lg border border-white/10 bg-slate-950/50 px-3 py-2 font-mono text-xs text-slate-300"
+            >
+              {{ c }}
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <section class="mt-10 space-y-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        MVP alvo (MD33)
+      </h2>
+      @if (roadmapView(); as r) {
+        <ul class="space-y-2 text-sm text-slate-300">
+          @for (m of r.mvpGoals; track m) {
+            <li class="flex gap-2">
+              <span class="text-amber-400">✓</span>
+              {{ m }}
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <section class="mt-10 rounded-xl border border-slate-500/25 bg-slate-950/40 p-5">
+      <h2 class="text-sm font-semibold text-slate-200">Não iniciar neste roadmap</h2>
+      @if (roadmapView(); as r) {
+        <ul class="mt-2 list-inside list-disc text-xs text-slate-400">
+          @for (d of r.deferred; track d) {
+            <li>{{ d }}</li>
+          }
+        </ul>
+      }
+    </section>
+
+    <p class="mt-10 font-mono text-xs text-slate-500">
+      UI futura em <span class="text-slate-400">{{ roadmapView().frontendStructure }}</span>
+    </p>
+  </main>
+</div>

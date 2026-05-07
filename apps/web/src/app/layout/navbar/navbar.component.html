@@ -1,5 +1,6 @@
 <header
-  class="sticky top-0 z-50 border-b border-white/5 bg-junny-bg/85 backdrop-blur-md"
+  class="sticky top-0 z-50 border-b border-white/10 backdrop-blur-xl transition duration-200 ease-out supports-[backdrop-filter]:bg-slate-950/25"
+  [ngClass]="isScrolled() ? 'bg-slate-950/40' : 'bg-slate-950/20'"
 >
   <div
     class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6"
@@ -7,27 +8,123 @@
     <a class="flex items-center gap-3" href="/" [attr.aria-label]="brand.name + ' home'">
       <img
         class="h-8 w-auto sm:h-9"
-        src="images/logo.png"
+        src="/images/logo.png"
         [alt]="brand.name"
         width="120"
         height="40"
+        decoding="async"
+        fetchpriority="high"
       />
     </a>
-    <nav class="flex flex-wrap items-center justify-end gap-2 sm:gap-3" aria-label="Primary">
-      <app-button variant="secondary" [href]="brand.urls.github" [external]="true">
-        GitHub
-      </app-button>
-      <app-button variant="primary" [href]="brand.urls.docs" [external]="true">
-        Documentation
-      </app-button>
+    <nav
+      class="flex flex-wrap items-center justify-end gap-2 sm:gap-3"
+      aria-label="Primary"
+    >
+      <a
+        routerLink="/app"
+        class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-100 transition hover:border-junny-violet/40 hover:bg-junny-violet/10"
+      >
+        {{ copy().nav.workspace }}
+      </a>
+      <a
+        routerLink="/app/official"
+        class="hidden items-center justify-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-sky-500/35 hover:text-slate-100 sm:inline-flex"
+        title="Official roadmap"
+      >
+        {{ copy().nav.roadmap }}
+      </a>
+
+      <!-- Compact Explore menu: full nav moves to landing section -->
+      <div class="relative">
+        <button
+          type="button"
+          (click)="toggleExplore()"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-slate-950/35 px-3 py-2 text-sm font-medium text-slate-200 ring-1 ring-white/5 transition hover:border-white/20 hover:bg-slate-950/55"
+          [attr.aria-expanded]="isExploreOpen()"
+          aria-haspopup="menu"
+        >
+          {{ copy().nav.explore }}
+          <span class="text-xs text-slate-500" aria-hidden="true">▾</span>
+        </button>
+
+        @if (isExploreOpen()) {
+          <div
+            class="absolute right-0 z-[60] mt-2 w-[18rem] overflow-hidden rounded-2xl border border-white/10 bg-slate-950/95 p-2 shadow-2xl shadow-black/40 ring-1 ring-white/10 backdrop-blur-xl"
+            role="menu"
+            aria-label="Explore Junny"
+          >
+            <a
+              role="menuitem"
+              (click)="closeExplore()"
+              routerLink="/app/design-system"
+              class="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-slate-200 transition hover:bg-white/5"
+              ><span>Design system</span></a
+            >
+            <a
+              role="menuitem"
+              (click)="closeExplore()"
+              routerLink="/app/plugins"
+              class="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-slate-200 transition hover:bg-white/5"
+              ><span>Plugins</span></a
+            >
+            <a
+              role="menuitem"
+              (click)="closeExplore()"
+              routerLink="/app/observability"
+              class="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-slate-200 transition hover:bg-white/5"
+              ><span>Observability</span></a
+            >
+            <a
+              role="menuitem"
+              (click)="closeExplore()"
+              routerLink="/app/ai"
+              class="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-slate-200 transition hover:bg-white/5"
+              ><span>AI</span></a
+            >
+            <a
+              role="menuitem"
+              (click)="closeExplore()"
+              routerLink="/app/enterprise"
+              class="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-slate-200 transition hover:bg-white/5"
+              ><span>Enterprise</span></a
+            >
+            <a
+              role="menuitem"
+              (click)="closeExplore()"
+              routerLink="/app/official"
+              class="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-slate-200 transition hover:bg-white/5"
+              ><span>Official roadmap</span></a
+            >
+          </div>
+        }
+      </div>
+      <app-language-selector />
+      <a
+        class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 transition hover:border-junny-violet/40 hover:bg-junny-violet/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-junny-violet whitespace-nowrap"
+        [href]="brand.urls.github"
+        rel="noopener noreferrer"
+        target="_blank"
+        [attr.aria-label]="githubLabel()"
+      >
+        {{ githubLabel() }}
+      </a>
+      <a
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-junny-blue px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-junny-blue/25 transition hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-junny-blue whitespace-nowrap"
+        [href]="brand.urls.docs"
+        [attr.aria-label]="docsLabel()"
+      >
+        {{ docsLabel() }}
+      </a>
+
       <button
         type="button"
-        disabled
-        title="Theme toggle — coming soon"
-        class="cursor-not-allowed rounded-xl border border-white/10 px-3 py-2 text-xs font-medium text-slate-500 opacity-70"
-        aria-disabled="true"
+        (click)="toggleTheme()"
+        class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-slate-950/35 px-3 py-2 text-xs font-medium text-slate-200 ring-1 ring-white/5 transition hover:border-white/20 hover:bg-slate-950/55"
+        [attr.aria-label]="themeMode() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+        [attr.title]="themeMode() === 'dark' ? 'Light theme' : 'Dark theme'"
       >
-        Theme
+        <span aria-hidden="true">{{ themeMode() === 'dark' ? '☾' : '☀' }}</span>
+        <span class="hidden sm:inline">Theme</span>
       </button>
     </nav>
   </div>
