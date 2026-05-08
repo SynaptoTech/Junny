@@ -181,8 +181,8 @@ Includes search (local provider), dark-first theme, `robots.txt` / `sitemap.xml`
 
 ## Repositories
 
-- **Synapto (internal Gitea):** full history including `.gitea/`, `infra/`, `md/`, etc.
-- **GitHub (public mirror):** same codebase; use `scripts/push-github.sh` after local commits when publishing to the public remote.
+- **Synapto (internal Gitea):** histórico completo — inclui `.gitea/`, `md/`, `infra/`, etc. Push normal: `git push origin main`.
+- **GitHub (mirror público):** branch `public-github`. Algumas pastas **não** são publicadas (por defeito `.gitea/` e `md/` — lista em `infra/scripts/github-publish-excludes.txt`). Depois de commits no `main`, corre `./infra/scripts/publish-to-github.sh` ou `./infra/scripts/push-all-remotes.sh` (Gitea + GitHub).
 
 ---
 
