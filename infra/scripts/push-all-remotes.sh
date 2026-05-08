@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-# Envia a mesma branch public-github ao Gitea (origin) e ao GitHub (github).
+#
+# Gitea (origin): trabalho normal — commit e push como sempre (sem fluxo especial).
+#
+# GitHub (github): cópia pública na branch public-github; usa este script quando
+# quiseres publicar no Hub a mesma linha que já está no Gitea (push duplo).
+#
 # Uso (na raiz do repo):
 #   ./infra/scripts/push-all-remotes.sh
 #   BRANCH=outra ./infra/scripts/push-all-remotes.sh
