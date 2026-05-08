@@ -15,7 +15,7 @@ import {
   template: `
     @if (open()) {
       <div
-        class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4"
+        class="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 p-4"
         role="dialog"
         aria-modal="true"
         [attr.aria-labelledby]="titleId"

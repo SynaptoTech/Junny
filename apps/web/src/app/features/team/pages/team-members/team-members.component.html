@@ -51,77 +51,7 @@
       </div>
 
       <div class="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
-        @if (selectedWorkspace(); as ws) {
-          <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <div class="min-w-0">
-              <p class="text-xs text-slate-500">Workspace selecionado</p>
-              <h2 class="truncate text-lg font-semibold text-slate-100">{{ ws.name }}</h2>
-            </div>
-            <button
-              type="button"
-              class="rounded-xl border border-white/15 bg-slate-900/70 px-3 py-2 text-sm text-slate-200 hover:border-junny-violet/40 disabled:opacity-40"
-              [disabled]="selectedRole() !== 'owner'"
-              (click)="inviteMember()"
-            >
-              Convidar membro
-            </button>
-          </div>
-
-          @if (inviteToken(); as t) {
-            <div class="mb-4 rounded-xl border border-emerald-500/25 bg-emerald-950/15 px-4 py-3 text-sm text-emerald-100">
-              <p class="font-medium text-emerald-50">Convite criado</p>
-              <p class="mt-1 text-xs text-emerald-100/90">Link:</p>
-              @if (inviteLink(); as link) {
-                <div class="mt-1 flex flex-wrap items-center gap-2">
-                  <span class="break-all font-mono text-[11px] text-emerald-200">{{ link }}</span>
-                  <button
-                    type="button"
-                    class="rounded-lg border border-emerald-400/25 bg-emerald-950/30 px-2 py-1 text-xs text-emerald-100 hover:border-emerald-300/40"
-                    (click)="copyInviteLink()"
-                  >
-                    Copiar
-                  </button>
-                </div>
-              } @else {
-                <span class="break-all font-mono text-xs text-emerald-200">{{ t }}</span>
-              }
-            </div>
-          }
-
-          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Members</p>
-          <div class="overflow-hidden rounded-xl border border-white/10">
-            <table class="w-full text-sm">
-              <thead class="bg-slate-950/60 text-xs text-slate-500">
-                <tr>
-                  <th class="px-3 py-2 text-left font-medium">User</th>
-                  <th class="px-3 py-2 text-left font-medium">Email</th>
-                  <th class="px-3 py-2 text-left font-medium">Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (m of members(); track m.id) {
-                  <tr class="border-t border-white/10">
-                    <td class="px-3 py-2 text-slate-200">
-                      {{ m.user.name || '—' }}
-                    </td>
-                    <td class="px-3 py-2 font-mono text-xs text-slate-300">{{ m.user.email }}</td>
-                    <td class="px-3 py-2">
-                      <span class="rounded-lg border border-white/10 bg-slate-900/60 px-2 py-0.5 text-[11px] text-slate-300">
-                        {{ m.role }}
-                      </span>
-                    </td>
-                  </tr>
-                } @empty {
-                  <tr>
-                    <td class="px-3 py-3 text-slate-500" colspan="3">Nenhum membro.</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        } @else {
-          <p class="text-sm text-slate-500">Selecione um workspace para ver membros.</p>
-        }
+        <app-team-workspace-detail [workspace]="selectedWorkspace()" />
       </div>
     </section>
   </main>
@@ -138,30 +68,3 @@
   (confirmed)="onCreateWorkspaceConfirmed($event)"
   (cancelled)="onCreateWorkspaceCancelled()"
 />
-
-<app-prompt-dialog
-  [open]="inviteEmailPromptOpen()"
-  title="Convidar membro"
-  label="Email"
-  placeholder="email@empresa.com"
-  confirmLabel="Continuar"
-  cancelLabel="Cancelar"
-  [maxlength]="320"
-  (confirmed)="onInviteEmailConfirmed($event)"
-  (cancelled)="onInviteEmailCancelled()"
-/>
-
-<app-prompt-dialog
-  [open]="inviteRolePromptOpen()"
-  title="Role do membro"
-  message="Valores: owner, editor, viewer"
-  label="Role"
-  placeholder="viewer"
-  confirmLabel="Convidar"
-  cancelLabel="Cancelar"
-  [initialValue]="'viewer'"
-  [maxlength]="12"
-  (confirmed)="onInviteRoleConfirmed($event)"
-  (cancelled)="onInviteRoleCancelled()"
-/>
-
