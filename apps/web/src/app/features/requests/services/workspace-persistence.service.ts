@@ -1,9 +1,18 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, effect, inject, signal } from '@angular/core';
 import { defaultAuth, type WorkspaceTabState } from '../models/workspace.models';
 import { workspaceTabContentFingerprint } from '../utils/workspace-tab.utils';
+import { WorkspaceContextService } from '../../../shared/services/workspace-context.service';
 
-const STORAGE_KEY = 'junny-workspace-tabs-v1';
-const UI_STORAGE_KEY = 'junny-workspace-ui-v1';
+const LEGACY_TABS_KEY = 'junny-workspace-tabs-v1';
+const LEGACY_UI_KEY = 'junny-workspace-ui-v1';
+
+function tabsKey(workspaceId: string): string {
+  return `junny-workspace-tabs-v2:${workspaceId}`;
+}
+
+function uiKey(workspaceId: string): string {
+  return `junny-workspace-ui-v2:${workspaceId}`;
+}
 
 function newTab(): WorkspaceTabState {
   const tab: WorkspaceTabState = {
@@ -23,20 +32,67 @@ function newTab(): WorkspaceTabState {
 
 @Injectable({ providedIn: 'root' })
 export class WorkspacePersistenceService {
+  private readonly ctx = inject(WorkspaceContextService);
+
   readonly tabs = signal<WorkspaceTabState[]>([]);
   readonly activeTabId = signal<string>('');
   readonly selectedEnvironmentId = signal('');
   readonly expandedCollectionId = signal<string | null>(null);
 
   constructor() {
-    this.hydrateFromStorage();
-    this.hydrateUiFromStorage();
+    // Migração best-effort (v1 -> v2 no workspace ativo).
+    this.migrateLegacyOnce();
+
+    // Mantém o estado sincronizado com o workspace ativo.
+    effect(() => {
+      const wid = this.ctx.activeWorkspaceId();
+      if (!wid) return;
+      this.hydrateFromStorage(wid);
+      this.hydrateUiFromStorage(wid);
+    });
+
+    // Persiste sempre que muda (no workspace ativo).
+    effect(() => {
+      const wid = this.ctx.activeWorkspaceId();
+      if (!wid) return;
+      // Touch dependencies
+      void this.tabs();
+      void this.activeTabId();
+      this.persist(wid);
+    });
+
+    effect(() => {
+      const wid = this.ctx.activeWorkspaceId();
+      if (!wid) return;
+      void this.selectedEnvironmentId();
+      void this.expandedCollectionId();
+      this.persistUi(wid);
+    });
   }
 
-  private hydrateFromStorage(): void {
+  private migrateLegacyOnce(): void {
     if (typeof localStorage === 'undefined') return;
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const wid = this.ctx.activeWorkspaceId();
+      if (!wid) return;
+      const targetTabsKey = tabsKey(wid);
+      const targetUiKey = uiKey(wid);
+      const alreadyMigrated =
+        localStorage.getItem(targetTabsKey) || localStorage.getItem(targetUiKey);
+      if (alreadyMigrated) return;
+      const legacyTabs = localStorage.getItem(LEGACY_TABS_KEY);
+      const legacyUi = localStorage.getItem(LEGACY_UI_KEY);
+      if (legacyTabs) localStorage.setItem(targetTabsKey, legacyTabs);
+      if (legacyUi) localStorage.setItem(targetUiKey, legacyUi);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  private hydrateFromStorage(workspaceId: string): void {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      const raw = localStorage.getItem(tabsKey(workspaceId));
       if (!raw) {
         const t = newTab();
         this.tabs.set([t]);
@@ -69,10 +125,10 @@ export class WorkspacePersistenceService {
     this.activeTabId.set(t.id);
   }
 
-  private hydrateUiFromStorage(): void {
+  private hydrateUiFromStorage(workspaceId: string): void {
     if (typeof localStorage === 'undefined') return;
     try {
-      const raw = localStorage.getItem(UI_STORAGE_KEY);
+      const raw = localStorage.getItem(uiKey(workspaceId));
       if (!raw) return;
       const u = JSON.parse(raw) as {
         selectedEnvironmentId?: string;
@@ -92,10 +148,11 @@ export class WorkspacePersistenceService {
     }
   }
 
-  persistUi(): void {
+  persistUi(workspaceId = this.ctx.activeWorkspaceId()): void {
     if (typeof localStorage === 'undefined') return;
+    if (!workspaceId) return;
     localStorage.setItem(
-      UI_STORAGE_KEY,
+      uiKey(workspaceId),
       JSON.stringify({
         selectedEnvironmentId: this.selectedEnvironmentId(),
         expandedCollectionId: this.expandedCollectionId(),
@@ -113,10 +170,11 @@ export class WorkspacePersistenceService {
     this.persistUi();
   }
 
-  persist(): void {
+  persist(workspaceId = this.ctx.activeWorkspaceId()): void {
     if (typeof localStorage === 'undefined') return;
+    if (!workspaceId) return;
     localStorage.setItem(
-      STORAGE_KEY,
+      tabsKey(workspaceId),
       JSON.stringify({
         tabs: this.tabs(),
         activeTabId: this.activeTabId(),

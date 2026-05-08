@@ -1,8 +1,13 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, effect, inject, signal } from '@angular/core';
 import { defaultAuth } from '../../requests/models/workspace.models';
 import type { GraphqlTabState } from '../models/graphql-workspace.models';
+import { WorkspaceContextService } from '../../../shared/services/workspace-context.service';
 
-const STORAGE_KEY = 'junny-graphql-workspace-tabs-v1';
+const LEGACY_KEY = 'junny-graphql-workspace-tabs-v1';
+
+function storageKey(workspaceId: string): string {
+  return `junny-graphql-workspace-tabs-v2:${workspaceId}`;
+}
 
 function newTab(): GraphqlTabState {
   return {
@@ -18,17 +23,47 @@ function newTab(): GraphqlTabState {
 
 @Injectable({ providedIn: 'root' })
 export class GraphqlWorkspacePersistenceService {
+  private readonly ctx = inject(WorkspaceContextService);
+
   readonly tabs = signal<GraphqlTabState[]>([]);
   readonly activeTabId = signal<string>('');
 
   constructor() {
-    this.hydrateFromStorage();
+    this.migrateLegacyOnce();
+
+    effect(() => {
+      const wid = this.ctx.activeWorkspaceId();
+      if (!wid) return;
+      this.hydrateFromStorage(wid);
+    });
+
+    effect(() => {
+      const wid = this.ctx.activeWorkspaceId();
+      if (!wid) return;
+      void this.tabs();
+      void this.activeTabId();
+      this.persist(wid);
+    });
   }
 
-  private hydrateFromStorage(): void {
+  private migrateLegacyOnce(): void {
     if (typeof localStorage === 'undefined') return;
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const wid = this.ctx.activeWorkspaceId();
+      if (!wid) return;
+      const key = storageKey(wid);
+      if (localStorage.getItem(key)) return;
+      const legacy = localStorage.getItem(LEGACY_KEY);
+      if (legacy) localStorage.setItem(key, legacy);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  private hydrateFromStorage(workspaceId: string): void {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      const raw = localStorage.getItem(storageKey(workspaceId));
       if (!raw) {
         const t = newTab();
         this.tabs.set([t]);
@@ -61,10 +96,11 @@ export class GraphqlWorkspacePersistenceService {
     this.activeTabId.set(t.id);
   }
 
-  persist(): void {
+  persist(workspaceId = this.ctx.activeWorkspaceId()): void {
     if (typeof localStorage === 'undefined') return;
+    if (!workspaceId) return;
     localStorage.setItem(
-      STORAGE_KEY,
+      storageKey(workspaceId),
       JSON.stringify({
         tabs: this.tabs(),
         activeTabId: this.activeTabId(),

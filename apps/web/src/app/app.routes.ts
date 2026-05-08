@@ -117,10 +117,29 @@ const appWorkspaceRoutes: Routes = [
   },
   {
     path: 'team',
-    loadComponent: () =>
-      import('./features/team/pages/team-roadmap/team-roadmap.component').then(
-        (m) => m.TeamRoadmapPageComponent,
-      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/team/pages/team-members/team-members.component').then(
+            (m) => m.TeamMembersPageComponent,
+          ),
+      },
+      {
+        path: 'join',
+        loadComponent: () =>
+          import('./features/team/pages/team-join/team-join.component').then(
+            (m) => m.TeamJoinPageComponent,
+          ),
+      },
+      {
+        path: 'roadmap',
+        loadComponent: () =>
+          import('./features/team/pages/team-roadmap/team-roadmap.component').then(
+            (m) => m.TeamRoadmapPageComponent,
+          ),
+      },
+    ],
   },
   {
     path: 'official',

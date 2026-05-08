@@ -326,6 +326,65 @@
             />
           </div>
         }
+        @case ('team') {
+          <div
+            class="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-3 py-3"
+          >
+            <div class="mb-2 flex items-center justify-between gap-2">
+              <p
+                class="text-xs font-semibold uppercase tracking-wide text-slate-500"
+              >
+                Workspaces
+              </p>
+              @if (teamLoading()) {
+                <span class="text-[10px] text-slate-500">…</span>
+              }
+            </div>
+            @if (teamError(); as te) {
+              <div
+                class="mb-2 rounded-lg border border-rose-500/25 bg-rose-950/20 px-2 py-1.5 text-[11px] text-rose-100"
+              >
+                {{ te }}
+              </div>
+            }
+            <div class="mb-2 space-y-1">
+              @for (w of teamWorkspaces(); track w.id) {
+                <button
+                  type="button"
+                  class="flex w-full items-center justify-between gap-2 rounded-lg border border-white/10 bg-slate-900/40 px-2.5 py-2 text-left text-xs text-slate-200 transition hover:border-junny-violet/35 hover:bg-slate-900/70"
+                  [title]="'Gerenciar · ' + w.name"
+                  (click)="openTeamModal(w)"
+                >
+                  <span class="min-w-0 truncate font-medium">{{ w.name }}</span>
+                  <span
+                    class="shrink-0 rounded border border-white/10 bg-slate-950/60 px-1.5 py-0.5 text-[10px] text-slate-400"
+                  >
+                    {{ w.role }}
+                  </span>
+                </button>
+              } @empty {
+                @if (!teamLoading()) {
+                  <p class="text-[11px] text-slate-500">Nenhum workspace.</p>
+                }
+              }
+            </div>
+            <div class="mt-auto flex shrink-0 flex-col gap-2 pt-2">
+              <button
+                type="button"
+                class="w-full rounded-lg border border-white/15 bg-slate-900/70 px-2 py-2 text-xs text-slate-200 transition hover:border-junny-violet/40"
+                (click)="openTeamCreatePrompt()"
+              >
+                + Novo workspace
+              </button>
+              <a
+                routerLink="/app/team"
+                class="inline-flex w-full items-center justify-center rounded-lg border border-white/10 px-2 py-2 text-center text-[11px] text-slate-400 transition hover:border-white/20 hover:text-slate-200"
+              >
+                Abrir página completa
+              </a>
+            </div>
+          </div>
+        }
         @case ('protocols') {
           <div
             class="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-2 py-3"
@@ -589,4 +648,21 @@
     title="Drag to resize"
     (mousedown)="onResizeStart($event)"
   ></button>
+
+  <app-team-workspace-modal
+    [open]="teamModalWorkspace() !== null"
+    [workspace]="teamModalWorkspace()"
+    (closed)="closeTeamModal()"
+  />
+  <app-prompt-dialog
+    [open]="teamCreatePromptOpen()"
+    title="Novo workspace"
+    label="Nome do workspace"
+    placeholder="Ex.: Personal, Projeto X…"
+    confirmLabel="Criar"
+    cancelLabel="Cancelar"
+    [maxlength]="80"
+    (confirmed)="onTeamCreateConfirmed($event)"
+    (cancelled)="onTeamCreateCancelled()"
+  />
 </aside>

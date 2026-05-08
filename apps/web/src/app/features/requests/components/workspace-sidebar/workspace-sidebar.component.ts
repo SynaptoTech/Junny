@@ -1,6 +1,7 @@
 import { isPlatformBrowser, NgClass } from '@angular/common';
 import {
   Component,
+  effect,
   HostListener,
   computed,
   inject,
@@ -10,6 +11,10 @@ import {
   signal,
 } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { TeamWorkspaceModalComponent } from '../../../team/components/team-workspace-modal/team-workspace-modal.component';
+import { TeamApiService, type WorkspaceDto } from '../../../team/services/team-api.service';
+import { PromptDialogComponent } from '../../../../shared/components/prompt-dialog/prompt-dialog.component';
+import { WorkspaceContextService } from '../../../../shared/services/workspace-context.service';
 import { HistoryPanelComponent } from '../../../history/components/history-panel/history-panel.component';
 import type {
   CollectionRow,
@@ -22,7 +27,7 @@ export interface EnvironmentOption {
   name: string;
 }
 
-type PanelId = 'env' | 'collections' | 'history' | 'protocols';
+type PanelId = 'env' | 'collections' | 'history' | 'team' | 'protocols';
 
 const STORAGE_KEY = 'junny.workspace-sidebar.width';
 const MIN_W = 240;
@@ -45,7 +50,14 @@ export type SidebarStoredRequestPayload = {
 @Component({
   selector: 'app-workspace-sidebar',
   standalone: true,
-  imports: [NgClass, RouterLink, RouterLinkActive, HistoryPanelComponent],
+  imports: [
+    NgClass,
+    RouterLink,
+    RouterLinkActive,
+    HistoryPanelComponent,
+    TeamWorkspaceModalComponent,
+    PromptDialogComponent,
+  ],
   templateUrl: './workspace-sidebar.component.html',
   styles: `
     :host {
@@ -55,6 +67,8 @@ export type SidebarStoredRequestPayload = {
 })
 export class WorkspaceSidebarComponent {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly teamApi = inject(TeamApiService);
+  private readonly workspaceCtx = inject(WorkspaceContextService);
 
   readonly collections = input<CollectionRow[]>([]);
   readonly environments = input<EnvironmentOption[]>([]);
@@ -108,6 +122,12 @@ export class WorkspaceSidebarComponent {
   readonly activePanel = signal<PanelId>('collections');
   readonly searchQuery = signal('');
 
+  readonly teamWorkspaces = signal<WorkspaceDto[]>([]);
+  readonly teamLoading = signal(false);
+  readonly teamError = signal<string | null>(null);
+  readonly teamModalWorkspace = signal<WorkspaceDto | null>(null);
+  readonly teamCreatePromptOpen = signal(false);
+
   protected readonly visibleRequests = computed(() => {
     const list = this.collectionRequests();
     if (!list) return null;
@@ -143,8 +163,66 @@ export class WorkspaceSidebarComponent {
     { id: 'env', short: 'Env', title: 'Environments', icon: '⚙' },
     { id: 'collections', short: 'Col', title: 'Collections', icon: '📁' },
     { id: 'history', short: 'Log', title: 'History', icon: '🕐' },
+    { id: 'team', short: 'Eqp', title: 'Equipe e workspace', icon: '👥' },
     { id: 'protocols', short: 'Nav', title: 'Protocols & tools', icon: '⎘' },
   ];
+
+  constructor() {
+    effect(() => {
+      if (this.activePanel() !== 'team') return;
+      this.loadTeamWorkspaces();
+    });
+  }
+
+  protected loadTeamWorkspaces(): void {
+    this.teamLoading.set(true);
+    this.teamError.set(null);
+    this.teamApi.listMyWorkspaces().subscribe({
+      next: (list) => {
+        this.workspaceCtx.mergeServerWorkspaces(list);
+        this.teamWorkspaces.set(list);
+        this.teamLoading.set(false);
+      },
+      error: () => {
+        this.teamLoading.set(false);
+        this.teamError.set('Não foi possível carregar os workspaces.');
+      },
+    });
+  }
+
+  protected openTeamModal(w: WorkspaceDto): void {
+    this.teamModalWorkspace.set(w);
+  }
+
+  protected closeTeamModal(): void {
+    this.teamModalWorkspace.set(null);
+    if (this.activePanel() === 'team') this.loadTeamWorkspaces();
+  }
+
+  protected openTeamCreatePrompt(): void {
+    this.teamCreatePromptOpen.set(true);
+  }
+
+  protected onTeamCreateCancelled(): void {
+    this.teamCreatePromptOpen.set(false);
+  }
+
+  protected onTeamCreateConfirmed(name: string): void {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    this.teamCreatePromptOpen.set(false);
+    this.teamLoading.set(true);
+    this.teamApi.createWorkspace(trimmed).subscribe({
+      next: (dto) => {
+        this.workspaceCtx.mergeServerWorkspaces([dto]);
+        this.loadTeamWorkspaces();
+      },
+      error: () => {
+        this.teamLoading.set(false);
+        this.teamError.set('Falha ao criar workspace.');
+      },
+    });
+  }
 
   private resizing = false;
   private resizeStartX = 0;

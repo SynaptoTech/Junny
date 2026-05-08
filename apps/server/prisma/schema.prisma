@@ -9,6 +9,8 @@ datasource db {
 
 model Collection {
   id          String          @id @default(cuid())
+  workspaceId String?
+  workspace   Workspace?      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   name        String
   description String?
   /// Auth predefinida (JSON); pedidos podem sobrepor com authConfig próprio.
@@ -16,10 +18,14 @@ model Collection {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   requests    StoredRequest[]
+
+  @@index([workspaceId])
 }
 
 model StoredRequest {
   id           String      @id @default(cuid())
+  workspaceId  String?
+  workspace    Workspace?  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   /// REST, GRAPHQL, SOAP ou WEBSOCKET
   protocol     String      @default("REST")
   method       String
@@ -38,14 +44,21 @@ model StoredRequest {
   collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+
+  @@index([workspaceId])
+  @@index([collectionId])
 }
 
 model Environment {
   id        String                @id @default(cuid())
+  workspaceId String?
+  workspace   Workspace?           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   name      String
   createdAt DateTime              @default(now())
   updatedAt DateTime              @updatedAt
   variables EnvironmentVariable[]
+
+  @@index([workspaceId])
 }
 
 model EnvironmentVariable {
@@ -60,6 +73,8 @@ model EnvironmentVariable {
 
 model HistoryEntry {
   id        String   @id @default(cuid())
+  workspaceId String?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   request   Json
   response  Json
   status    Int
@@ -69,6 +84,8 @@ model HistoryEntry {
   protocol  String   @default("REST")
   method    String   @default("GET")
   url       String   @default("")
+
+  @@index([workspaceId])
 }
 
 model User {
@@ -78,4 +95,50 @@ model User {
   name         String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  memberships  WorkspaceMember[]
+  sentWorkspaceInvites WorkspaceInvite[] @relation("WorkspaceInviteInvitedBy")
+}
+
+model Workspace {
+  id         String            @id @default(cuid())
+  name       String
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  members    WorkspaceMember[]
+  invites    WorkspaceInvite[]
+  collections Collection[]
+  environments Environment[]
+  storedRequests StoredRequest[]
+  history    HistoryEntry[]
+}
+
+model WorkspaceMember {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        String    @default("owner") // owner | editor | viewer
+  createdAt   DateTime  @default(now())
+
+  @@unique([workspaceId, userId])
+  @@index([userId])
+}
+
+model WorkspaceInvite {
+  id            String    @id @default(cuid())
+  workspaceId   String
+  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  email         String
+  role          String    @default("viewer")
+  token         String    @unique
+  expiresAt     DateTime
+  invitedByUserId String?
+  invitedByUser   User?   @relation("WorkspaceInviteInvitedBy", fields: [invitedByUserId], references: [id], onDelete: SetNull)
+  acceptedAt    DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([workspaceId])
+  @@index([email])
 }

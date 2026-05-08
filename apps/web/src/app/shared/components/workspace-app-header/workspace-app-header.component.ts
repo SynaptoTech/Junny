@@ -1,6 +1,7 @@
 import { NgClass } from '@angular/common';
 import {
   Component,
+  effect,
   ElementRef,
   HostListener,
   inject,
@@ -12,6 +13,9 @@ import { NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
+import { TeamApiService } from '../../../features/team/services/team-api.service';
+import { WorkspaceContextService } from '../../services/workspace-context.service';
+import { PromptDialogComponent } from '../prompt-dialog/prompt-dialog.component';
 
 export type WorkspaceNavLink = { label: string; href: string };
 
@@ -86,13 +90,15 @@ const MENUS: WorkspaceNavMenu[] = [
 @Component({
   selector: 'app-workspace-app-header',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, PromptDialogComponent],
   templateUrl: './workspace-app-header.component.html',
 })
 export class WorkspaceAppHeaderComponent {
   private readonly router = inject(Router);
   private readonly host = inject(ElementRef<HTMLElement>);
   readonly auth = inject(AuthService);
+  readonly workspaceCtx = inject(WorkspaceContextService);
+  private readonly teamApi = inject(TeamApiService);
 
   /** Label do workspace atual (ex.: "REST workspace"). */
   readonly contextLabel = input<string | null>(null);
@@ -104,6 +110,7 @@ export class WorkspaceAppHeaderComponent {
   readonly menus = MENUS;
 
   readonly openId = signal<string | null>(null);
+  readonly createWsPromptOpen = signal(false);
 
   private readonly url = toSignal(
     this.router.events.pipe(
@@ -113,6 +120,16 @@ export class WorkspaceAppHeaderComponent {
     ),
     { initialValue: this.router.url },
   );
+
+  constructor() {
+    effect((onCleanup) => {
+      if (!this.auth.isAuthenticated()) return;
+      const sub = this.teamApi.listMyWorkspaces().subscribe({
+        next: (list) => this.workspaceCtx.mergeServerWorkspaces(list),
+      });
+      onCleanup(() => sub.unsubscribe());
+    });
+  }
 
   path(): string {
     return this.url().split('?')[0];
@@ -136,6 +153,39 @@ export class WorkspaceAppHeaderComponent {
 
   closeMenus(): void {
     this.openId.set(null);
+  }
+
+  activeWorkspaceName(): string {
+    const wid = this.workspaceCtx.activeWorkspaceId();
+    return (
+      this.workspaceCtx.workspaces().find((w) => w.id === wid)?.name?.trim() ||
+      'Workspace'
+    );
+  }
+
+  selectWorkspace(id: string, ev: Event): void {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.workspaceCtx.setActiveWorkspace(id);
+    this.closeMenus();
+  }
+
+  createWorkspace(ev: Event): void {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.createWsPromptOpen.set(true);
+  }
+
+  onCreateWorkspaceConfirmed(name: string): void {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    this.workspaceCtx.createWorkspace(trimmed);
+    this.createWsPromptOpen.set(false);
+    this.closeMenus();
+  }
+
+  onCreateWorkspaceCancelled(): void {
+    this.createWsPromptOpen.set(false);
   }
 
   onImportClick(ev: Event): void {
