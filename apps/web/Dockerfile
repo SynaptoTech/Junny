@@ -2,6 +2,8 @@ FROM node:20-alpine AS build
 
 WORKDIR /repo
 
+RUN apk add --no-cache git
+
 COPY package.json package-lock.json ./
 COPY apps ./apps
 COPY packages ./packages
