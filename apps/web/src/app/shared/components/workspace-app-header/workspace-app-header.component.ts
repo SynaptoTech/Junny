@@ -13,6 +13,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
 import { WorkspaceContextService } from '../../services/workspace-context.service';
+import { PromptDialogComponent } from '../prompt-dialog/prompt-dialog.component';
 
 export type WorkspaceNavLink = { label: string; href: string };
 
@@ -87,7 +88,7 @@ const MENUS: WorkspaceNavMenu[] = [
 @Component({
   selector: 'app-workspace-app-header',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, PromptDialogComponent],
   templateUrl: './workspace-app-header.component.html',
 })
 export class WorkspaceAppHeaderComponent {
@@ -106,6 +107,7 @@ export class WorkspaceAppHeaderComponent {
   readonly menus = MENUS;
 
   readonly openId = signal<string | null>(null);
+  readonly createWsPromptOpen = signal(false);
 
   private readonly url = toSignal(
     this.router.events.pipe(
@@ -158,11 +160,19 @@ export class WorkspaceAppHeaderComponent {
   createWorkspace(ev: Event): void {
     ev.preventDefault();
     ev.stopPropagation();
-    if (typeof window === 'undefined') return;
-    const name = window.prompt('Nome do workspace');
-    if (!name?.trim()) return;
-    this.workspaceCtx.createWorkspace(name.trim());
+    this.createWsPromptOpen.set(true);
+  }
+
+  onCreateWorkspaceConfirmed(name: string): void {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    this.workspaceCtx.createWorkspace(trimmed);
+    this.createWsPromptOpen.set(false);
     this.closeMenus();
+  }
+
+  onCreateWorkspaceCancelled(): void {
+    this.createWsPromptOpen.set(false);
   }
 
   onImportClick(ev: Event): void {

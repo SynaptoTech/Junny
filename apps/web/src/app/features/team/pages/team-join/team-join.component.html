@@ -1,0 +1,19 @@
+<div class="flex h-dvh min-h-0 flex-col bg-junny-bg text-slate-100 selection:bg-junny-violet/25">
+  <app-workspace-app-header contextLabel="Team · Join" />
+
+  <main class="mx-auto w-full max-w-xl flex-1 p-6">
+    <div class="rounded-2xl border border-white/10 bg-slate-950/40 p-5">
+      @if (loading()) {
+        <p class="text-sm text-slate-300">Aceitando convite…</p>
+      } @else if (done()) {
+        <p class="text-sm text-emerald-200">Convite aceito. Redirecionando…</p>
+      } @else if (error()) {
+        <p class="text-sm text-rose-200">{{ error() }}</p>
+      }
+      <div class="mt-4">
+        <a class="text-sm text-junny-blue hover:underline" href="/app/team">Voltar para Team</a>
+      </div>
+    </div>
+  </main>
+</div>
+

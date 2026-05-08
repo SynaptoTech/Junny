@@ -106,6 +106,18 @@
     </nav>
   </div>
 
+  <app-prompt-dialog
+    [open]="createWsPromptOpen()"
+    title="Novo workspace"
+    label="Nome do workspace"
+    placeholder="Ex.: Personal, Projeto X…"
+    confirmLabel="Criar"
+    cancelLabel="Cancelar"
+    [maxlength]="80"
+    (confirmed)="onCreateWorkspaceConfirmed($event)"
+    (cancelled)="onCreateWorkspaceCancelled()"
+  />
+
   <div class="flex shrink-0 flex-wrap items-center justify-end gap-2 md:gap-3">
     @if (auth.currentUser(); as u) {
       <span

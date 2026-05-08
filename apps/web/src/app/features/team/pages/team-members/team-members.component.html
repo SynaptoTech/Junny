@@ -69,8 +69,22 @@
 
           @if (inviteToken(); as t) {
             <div class="mb-4 rounded-xl border border-emerald-500/25 bg-emerald-950/15 px-4 py-3 text-sm text-emerald-100">
-              Convite criado. Token:
-              <span class="break-all font-mono text-xs text-emerald-200">{{ t }}</span>
+              <p class="font-medium text-emerald-50">Convite criado</p>
+              <p class="mt-1 text-xs text-emerald-100/90">Link:</p>
+              @if (inviteLink(); as link) {
+                <div class="mt-1 flex flex-wrap items-center gap-2">
+                  <span class="break-all font-mono text-[11px] text-emerald-200">{{ link }}</span>
+                  <button
+                    type="button"
+                    class="rounded-lg border border-emerald-400/25 bg-emerald-950/30 px-2 py-1 text-xs text-emerald-100 hover:border-emerald-300/40"
+                    (click)="copyInviteLink()"
+                  >
+                    Copiar
+                  </button>
+                </div>
+              } @else {
+                <span class="break-all font-mono text-xs text-emerald-200">{{ t }}</span>
+              }
             </div>
           }
 
@@ -112,4 +126,42 @@
     </section>
   </main>
 </div>
+
+<app-prompt-dialog
+  [open]="createWsPromptOpen()"
+  title="Novo workspace"
+  label="Nome do workspace"
+  placeholder="Ex.: Personal, Projeto X…"
+  confirmLabel="Criar"
+  cancelLabel="Cancelar"
+  [maxlength]="80"
+  (confirmed)="onCreateWorkspaceConfirmed($event)"
+  (cancelled)="onCreateWorkspaceCancelled()"
+/>
+
+<app-prompt-dialog
+  [open]="inviteEmailPromptOpen()"
+  title="Convidar membro"
+  label="Email"
+  placeholder="email@empresa.com"
+  confirmLabel="Continuar"
+  cancelLabel="Cancelar"
+  [maxlength]="320"
+  (confirmed)="onInviteEmailConfirmed($event)"
+  (cancelled)="onInviteEmailCancelled()"
+/>
+
+<app-prompt-dialog
+  [open]="inviteRolePromptOpen()"
+  title="Role do membro"
+  message="Valores: owner, editor, viewer"
+  label="Role"
+  placeholder="viewer"
+  confirmLabel="Convidar"
+  cancelLabel="Cancelar"
+  [initialValue]="'viewer'"
+  [maxlength]="12"
+  (confirmed)="onInviteRoleConfirmed($event)"
+  (cancelled)="onInviteRoleCancelled()"
+/>
 

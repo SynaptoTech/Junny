@@ -2,11 +2,12 @@ import { NgClass } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { WorkspaceAppHeaderComponent } from '../../../../shared/components/workspace-app-header/workspace-app-header.component';
 import { TeamApiService, type WorkspaceDto, type WorkspaceMemberDto, type WorkspaceRole } from '../../services/team-api.service';
+import { PromptDialogComponent } from '../../../../shared/components/prompt-dialog/prompt-dialog.component';
 
 @Component({
   selector: 'app-team-members-page',
   standalone: true,
-  imports: [NgClass, WorkspaceAppHeaderComponent],
+  imports: [NgClass, WorkspaceAppHeaderComponent, PromptDialogComponent],
   templateUrl: './team-members.component.html',
 })
 export class TeamMembersPageComponent {
@@ -19,6 +20,16 @@ export class TeamMembersPageComponent {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly inviteToken = signal<string | null>(null);
+  readonly inviteLink = computed(() => {
+    const t = this.inviteToken();
+    if (!t || typeof window === 'undefined') return null;
+    return `${window.location.origin}/app/team/join?token=${encodeURIComponent(t)}`;
+  });
+
+  readonly createWsPromptOpen = signal(false);
+  readonly inviteEmailPromptOpen = signal(false);
+  readonly inviteRolePromptOpen = signal(false);
+  readonly pendingInviteEmail = signal('');
 
   readonly selectedWorkspace = computed(() => {
     const id = this.selectedWorkspaceId();
@@ -77,16 +88,25 @@ export class TeamMembersPageComponent {
   }
 
   createWorkspace(): void {
-    const name = window.prompt('Nome do workspace');
-    if (!name?.trim()) return;
+    this.createWsPromptOpen.set(true);
+  }
+
+  onCreateWorkspaceConfirmed(name: string): void {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    this.createWsPromptOpen.set(false);
     this.loading.set(true);
-    this.api.createWorkspace(name.trim()).subscribe({
+    this.api.createWorkspace(trimmed).subscribe({
       next: () => this.reload(),
       error: () => {
         this.loading.set(false);
         this.error.set('Falha ao criar workspace.');
       },
     });
+  }
+
+  onCreateWorkspaceCancelled(): void {
+    this.createWsPromptOpen.set(false);
   }
 
   inviteMember(): void {
@@ -96,14 +116,37 @@ export class TeamMembersPageComponent {
       this.error.set('Apenas owner pode convidar no MVP.');
       return;
     }
-    const email = window.prompt('Email do membro');
-    if (!email?.trim()) return;
-    const roleRaw = window.prompt('Role (owner/editor/viewer)', 'viewer') ?? 'viewer';
-    const role = (['owner', 'editor', 'viewer'].includes(roleRaw) ? roleRaw : 'viewer') as WorkspaceRole;
+    this.pendingInviteEmail.set('');
+    this.inviteEmailPromptOpen.set(true);
+  }
+
+  onInviteEmailConfirmed(email: string): void {
+    const trimmed = email.trim();
+    if (!trimmed) return;
+    this.pendingInviteEmail.set(trimmed);
+    this.inviteEmailPromptOpen.set(false);
+    this.inviteRolePromptOpen.set(true);
+  }
+
+  onInviteEmailCancelled(): void {
+    this.inviteEmailPromptOpen.set(false);
+    this.pendingInviteEmail.set('');
+  }
+
+  onInviteRoleConfirmed(roleInput: string): void {
+    const ws = this.selectedWorkspace();
+    if (!ws) return;
+    const raw = roleInput.trim().toLowerCase();
+    const role = (
+      raw === 'owner' || raw === 'editor' || raw === 'viewer' ? raw : 'viewer'
+    ) as WorkspaceRole;
+    const email = this.pendingInviteEmail().trim();
+    if (!email) return;
+    this.inviteRolePromptOpen.set(false);
     this.loading.set(true);
     this.error.set(null);
     this.inviteToken.set(null);
-    this.api.invite(ws.id, email.trim(), role).subscribe({
+    this.api.invite(ws.id, email, role).subscribe({
       next: (res: any) => {
         this.loading.set(false);
         const token = res?.invite?.token as string | undefined;
@@ -115,6 +158,17 @@ export class TeamMembersPageComponent {
         this.error.set('Falha ao convidar membro.');
       },
     });
+  }
+
+  copyInviteLink(): void {
+    const link = this.inviteLink();
+    if (!link) return;
+    void navigator.clipboard?.writeText(link);
+  }
+
+  onInviteRoleCancelled(): void {
+    this.inviteRolePromptOpen.set(false);
+    this.pendingInviteEmail.set('');
   }
 }
 

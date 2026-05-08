@@ -126,6 +126,13 @@ const appWorkspaceRoutes: Routes = [
           ),
       },
       {
+        path: 'join',
+        loadComponent: () =>
+          import('./features/team/pages/team-join/team-join.component').then(
+            (m) => m.TeamJoinPageComponent,
+          ),
+      },
+      {
         path: 'roadmap',
         loadComponent: () =>
           import('./features/team/pages/team-roadmap/team-roadmap.component').then(
