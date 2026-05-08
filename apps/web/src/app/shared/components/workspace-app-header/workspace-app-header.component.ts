@@ -1,6 +1,7 @@
 import { NgClass } from '@angular/common';
 import {
   Component,
+  effect,
   ElementRef,
   HostListener,
   inject,
@@ -12,6 +13,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
+import { TeamApiService } from '../../../features/team/services/team-api.service';
 import { WorkspaceContextService } from '../../services/workspace-context.service';
 import { PromptDialogComponent } from '../prompt-dialog/prompt-dialog.component';
 
@@ -96,6 +98,7 @@ export class WorkspaceAppHeaderComponent {
   private readonly host = inject(ElementRef<HTMLElement>);
   readonly auth = inject(AuthService);
   readonly workspaceCtx = inject(WorkspaceContextService);
+  private readonly teamApi = inject(TeamApiService);
 
   /** Label do workspace atual (ex.: "REST workspace"). */
   readonly contextLabel = input<string | null>(null);
@@ -117,6 +120,16 @@ export class WorkspaceAppHeaderComponent {
     ),
     { initialValue: this.router.url },
   );
+
+  constructor() {
+    effect((onCleanup) => {
+      if (!this.auth.isAuthenticated()) return;
+      const sub = this.teamApi.listMyWorkspaces().subscribe({
+        next: (list) => this.workspaceCtx.mergeServerWorkspaces(list),
+      });
+      onCleanup(() => sub.unsubscribe());
+    });
+  }
 
   path(): string {
     return this.url().split('?')[0];

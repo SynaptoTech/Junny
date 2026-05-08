@@ -106,5 +106,52 @@ export class WorkspaceContextService {
     this.persist();
     return w;
   }
+
+  /**
+   * Incorpora workspaces retornados pela API (times / compartilhados) na lista do seletor da UI.
+   * Não remove entradas apenas locais (ex.: Personal criada offline); só atualiza nomes por id
+   * e acrescenta ids novos ao fim.
+   */
+  mergeServerWorkspaces(
+    server: Array<{ id: string; name: string; createdAt: string }>,
+  ): void {
+    if (!server.length) return;
+    const cur = this.workspaces();
+    const map = new Map(cur.map((w) => [w.id, { ...w }]));
+    for (const s of server) {
+      const name = s.name?.trim() || 'Workspace';
+      const existing = map.get(s.id);
+      if (existing) {
+        map.set(s.id, { ...existing, name });
+      } else {
+        map.set(s.id, {
+          id: s.id,
+          name,
+          createdAt: s.createdAt,
+        });
+      }
+    }
+    const seen = new Set<string>();
+    const out: WorkspaceMeta[] = [];
+    for (const w of cur) {
+      const u = map.get(w.id);
+      if (u) {
+        out.push(u);
+        seen.add(w.id);
+      }
+    }
+    for (const s of server) {
+      if (!seen.has(s.id)) {
+        const u = map.get(s.id);
+        if (u) out.push(u);
+      }
+    }
+    this.workspaces.set(out);
+    const active = this.activeWorkspaceId();
+    if (!active || !out.some((w) => w.id === active)) {
+      this.activeWorkspaceId.set(out[0]?.id ?? '');
+    }
+    this.persist();
+  }
 }
 

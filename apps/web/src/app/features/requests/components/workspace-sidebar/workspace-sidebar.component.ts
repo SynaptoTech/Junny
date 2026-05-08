@@ -14,6 +14,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TeamWorkspaceModalComponent } from '../../../team/components/team-workspace-modal/team-workspace-modal.component';
 import { TeamApiService, type WorkspaceDto } from '../../../team/services/team-api.service';
 import { PromptDialogComponent } from '../../../../shared/components/prompt-dialog/prompt-dialog.component';
+import { WorkspaceContextService } from '../../../../shared/services/workspace-context.service';
 import { HistoryPanelComponent } from '../../../history/components/history-panel/history-panel.component';
 import type {
   CollectionRow,
@@ -67,6 +68,7 @@ export type SidebarStoredRequestPayload = {
 export class WorkspaceSidebarComponent {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly teamApi = inject(TeamApiService);
+  private readonly workspaceCtx = inject(WorkspaceContextService);
 
   readonly collections = input<CollectionRow[]>([]);
   readonly environments = input<EnvironmentOption[]>([]);
@@ -177,6 +179,7 @@ export class WorkspaceSidebarComponent {
     this.teamError.set(null);
     this.teamApi.listMyWorkspaces().subscribe({
       next: (list) => {
+        this.workspaceCtx.mergeServerWorkspaces(list);
         this.teamWorkspaces.set(list);
         this.teamLoading.set(false);
       },
@@ -210,7 +213,10 @@ export class WorkspaceSidebarComponent {
     this.teamCreatePromptOpen.set(false);
     this.teamLoading.set(true);
     this.teamApi.createWorkspace(trimmed).subscribe({
-      next: () => this.loadTeamWorkspaces(),
+      next: (dto) => {
+        this.workspaceCtx.mergeServerWorkspaces([dto]);
+        this.loadTeamWorkspaces();
+      },
       error: () => {
         this.teamLoading.set(false);
         this.teamError.set('Falha ao criar workspace.');
