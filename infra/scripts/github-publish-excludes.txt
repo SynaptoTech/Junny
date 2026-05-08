@@ -1,0 +1,5 @@
+# Caminhos (relativos à raiz do repo) que não entram no mirror público do GitHub.
+# Um por linha. Linhas vazias e # são ignoradas.
+
+.gitea
+md
