@@ -1,6 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine, isMainModule } from '@angular/ssr/node';
 import express from 'express';
+import fs from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
@@ -11,6 +12,37 @@ const indexHtml = join(serverDistFolder, 'index.server.html');
 
 const app = express();
 const commonEngine = new CommonEngine();
+
+function resolveDocsDistFolder(): string | null {
+  // When running `apps/web` SSR locally, we want `/docs/*` to be served from the VitePress build.
+  // In production this is typically done by nginx/reverse-proxy; this makes local SSR parity easy.
+  const candidates = [
+    // monorepo root executions
+    resolve(process.cwd(), 'apps/docs/.vitepress/dist'),
+    resolve(process.cwd(), 'apps/docs/dist'),
+    // running with cwd = `apps/web`
+    resolve(process.cwd(), '../docs/.vitepress/dist'),
+    resolve(process.cwd(), '../docs/dist'),
+    // running with cwd = `apps/web/dist/...`
+    resolve(process.cwd(), '../../docs/.vitepress/dist'),
+    resolve(process.cwd(), '../../docs/dist'),
+    // relative to `apps/web/dist/server`
+    resolve(serverDistFolder, '../../../docs/.vitepress/dist'),
+    resolve(serverDistFolder, '../../../docs/dist'),
+    // some build setups nest one more level
+    resolve(serverDistFolder, '../../../../apps/docs/.vitepress/dist'),
+    resolve(serverDistFolder, '../../../../apps/docs/dist'),
+  ];
+
+  for (const folder of candidates) {
+    try {
+      if (fs.existsSync(folder) && fs.statSync(folder).isDirectory()) return folder;
+    } catch {
+      // ignore
+    }
+  }
+  return null;
+}
 
 /** MD60 — headers de segurança para SSR Node (Docker prod usa nginx estático). */
 app.use((_req, res, next) => {
@@ -23,6 +55,18 @@ app.use((_req, res, next) => {
   );
   next();
 });
+
+// Serve VitePress docs (if present) under `/docs/*`.
+const docsDistFolder = resolveDocsDistFolder();
+if (docsDistFolder) {
+  app.use(
+    '/docs',
+    express.static(docsDistFolder, {
+      maxAge: '1h',
+      index: 'index.html',
+    }),
+  );
+}
 
 /**
  * Example Express Rest API endpoints can be defined here.

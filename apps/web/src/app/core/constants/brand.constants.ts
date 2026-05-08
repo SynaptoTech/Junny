@@ -10,7 +10,7 @@ export const BRAND = {
     /** Same-origin (VitePress `base: /docs/`). Use absolute URL in meta tags if needed. */
     docs: '/docs/',
     license:
-      'https://github.com/SynaptoTech/Junny/blob/main/LICENSE',
+      'https://github.com/SynaptoTech/Junny/blob/public-github/LICENSE',
     synapto: 'https://www.synapto.com.br',
     ogImage: 'https://junny.dev.br/images/logo.png',
   },
