@@ -113,7 +113,7 @@ export default defineConfig({
 
     editLink: {
       pattern:
-        'https://github.com/SynaptoTech/Junny/edit/main/apps/docs/:path',
+        'https://github.com/SynaptoTech/Junny/edit/public-github/apps/docs/:path',
       text: 'Edit this page on GitHub',
     },
 
