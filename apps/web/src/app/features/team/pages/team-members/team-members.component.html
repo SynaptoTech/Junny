@@ -1,0 +1,115 @@
+<div class="flex h-dvh min-h-0 flex-col bg-junny-bg text-slate-100 selection:bg-junny-violet/25">
+  <app-workspace-app-header contextLabel="Team · Members" />
+
+  <main class="mx-auto w-full max-w-4xl flex-1 p-4 md:p-6">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <h1 class="text-lg font-semibold text-slate-100">Workspaces</h1>
+        @if (loading()) {
+          <span class="text-xs text-slate-500">Carregando…</span>
+        }
+      </div>
+      <button
+        type="button"
+        class="rounded-xl border border-white/15 bg-slate-900/70 px-3 py-2 text-sm text-slate-200 hover:border-junny-violet/40"
+        (click)="createWorkspace()"
+      >
+        + Novo workspace
+      </button>
+    </div>
+
+    @if (error(); as err) {
+      <div class="mb-4 rounded-xl border border-rose-500/25 bg-rose-950/25 px-4 py-3 text-sm text-rose-100">
+        {{ err }}
+      </div>
+    }
+
+    <section class="grid gap-4 md:grid-cols-[18rem_1fr]">
+      <div class="rounded-2xl border border-white/10 bg-slate-950/40 p-3">
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Meus workspaces</p>
+        <div class="space-y-1">
+          @for (w of workspaces(); track w.id) {
+            <button
+              type="button"
+              class="flex w-full items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left text-sm transition"
+              [ngClass]="
+                w.id === selectedWorkspaceId()
+                  ? 'border-junny-blue/40 bg-junny-blue/10 text-slate-100'
+                  : 'border-white/10 bg-slate-950/30 text-slate-300 hover:border-white/20 hover:text-white'
+              "
+              (click)="selectWorkspace(w.id)"
+            >
+              <span class="truncate">{{ w.name }}</span>
+              <span class="shrink-0 rounded-lg border border-white/10 bg-slate-900/60 px-2 py-0.5 text-[11px] text-slate-300">
+                {{ w.role }}
+              </span>
+            </button>
+          } @empty {
+            <p class="text-sm text-slate-500">Nenhum workspace ainda.</p>
+          }
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
+        @if (selectedWorkspace(); as ws) {
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div class="min-w-0">
+              <p class="text-xs text-slate-500">Workspace selecionado</p>
+              <h2 class="truncate text-lg font-semibold text-slate-100">{{ ws.name }}</h2>
+            </div>
+            <button
+              type="button"
+              class="rounded-xl border border-white/15 bg-slate-900/70 px-3 py-2 text-sm text-slate-200 hover:border-junny-violet/40 disabled:opacity-40"
+              [disabled]="selectedRole() !== 'owner'"
+              (click)="inviteMember()"
+            >
+              Convidar membro
+            </button>
+          </div>
+
+          @if (inviteToken(); as t) {
+            <div class="mb-4 rounded-xl border border-emerald-500/25 bg-emerald-950/15 px-4 py-3 text-sm text-emerald-100">
+              Convite criado. Token:
+              <span class="break-all font-mono text-xs text-emerald-200">{{ t }}</span>
+            </div>
+          }
+
+          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Members</p>
+          <div class="overflow-hidden rounded-xl border border-white/10">
+            <table class="w-full text-sm">
+              <thead class="bg-slate-950/60 text-xs text-slate-500">
+                <tr>
+                  <th class="px-3 py-2 text-left font-medium">User</th>
+                  <th class="px-3 py-2 text-left font-medium">Email</th>
+                  <th class="px-3 py-2 text-left font-medium">Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (m of members(); track m.id) {
+                  <tr class="border-t border-white/10">
+                    <td class="px-3 py-2 text-slate-200">
+                      {{ m.user.name || '—' }}
+                    </td>
+                    <td class="px-3 py-2 font-mono text-xs text-slate-300">{{ m.user.email }}</td>
+                    <td class="px-3 py-2">
+                      <span class="rounded-lg border border-white/10 bg-slate-900/60 px-2 py-0.5 text-[11px] text-slate-300">
+                        {{ m.role }}
+                      </span>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td class="px-3 py-3 text-slate-500" colspan="3">Nenhum membro.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <p class="text-sm text-slate-500">Selecione um workspace para ver membros.</p>
+        }
+      </div>
+    </section>
+  </main>
+</div>
+

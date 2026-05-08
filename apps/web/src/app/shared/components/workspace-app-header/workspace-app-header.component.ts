@@ -12,6 +12,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
+import { WorkspaceContextService } from '../../services/workspace-context.service';
 
 export type WorkspaceNavLink = { label: string; href: string };
 
@@ -93,6 +94,7 @@ export class WorkspaceAppHeaderComponent {
   private readonly router = inject(Router);
   private readonly host = inject(ElementRef<HTMLElement>);
   readonly auth = inject(AuthService);
+  readonly workspaceCtx = inject(WorkspaceContextService);
 
   /** Label do workspace atual (ex.: "REST workspace"). */
   readonly contextLabel = input<string | null>(null);
@@ -136,6 +138,31 @@ export class WorkspaceAppHeaderComponent {
 
   closeMenus(): void {
     this.openId.set(null);
+  }
+
+  activeWorkspaceName(): string {
+    const wid = this.workspaceCtx.activeWorkspaceId();
+    return (
+      this.workspaceCtx.workspaces().find((w) => w.id === wid)?.name?.trim() ||
+      'Workspace'
+    );
+  }
+
+  selectWorkspace(id: string, ev: Event): void {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.workspaceCtx.setActiveWorkspace(id);
+    this.closeMenus();
+  }
+
+  createWorkspace(ev: Event): void {
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (typeof window === 'undefined') return;
+    const name = window.prompt('Nome do workspace');
+    if (!name?.trim()) return;
+    this.workspaceCtx.createWorkspace(name.trim());
+    this.closeMenus();
   }
 
   onImportClick(ev: Event): void {
