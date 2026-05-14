@@ -9,10 +9,10 @@ Junny ships a **local NestJS API** for persistence (collections, environments, h
 
 ## Swagger UI
 
-When the API is running (default dev port **13050** unless overridden):
+When the API is running (default dev port **20053** unless overridden):
 
 ```txt
-http://localhost:13050/api/docs
+http://localhost:20053/api/docs
 ```
 
 Use Swagger to:

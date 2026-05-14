@@ -11,7 +11,7 @@ async function bootstrap() {
     logger: ['log', 'error', 'warn', 'debug'],
   });
 
-  const port = Number.parseInt(process.env.PORT ?? '13050', 10);
+  const port = Number.parseInt(process.env.PORT ?? '20053', 10);
 
   app.useWebSocketAdapter(new IoAdapter(app));
 

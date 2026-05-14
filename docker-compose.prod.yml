@@ -1,12 +1,14 @@
 # Stack de produção (imagem multi-stage + Nginx estático + API).
 # Uso: docker compose -f docker-compose.prod.yml up -d
 #
-# Portas publicadas no host (evitar conflito com outros stacks):
-#   API:   28471 -> 3000 (container)
-#   Web:   36284 -> 80
+# Portas publicadas no host (convenção monorepo Cloud):
+#   Web:   ${JUNNY_WEB_HOST_PORT:-20052} -> 80 (contentor)
+#   API:   ${JUNNY_API_HOST_PORT:-20053} -> 3000 (contentor)
 #
-# API usa SQLite via Prisma (volume `junny_sqlite`). DATABASE_URL no container.
-# Nginx no servidor aponta para 127.0.0.1 nessas portas (ver infra/nginx/).
+# API usa SQLite via Prisma (volume `junny_sqlite`). `JWT_SECRET` e portas vêm
+# de `.env` no servidor (CI: `infra/scripts/write-deploy-env.py`). Compose injecta
+# `JWT_SECRET` no contentor. NPM aponta para 127.0.0.1 nessas portas (ver
+# infra/nginx/*.conf de referência).
 
 services:
   api:
@@ -15,11 +17,12 @@ services:
       dockerfile: apps/server/Dockerfile
     restart: unless-stopped
     ports:
-      - '28471:3000'
+      - "${JUNNY_API_HOST_PORT:-20053}:3000"
     environment:
       NODE_ENV: production
       PORT: 3000
       DATABASE_URL: file:/app/data/dev.db
+      JWT_SECRET: ${JWT_SECRET:-}
     volumes:
       - junny_sqlite:/app/data
     networks:
@@ -31,7 +34,7 @@ services:
       dockerfile: apps/web/Dockerfile
     restart: unless-stopped
     ports:
-      - '36284:80'
+      - "${JUNNY_WEB_HOST_PORT:-20052}:80"
     networks:
       - junny-network
 

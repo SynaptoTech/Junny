@@ -4,7 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
  * E2E against the Angular dev server (default MD15 ports).
  * Opt-in: `E2E=1 npm run test:e2e` (requires `npx playwright install chromium` once).
  */
-const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:12050';
+const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:20052';
 const e2eEnabled = process.env.E2E === '1';
 
 export default defineConfig({

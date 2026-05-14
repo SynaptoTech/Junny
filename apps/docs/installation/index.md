@@ -26,10 +26,10 @@ Defaults (see `docker-compose.yml` and `.env.example`):
 
 | Service | URL |
 |---------|-----|
-| Web (Angular dev server) | `http://localhost:12050` |
-| API (NestJS) | `http://localhost:13050` |
+| Web (Angular dev server) | `http://localhost:20052` |
+| API (NestJS) | `http://localhost:20053` |
 
-The frontend expects the API at `http://localhost:13050` in development (see `apps/web` environment files).
+The frontend expects the API at `http://localhost:20053` in development (see `apps/web` environment files).
 
 To rebuild after dependency changes:
 

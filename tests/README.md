@@ -24,7 +24,7 @@ From the monorepo root (after `npm install`):
 npm test
 ```
 
-E2E (requires the web app reachable — default `http://localhost:12050`):
+E2E (requires the web app reachable — default `http://localhost:20052`):
 
 ```bash
 npm run test:e2e

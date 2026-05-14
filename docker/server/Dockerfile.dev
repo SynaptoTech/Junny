@@ -17,7 +17,7 @@ COPY docker/server/docker-entrypoint-dev.sh /usr/local/bin/docker-entrypoint-dev
 RUN chmod +x /usr/local/bin/docker-entrypoint-dev.sh
 
 ENV NODE_ENV=development
-ENV PORT=13050
-EXPOSE 13050
+ENV PORT=20053
+EXPOSE 20053
 
 ENTRYPOINT ["docker-entrypoint-dev.sh"]

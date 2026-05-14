@@ -107,10 +107,14 @@ Semantic versioning: **`v0.x.x`** (`MAJOR.MINOR.PATCH`). Releases are published 
 docker compose up
 ```
 
-- **UI:** http://localhost:12050
-- **API:** http://localhost:13050
+- **UI:** http://localhost:20052
+- **API:** http://localhost:20053
 
-Optional: `cp .env.example .env`. Production-style stack: `docker compose -f docker-compose.prod.yml` (see [`docker-compose.prod.yml`](docker-compose.prod.yml)).
+Optional: `cp .env.example .env`. Production-style stack: `docker compose -f docker-compose.prod.yml` (see [`docker-compose.prod.yml`](docker-compose.prod.yml)); define `JWT_SECRET` (e opcionalmente `JUNNY_WEB_HOST_PORT` / `JUNNY_API_HOST_PORT`) no `.env` do servidor.
+
+### CI / deploy (Gitea)
+
+`.gitea/workflows/deploy.yml`: jobs **prepare** → **sync-code** (rsync) → **remote-docker** (`.env` via [`infra/scripts/write-deploy-env.py`](infra/scripts/write-deploy-env.py) + `docker compose -f docker-compose.prod.yml`) → **verify** (curl **20052** e **20053/v1/health**). Runner `ubuntu-latest` + `ghcr.io/catthehacker/ubuntu:act-22.04`. **Sem** cópia de Nginx/Certbot no SO (TLS no **NPM**). Secrets: `SSH_KEY`, `SSH_USER`, `SSH_HOST`, `APP_DIR`, `JWT_SECRET`; opcional `JUNNY_WEB_HOST_PORT`, `JUNNY_API_HOST_PORT`.
 
 After changing dependencies, rebuild images: `docker compose up --build`. To reset dependency volumes: `docker compose down -v`.
 
@@ -181,8 +185,8 @@ Includes search (local provider), dark-first theme, `robots.txt` / `sitemap.xml`
 
 ## Repositories
 
-- **Synapto (internal Gitea):** histórico completo — inclui `.gitea/`, `md/`, `infra/`, etc. Push normal: `git push origin main`.
-- **GitHub (mirror público):** branch `public-github`. Algumas pastas **não** são publicadas (por defeito `.gitea/` e `md/` — lista em `infra/scripts/github-publish-excludes.txt`). Depois de commits no `main`, corre `./infra/scripts/publish-to-github.sh` ou `./infra/scripts/push-all-remotes.sh` (Gitea + GitHub).
+- **Synapto (Gitea interno):** repositório canónico **`Tools/Junny`** (`https://git.synapto.com.br/Tools/Junny.git`). Inclui `.gitea/`, `md/`, `infra/`, etc. Push típico: `git push origin main` (ou `git push gitea-ssh main` se usares o remoto SSH).
+- **GitHub (mirror público):** remoto **`github`** — mantém-se como está (`git@github.com:SynaptoTech/Junny.git`). Branch `public-github`. Algumas pastas **não** são publicadas (por defeito `.gitea/` e `md/` — lista em `infra/scripts/github-publish-excludes.txt`). Depois de commits no `main`, corre `./infra/scripts/publish-to-github.sh` ou `./infra/scripts/push-all-remotes.sh` (Gitea + GitHub).
 
 ---
 

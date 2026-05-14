@@ -277,7 +277,7 @@ describe("App (e2e)", () => {
       phase: "roadmap",
       md: "MD35_JUNNY_BROWSER_EXTENSION_REQUEST_CAPTURE.md",
       frontendStructure: "/features/browser-extension",
-      localIntegrationHost: "localhost:13050",
+      localIntegrationHost: "localhost:20053",
     });
     expect(Array.isArray(res.body.mvpGoals)).toBe(true);
     expect(res.body.mvpGoals).toContain("capture fetch");

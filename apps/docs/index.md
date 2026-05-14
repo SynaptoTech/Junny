@@ -39,7 +39,7 @@ cd Junny
 docker compose up
 ```
 
-Then open the **web UI** at `http://localhost:12050` and the **API** at `http://localhost:13050` (default dev ports).
+Then open the **web UI** at `http://localhost:20052` and the **API** at `http://localhost:20053` (default dev ports).
 
 ## Next steps
 

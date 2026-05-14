@@ -20,8 +20,8 @@ docker compose up
 
 Then open:
 
-- **Web UI:** http://localhost:12050  
-- **API:** http://localhost:13050  
+- **Web UI:** http://localhost:20052  
+- **API:** http://localhost:20053  
 
 See `docker-compose.yml`, `.env.example`, and the main **README** for ports, volumes, and production compose (`docker-compose.prod.yml`).
 

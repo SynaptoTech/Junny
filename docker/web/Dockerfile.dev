@@ -11,7 +11,7 @@ COPY examples ./examples
 RUN npm ci
 
 ENV CHOKIDAR_USEPOLLING=true
-EXPOSE 12050
+EXPOSE 20052
 
 # API no host: o browser chama http://localhost:<SERVER_PORT> (ver environment.ts)
-CMD ["npm", "run", "start", "-w", "@junny/web", "--", "--host", "0.0.0.0", "--port", "12050"]
+CMD ["npm", "run", "start", "-w", "@junny/web", "--", "--host", "0.0.0.0", "--port", "20052"]
