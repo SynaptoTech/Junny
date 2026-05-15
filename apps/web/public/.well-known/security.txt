@@ -1,0 +1,4 @@
+Contact: mailto:contato@synapto.com.br
+Expires: 2027-05-15T23:59:59.000Z
+Preferred-Languages: pt-BR, en
+Canonical: https://junny.dev.br/.well-known/security.txt
