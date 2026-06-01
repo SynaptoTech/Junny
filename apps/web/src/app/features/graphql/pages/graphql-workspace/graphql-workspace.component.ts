@@ -137,7 +137,10 @@ export class GraphqlWorkspacePageComponent {
   }
 
   refreshMeta(): void {
-    this.api.listCollections().subscribe((c) => this.collections.set(c));
+    this.api.bootstrapCollections().subscribe((c) => {
+      this.collections.set(c);
+      this.ui.reconcileExpandedCollection(c);
+    });
     this.api
       .listEnvironments()
       .subscribe((e) => this.environments.set(e ?? []));

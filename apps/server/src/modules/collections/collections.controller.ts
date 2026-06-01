@@ -6,8 +6,12 @@ import {
   Param,
   Patch,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import type { Request } from 'express';
+import { JwtAuthGuard } from '../user-auth/jwt-auth.guard';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { CreateStoredRequestDto } from './dto/create-stored-request.dto';
@@ -67,6 +71,16 @@ export class CollectionsController {
     @Param('requestId') requestId: string,
   ) {
     return this.collectionsService.removeStoredRequest(collectionId, requestId);
+  }
+
+  @Get('bootstrap')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Lista collections do utilizador e cria a primeira se necessário',
+  })
+  bootstrap(@Req() req: Request & { user?: { id: string } }) {
+    return this.collectionsService.bootstrapForUser(req.user!.id);
   }
 
   @Get(':id')

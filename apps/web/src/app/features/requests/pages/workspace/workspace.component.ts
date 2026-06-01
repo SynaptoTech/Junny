@@ -217,12 +217,15 @@ export class WorkspacePageComponent {
   }
 
   refreshMeta(): void {
-    this.api.listCollections().subscribe((c) => this.collections.set(c));
+    this.api.bootstrapCollections().subscribe((c) => {
+      this.collections.set(c);
+      this.store.reconcileExpandedCollection(c, this.rootFolderId);
+      this.reloadExpandedRequestsList();
+    });
     this.api
       .listEnvironments()
       .subscribe((e) => this.environments.set(e ?? []));
     this.historyReloadTick.update((n) => n + 1);
-    this.reloadExpandedRequestsList();
   }
 
   onReplayHistory(entry: HistoryEntryDto): void {
@@ -527,10 +530,22 @@ export class WorkspacePageComponent {
       });
       return;
     }
+    const collections = this.collections();
+    if (
+      collections.length > 0 &&
+      !collections.some((c) => c.id === exp)
+    ) {
+      this.store.setExpandedCollectionId(null);
+      this.expandedRequests.set([]);
+      return;
+    }
     this.api.getCollection(exp).subscribe((c) => {
       if (!c) {
         this.store.setExpandedCollectionId(null);
         this.expandedRequests.set([]);
+        this.api.bootstrapCollections().subscribe((cols) => {
+          this.collections.set(cols);
+        });
         return;
       }
       this.expandedRequests.set(mapRestRequestsForSidebar(c.requests));

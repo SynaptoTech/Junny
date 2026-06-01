@@ -125,6 +125,18 @@ export class RestWorkspaceApiService {
       .pipe(map((r) => r.data ?? []));
   }
 
+  /** Collections do utilizador; cria "My requests" se a lista estiver vazia (JWT). */
+  bootstrapCollections(): Observable<CollectionRow[]> {
+    return this.http
+      .get<Wrapped<CollectionRow[]>>(`${this.v1}/collections/bootstrap`)
+      .pipe(
+        map((r) => r.data ?? []),
+        catchError((err: { status?: number }) =>
+          err?.status === 401 ? this.listCollections() : throwError(() => err),
+        ),
+      );
+  }
+
   getCollection(id: string): Observable<
     | {
         id: string;

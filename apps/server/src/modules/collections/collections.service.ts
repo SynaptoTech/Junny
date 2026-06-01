@@ -16,6 +16,45 @@ export class CollectionsService {
     });
   }
 
+  /** Garante workspace + ao menos uma collection para o utilizador autenticado. */
+  async bootstrapForUser(userId: string) {
+    let memberships = await this.prisma.workspaceMember.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    if (memberships.length === 0) {
+      const workspace = await this.prisma.workspace.create({
+        data: {
+          name: 'Personal',
+          members: { create: { userId, role: 'owner' } },
+          collections: { create: { name: 'My requests' } },
+        },
+      });
+      return this.collectionsForWorkspaceIds([workspace.id]);
+    }
+
+    const workspaceIds = memberships.map((m) => m.workspaceId);
+    let collections = await this.collectionsForWorkspaceIds(workspaceIds);
+    if (collections.length === 0) {
+      await this.prisma.collection.create({
+        data: {
+          name: 'My requests',
+          workspaceId: memberships[0].workspaceId,
+        },
+      });
+      collections = await this.collectionsForWorkspaceIds(workspaceIds);
+    }
+    return collections;
+  }
+
+  private collectionsForWorkspaceIds(workspaceIds: string[]) {
+    return this.prisma.collection.findMany({
+      where: { workspaceId: { in: workspaceIds } },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   async findOne(id: string) {
     const row = await this.prisma.collection.findUnique({
       where: { id },

@@ -170,6 +170,19 @@ export class WorkspacePersistenceService {
     this.persistUi();
   }
 
+  /** Limpa expandedCollectionId se o id já não existir na lista carregada. */
+  reconcileExpandedCollection(
+    collections: { id: string }[],
+    rootFolderId?: string,
+  ): void {
+    const exp = this.expandedCollectionId();
+    if (!exp) return;
+    if (rootFolderId && exp === rootFolderId) return;
+    if (!collections.some((c) => c.id === exp)) {
+      this.setExpandedCollectionId(null);
+    }
+  }
+
   /** Remove collection expandida guardada (ex.: após login com outro utilizador). */
   clearStaleExpandedCollections(): void {
     if (typeof localStorage === 'undefined') {
