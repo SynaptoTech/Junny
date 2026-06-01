@@ -49,12 +49,16 @@ export class UserAuthService {
     const email = dto.email.toLowerCase();
 
     if (this.identity.isEnabled()) {
-      await this.identity.register({
+      const session = await this.identity.register({
         email,
         password: dto.password,
         name: dto.name?.trim() || undefined,
       });
-      return this.syncLocalUserAfterIdentityRegister(email, dto.password, dto.name?.trim() || null);
+      return this.syncLocalUserFromIdentity(
+        session.user,
+        dto.password,
+        dto.name?.trim() || session.user.name,
+      );
     }
 
     const existing = await this.prisma.user.findUnique({ where: { email } });
@@ -75,17 +79,27 @@ export class UserAuthService {
     };
   }
 
-  /** Espelha utilizador no SQLite do Junny (workspaces) após cadastro no Identity (perfil JUNNY_USER). */
-  private async syncLocalUserAfterIdentityRegister(
-    email: string,
+  /**
+   * Credenciais no Identity; espelho local (SQLite) para workspaces + JWT da API Junny.
+   */
+  private async syncLocalUserFromIdentity(
+    identityUser: { id: string; email: string; name: string | null },
     password: string,
     name: string | null,
   ): Promise<{ accessToken: string; user: AuthUser }> {
+    const email = identityUser.email.toLowerCase();
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
     const user = await this.prisma.user.upsert({
       where: { email },
-      create: { email, passwordHash, name },
-      update: { name: name ?? undefined, passwordHash },
+      create: {
+        email,
+        passwordHash,
+        name: name ?? identityUser.name,
+      },
+      update: {
+        name: name ?? identityUser.name ?? undefined,
+        passwordHash,
+      },
     });
     return {
       accessToken: this.signToken(user.id),
@@ -94,9 +108,21 @@ export class UserAuthService {
   }
 
   async login(dto: LoginDto): Promise<{ accessToken: string; user: AuthUser }> {
-    const user = await this.prisma.user.findUnique({
-      where: { email: dto.email.toLowerCase() },
-    });
+    const email = dto.email.toLowerCase();
+
+    if (this.identity.isEnabled()) {
+      const session = await this.identity.login({
+        email,
+        password: dto.password,
+      });
+      return this.syncLocalUserFromIdentity(
+        session.user,
+        dto.password,
+        session.user.name,
+      );
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) {
       throw new UnauthorizedException('Invalid email or password.');
     }
