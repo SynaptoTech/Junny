@@ -6,11 +6,12 @@ import { BRAND } from '../../core/constants/brand.constants';
 import type { LocaleId } from '../../core/i18n/supported-locales';
 import { getLandingCopy } from '../../core/i18n/landing.copy';
 import { resolveLocaleIdFromUrl } from '../../core/i18n/resolve-locale';
+import { ScCreativeSlotComponent } from '../../shared/components/sc-creative-slot/sc-creative-slot.component';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ScCreativeSlotComponent],
   templateUrl: './footer.component.html',
 })
 export class FooterComponent {

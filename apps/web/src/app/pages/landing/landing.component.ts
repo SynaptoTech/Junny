@@ -17,12 +17,19 @@ import { resolveLocaleIdFromUrl } from '../../core/i18n/resolve-locale';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { NavbarComponent } from '../../layout/navbar/navbar.component';
 import { ProtocolCardComponent } from '../../shared/components/protocol-card/protocol-card.component';
+import { ScCreativeSlotComponent } from '../../shared/components/sc-creative-slot/sc-creative-slot.component';
 import { SectionComponent } from '../../shared/components/section/section.component';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [NavbarComponent, SectionComponent, ProtocolCardComponent, FooterComponent],
+  imports: [
+    NavbarComponent,
+    SectionComponent,
+    ProtocolCardComponent,
+    FooterComponent,
+    ScCreativeSlotComponent,
+  ],
   templateUrl: './landing.component.html',
 })
 export class LandingPageComponent implements AfterViewInit, OnDestroy {
