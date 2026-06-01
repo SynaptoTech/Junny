@@ -529,6 +529,7 @@ export class WorkspacePageComponent {
     }
     this.api.getCollection(exp).subscribe((c) => {
       if (!c) {
+        this.store.setExpandedCollectionId(null);
         this.expandedRequests.set([]);
         return;
       }

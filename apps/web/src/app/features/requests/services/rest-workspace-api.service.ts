@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, type Observable } from 'rxjs';
+import { map, type Observable, catchError, of, throwError } from 'rxjs';
 import { environment } from '../../../core/environments/environment';
 import type {
   RequestAuthConfig,
@@ -145,7 +145,12 @@ export class RestWorkspaceApiService {
           requests: StoredRequestDto[];
         }>
       >(`${this.v1}/collections/${id}`)
-      .pipe(map((r) => r.data));
+      .pipe(
+        map((r) => r.data),
+        catchError((err: { status?: number }) =>
+          err?.status === 404 ? of(undefined) : throwError(() => err),
+        ),
+      );
   }
 
   createCollection(body: {

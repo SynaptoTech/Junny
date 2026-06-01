@@ -73,6 +73,7 @@ export class UserAuthService {
         name: dto.name?.trim() || null,
       },
     });
+    await this.provisionDefaultWorkspace(user.id);
     return {
       accessToken: this.signToken(user.id),
       user: this.toPublicUser(user),
@@ -101,10 +102,31 @@ export class UserAuthService {
         passwordHash,
       },
     });
+    await this.provisionDefaultWorkspace(user.id);
     return {
       accessToken: this.signToken(user.id),
       user: this.toPublicUser(user),
     };
+  }
+
+  /** Workspace + collection inicial para utilizadores novos (Identity ou registo local). */
+  private async provisionDefaultWorkspace(userId: string): Promise<void> {
+    const memberships = await this.prisma.workspaceMember.count({
+      where: { userId },
+    });
+    if (memberships > 0) return;
+
+    await this.prisma.workspace.create({
+      data: {
+        name: 'Personal',
+        members: {
+          create: { userId, role: 'owner' },
+        },
+        collections: {
+          create: { name: 'My requests' },
+        },
+      },
+    });
   }
 
   async login(dto: LoginDto): Promise<{ accessToken: string; user: AuthUser }> {
@@ -130,6 +152,7 @@ export class UserAuthService {
     if (!ok) {
       throw new UnauthorizedException('Invalid email or password.');
     }
+    await this.provisionDefaultWorkspace(user.id);
     return {
       accessToken: this.signToken(user.id),
       user: this.toPublicUser(user),
@@ -141,6 +164,8 @@ export class UserAuthService {
       where: { id },
       select: { id: true, email: true, name: true },
     });
+    if (!user) return null;
+    await this.provisionDefaultWorkspace(user.id);
     return user;
   }
 

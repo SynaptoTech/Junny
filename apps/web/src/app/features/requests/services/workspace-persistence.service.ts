@@ -170,6 +170,31 @@ export class WorkspacePersistenceService {
     this.persistUi();
   }
 
+  /** Remove collection expandida guardada (ex.: após login com outro utilizador). */
+  clearStaleExpandedCollections(): void {
+    if (typeof localStorage === 'undefined') {
+      this.expandedCollectionId.set(null);
+      return;
+    }
+    const prefix = 'junny-workspace-ui-v2:';
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key?.startsWith(prefix)) continue;
+        const raw = localStorage.getItem(key);
+        if (!raw) continue;
+        const u = JSON.parse(raw) as { expandedCollectionId?: string | null };
+        if (u.expandedCollectionId) {
+          u.expandedCollectionId = null;
+          localStorage.setItem(key, JSON.stringify(u));
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+    this.expandedCollectionId.set(null);
+  }
+
   persist(workspaceId = this.ctx.activeWorkspaceId()): void {
     if (typeof localStorage === 'undefined') return;
     if (!workspaceId) return;

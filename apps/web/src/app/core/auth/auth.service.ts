@@ -3,6 +3,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, of, tap } from 'rxjs';
 import { environment } from '../environments/environment';
+import { WorkspacePersistenceService } from '../../features/requests/services/workspace-persistence.service';
 
 export type AuthUser = {
   id: string;
@@ -28,6 +29,7 @@ const USER_KEY = 'junny.auth.user';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly workspacePersistence = inject(WorkspacePersistenceService);
 
   private readonly api = `${environment.apiBaseUrl}/auth`;
 
@@ -96,6 +98,7 @@ export class AuthService {
 
   finalizeSession(payload: AuthPayload): void {
     this.persistSession(payload);
+    this.workspacePersistence.clearStaleExpandedCollections();
   }
 
   /** Valida o JWT contra o servidor e atualiza o perfil. */
