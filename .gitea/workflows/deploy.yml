@@ -3,8 +3,8 @@
 # Runner: ubuntu-latest + ghcr.io/catthehacker/ubuntu:act-22.04. TLS: **NPM** (sem Nginx/Certbot no SO).
 # Portas no host: **20052** web (Nginx estático) · **20053** API Nest (`GET /v1/health`).
 #
-# Secrets: SSH_KEY, SSH_USER, SSH_HOST, APP_DIR, JWT_SECRET
-# Opcional: JUNNY_WEB_HOST_PORT, JUNNY_API_HOST_PORT
+# Secrets: SSH_KEY, SSH_USER, SSH_HOST, APP_DIR, JWT_SECRET, IDENTITY_CLIENT_SECRET
+# Opcional: JUNNY_WEB_HOST_PORT, JUNNY_API_HOST_PORT, IDENTITY_ENABLED, IDENTITY_TENANT_SLUG, IDENTITY_SERVICE_URL
 
 name: junny-deploy-pipeline
 
@@ -138,6 +138,10 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JUNNY_WEB_HOST_PORT: ${{ secrets.JUNNY_WEB_HOST_PORT }}
           JUNNY_API_HOST_PORT: ${{ secrets.JUNNY_API_HOST_PORT }}
+          IDENTITY_CLIENT_SECRET: ${{ secrets.IDENTITY_CLIENT_SECRET }}
+          IDENTITY_ENABLED: ${{ secrets.IDENTITY_ENABLED }}
+          IDENTITY_TENANT_SLUG: ${{ secrets.IDENTITY_TENANT_SLUG }}
+          IDENTITY_SERVICE_URL: ${{ secrets.IDENTITY_SERVICE_URL }}
         run: |
           set -euo pipefail
           python3 infra/scripts/write-deploy-env.py
