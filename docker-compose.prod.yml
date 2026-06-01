@@ -23,6 +23,11 @@ services:
       PORT: 3000
       DATABASE_URL: file:/app/data/dev.db
       JWT_SECRET: ${JWT_SECRET:-}
+      IDENTITY_ENABLED: ${IDENTITY_ENABLED:-}
+      IDENTITY_SERVICE_URL: ${IDENTITY_SERVICE_URL:-https://api-identity.synapto.com.br}
+      IDENTITY_CLIENT_ID: ${IDENTITY_CLIENT_ID:-junny}
+      IDENTITY_CLIENT_SECRET: ${IDENTITY_CLIENT_SECRET:-}
+      IDENTITY_TENANT_SLUG: ${IDENTITY_TENANT_SLUG:-}
     volumes:
       - junny_sqlite:/app/data
     networks:
